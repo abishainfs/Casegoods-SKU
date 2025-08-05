@@ -1,47 +1,52 @@
-{
-  "T": {
+[
+  {
+    "code": "T",
     "name": "Teakwood",
-    "finishes": {
-      "0": "Unfinished",
-      "1": "Oiled/Sealed",
-      "2": "Black Stained",
-      "3": "Dark Stained"
-    }
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Oiled/Sealed" },
+      { "code": "2", "name": "Black Stained" },
+      { "code": "3", "name": "Dark Stained" }
+    ]
   },
-  "A": {
+  {
+    "code": "A",
     "name": "Ash",
-    "finishes": {
-      "0": "Unfinished",
-      "1": "Oiled/Sealed",
-      "2": "Black Stained",
-      "3": "Dark Stained"
-    }
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Oiled/Sealed" },
+      { "code": "2", "name": "Black Stained" },
+      { "code": "3", "name": "Dark Stained" }
+    ]
   },
-  "U": {
+  {
+    "code": "U",
     "name": "Aluminium",
-    "finishes": {
-      "0": "Unfinished",
-      "1": "Neutral Anodised",
-      "2": "Black Anodised",
-      "3": "Nickel Plated",
-      "4": "Raw/Waxed"
-    }
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Neutral Anodised" },
+      { "code": "2", "name": "Black Anodised" },
+      { "code": "3", "name": "Nickel Plated" },
+      { "code": "4", "name": "Raw/Waxed" }
+    ]
   },
-  "S": {
+  {
+    "code": "S",
     "name": "Stainless Steel",
-    "finishes": {
-      "0": "Unfinished",
-      "1": "Brushed",
-      "2": "Polished"
-    }
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Brushed" },
+      { "code": "2", "name": "Polished" }
+    ]
   },
-  "B": {
+  {
+    "code": "B",
     "name": "Brass",
-    "finishes": {
-      "0": "Unfinished",
-      "1": "Satin",
-      "2": "Slightly Aged",
-      "3": "Blackened"
-    }
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Satin" },
+      { "code": "2", "name": "Slightly Aged" },
+      { "code": "3", "name": "Blackened" }
+    ]
   }
-}
+]
