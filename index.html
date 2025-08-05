@@ -316,10 +316,10 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 materialsData = await response.json();
-                console.log("Materials data loaded:", materialsData);
+                console.log("Materials data loaded successfully:", materialsData);
             } catch (error) {
                 console.error("Could not load materials.json:", error);
-                showAlert("Failed to load material data. Please check 'materials.json' file.");
+                showAlert("Failed to load material data. Please check 'materials.json' file and its content.");
                 // Fallback to a default or empty data set if loading fails
                 materialsData = {
                     "T": { "name": "Teakwood (Error)", "finishes": { "0": "Unfinished" } },
@@ -330,7 +330,7 @@
 
         function populateMaterialTypes(selectElement) {
             const defaultOption = selectElement.querySelector('option[value=""][selected]');
-            selectElement.innerHTML = '';
+            selectElement.innerHTML = ''; // Clear existing options
             if (defaultOption) {
                 selectElement.appendChild(defaultOption.cloneNode(true));
             } else {
@@ -352,7 +352,7 @@
         function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
             const selectedMaterialCode = materialTypeSelect.value;
             const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
-            finishSelectElement.innerHTML = '';
+            finishSelectElement.innerHTML = ''; // Clear existing options
             if (defaultOption) {
                 finishSelectElement.appendChild(defaultOption.cloneNode(true));
             } else {
@@ -360,7 +360,7 @@
                 newDefaultOption.value = "";
                 newDefaultOption.textContent = "Select Finish";
                 newDefaultOption.selected = true;
-                selectElement.appendChild(newDefaultOption);
+                finishSelectElement.appendChild(newDefaultOption); // Corrected this line
             }
 
             if (selectedMaterialCode && materialsData[selectedMaterialCode]) {
@@ -391,20 +391,29 @@
                 const finishes = material.finishes;
                 const finishKeys = Object.keys(finishes);
 
-                legendHtml += `<tr>`;
-                legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
-                legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
-                legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[0]}</td>`;
-                legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[0]]}</td>`;
-                legendHtml += `</tr>`;
-
-                for (let i = 1; i < finishKeys.length; i++) {
+                if (finishKeys.length === 0) {
                     legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[i]}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[i]]}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">N/A</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">No Finishes</td>`;
                     legendHtml += `</tr>`;
+                } else {
+                    legendHtml += `<tr>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[0]}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[0]]}</td>`;
+                    legendHtml += `</tr>`;
+
+                    for (let i = 1; i < finishKeys.length; i++) {
+                        legendHtml += `<tr>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[i]}</td>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[i]]}</td>`;
+                        legendHtml += `</tr>`;
+                    }
                 }
             }
 
@@ -591,6 +600,7 @@
             // Populate dropdowns and legend after materialsData is fetched
             populateMaterialTypes(material1TypeSelect);
             populateMaterialTypes(material2TypeSelect);
+            // Initial population of finishes based on default selected type (which is empty)
             populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
             populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
 
