@@ -283,53 +283,8 @@
         let auth;
         let userId;
 
-        const materialsData = {
-            "T": {
-                name: "Teakwood",
-                finishes: {
-                    "0": "Unfinished",
-                    "1": "Oiled/Sealed",
-                    "2": "Black Stained",
-                    "3": "Dark Stained"
-                }
-            },
-            "A": {
-                name: "Ash",
-                finishes: {
-                    "0": "Unfinished",
-                    "1": "Oiled/Sealed",
-                    "2": "Black Stained",
-                    "3": "Dark Stained"
-                }
-            },
-            "U": {
-                name: "Aluminium",
-                finishes: {
-                    "0": "Unfinished",
-                    "1": "Neutral Anodised",
-                    "2": "Black Anodised",
-                    "3": "Nickel Plated",
-                    "4": "Raw/Waxed"
-                }
-            },
-            "S": {
-                name: "Stainless Steel",
-                finishes: {
-                    "0": "Unfinished",
-                    "1": "Brushed",
-                    "2": "Polished"
-                }
-            },
-            "B": {
-                name: "Brass",
-                finishes: {
-                    "0": "Unfinished",
-                    "1": "Satin",
-                    "2": "Slightly Aged",
-                    "3": "Blackened"
-                }
-            }
-        };
+        // materialsData will be loaded from materials.json
+        let materialsData = {}; 
 
         let productCategorySelect;
         let customCodeInput;
@@ -352,6 +307,25 @@
         function showAlert(message) {
             alertMessage.textContent = message;
             customAlert.classList.remove('hidden');
+        }
+
+        async function fetchMaterialsData() {
+            try {
+                const response = await fetch('./materials.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                materialsData = await response.json();
+                console.log("Materials data loaded:", materialsData);
+            } catch (error) {
+                console.error("Could not load materials.json:", error);
+                showAlert("Failed to load material data. Please check 'materials.json' file.");
+                // Fallback to a default or empty data set if loading fails
+                materialsData = {
+                    "T": { "name": "Teakwood (Error)", "finishes": { "0": "Unfinished" } },
+                    "A": { "name": "Ash (Error)", "finishes": { "0": "Unfinished" } }
+                };
+            }
         }
 
         function populateMaterialTypes(selectElement) {
@@ -386,7 +360,7 @@
                 newDefaultOption.value = "";
                 newDefaultOption.textContent = "Select Finish";
                 newDefaultOption.selected = true;
-                finishSelectElement.appendChild(newDefaultOption);
+                selectElement.appendChild(newDefaultOption);
             }
 
             if (selectedMaterialCode && materialsData[selectedMaterialCode]) {
@@ -445,8 +419,6 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // __initial_auth_token is specific to the Canvas environment.
-                // For Vercel, we will always sign in anonymously for public access.
                 await signInAnonymously(auth);
 
                 userId = auth.currentUser?.uid || crypto.randomUUID();
@@ -491,7 +463,8 @@
             loggedSkusList.appendChild(ul);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Assign DOM elements once the window is loaded
             productCategorySelect = document.getElementById('productCategory');
             customCodeInput = document.getElementById('customCode');
             sizeTypeInput = document.getElementById('sizeType');
@@ -509,6 +482,9 @@
             alertCloseBtn = document.getElementById('alertCloseBtn');
             materialLegendDiv = document.getElementById('materialLegend');
             loggedSkusList = document.getElementById('loggedSkusList');
+
+            // Fetch materials data before populating dropdowns and legend
+            await fetchMaterialsData();
 
             alertCloseBtn.addEventListener('click', () => {
                 customAlert.classList.add('hidden');
@@ -554,6 +530,12 @@
                     sku += `-${material2}`;
                 }
 
+                // Display the SKU in the current generator result area immediately
+                generatedSkuParagraph.textContent = sku;
+                resultContainer.classList.remove('hidden');
+                copyMessage.classList.add('hidden');
+
+                // Database operations for SKU logging (only if unique)
                 if (!db || !auth.currentUser) {
                     showAlert("Database not ready or user not authenticated. Please try again.");
                     return;
@@ -565,24 +547,21 @@
                     const querySnapshot = await getDocs(q);
 
                     if (!querySnapshot.empty) {
-                        showAlert(`SKU "${sku}" already exists in the database. Please generate a unique SKU.`);
-                        return;
+                        showAlert(`SKU "${sku}" already exists in the database. It will not be logged again.`);
+                        // Do NOT addDoc if it's a duplicate
+                    } else {
+                        await addDoc(skusCollectionRef, {
+                            sku: sku,
+                            timestamp: serverTimestamp(),
+                            generatedBy: userId
+                        });
+                        console.log("SKU added successfully:", sku);
+                        // The onSnapshot listener will automatically update the list
                     }
-
-                    await addDoc(skusCollectionRef, {
-                        sku: sku,
-                        timestamp: serverTimestamp(),
-                        generatedBy: userId
-                    });
-                    console.log("SKU added successfully:", sku);
                 } catch (e) {
-                    console.error("Error adding SKU to database: ", e);
-                    showAlert("Failed to save SKU to database. Please try again.");
+                    console.error("Error checking or adding SKU to database: ", e);
+                    showAlert("Failed to interact with database. Please try again.");
                 }
-
-                generatedSkuParagraph.textContent = sku;
-                resultContainer.classList.remove('hidden');
-                copyMessage.classList.add('hidden');
             });
 
             copySkuBtn.addEventListener('click', () => {
@@ -609,6 +588,7 @@
                 }
             });
 
+            // Populate dropdowns and legend after materialsData is fetched
             populateMaterialTypes(material1TypeSelect);
             populateMaterialTypes(material2TypeSelect);
             populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
