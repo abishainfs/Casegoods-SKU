@@ -288,7 +288,7 @@
         let userId;
 
         // materialsData will be loaded from materials.json
-        let materialsData = {}; 
+        let materialsData = []; // Changed to an array to match the new JSON structure
         let currentLoggedSkus = []; // Store logged SKUs to easily access for download
 
         let productCategorySelect;
@@ -317,7 +317,6 @@
 
         async function fetchMaterialsData() {
             try {
-                // Changed the fetch path to be absolute from the root
                 const response = await fetch('/materials.json');
                 if (!response.ok) {
                     console.error(`HTTP error! Status: ${response.status}, Text: ${response.statusText}`);
@@ -329,10 +328,10 @@
                 console.error("Error fetching materials.json:", error);
                 showAlert(`Failed to load material data: ${error.message}. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON.`);
                 // Fallback to a minimal data set if loading fails
-                materialsData = {
-                    "T": { "name": "Teakwood (Fallback)", "finishes": { "0": "Unfinished" } },
-                    "A": { "name": "Ash (Fallback)", "finishes": { "0": "Unfinished" } }
-                };
+                materialsData = [
+                    { "code": "T", "name": "Teakwood (Fallback)", "finishes": [] },
+                    { "code": "A", "name": "Ash (Fallback)", "finishes": [] }
+                ];
             }
         }
 
@@ -349,12 +348,13 @@
                 selectElement.appendChild(newDefaultOption);
             }
 
-            for (const code in materialsData) {
+            // Iterate over the materialsData array
+            materialsData.forEach(material => {
                 const option = document.createElement('option');
-                option.value = code;
-                option.textContent = `${code} - ${materialsData[code].name}`;
+                option.value = material.code;
+                option.textContent = `${material.code} - ${material.name}`;
                 selectElement.appendChild(option);
-            }
+            });
         }
 
         function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
@@ -371,14 +371,17 @@
                 finishSelectElement.appendChild(newDefaultOption);
             }
 
-            if (selectedMaterialCode && materialsData[selectedMaterialCode]) {
-                const finishes = materialsData[selectedMaterialCode].finishes;
-                for (const code in finishes) {
+            // Find the selected material object in the materialsData array
+            const selectedMaterial = materialsData.find(material => material.code === selectedMaterialCode);
+
+            if (selectedMaterial && selectedMaterial.finishes) {
+                // Iterate over the finishes array within the selected material
+                selectedMaterial.finishes.forEach(finish => {
                     const option = document.createElement('option');
-                    option.value = code;
-                    option.textContent = `${code} - ${finishes[code]}`;
+                    option.value = finish.code;
+                    option.textContent = `${finish.code} - ${finish.name}`;
                     finishSelectElement.appendChild(option);
-                }
+                });
             }
         }
 
@@ -394,36 +397,37 @@
             legendHtml += '</thead>';
             legendHtml += '<tbody>';
 
-            for (const materialCode in materialsData) {
-                const material = materialsData[materialCode];
+            // Iterate over the materialsData array
+            materialsData.forEach(material => {
                 const finishes = material.finishes;
-                const finishKeys = Object.keys(finishes);
-
-                if (finishKeys.length === 0) {
+                
+                if (!finishes || finishes.length === 0) {
                     legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${material.code}</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">N/A</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">No Finishes</td>`;
                     legendHtml += `</tr>`;
                 } else {
+                    // For the first finish, display material code and name
                     legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${material.code}</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[0]}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[0]]}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[0].code}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[0].name}</td>`;
                     legendHtml += `</tr>`;
 
-                    for (let i = 1; i < finishKeys.length; i++) {
+                    // For subsequent finishes, leave material code and name empty
+                    for (let i = 1; i < finishes.length; i++) {
                         legendHtml += `<tr>`;
                         legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
                         legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[i]}</td>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[i]]}</td>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[i].code}</td>`;
+                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[i].name}</td>`;
                         legendHtml += `</tr>`;
                     }
                 }
-            }
+            });
 
             legendHtml += '</tbody>';
             legendHtml += '</table>';
@@ -630,8 +634,7 @@
             downloadSkusBtn.addEventListener('click', downloadSkus);
 
             // Populate dropdowns and legend after materialsData is fetched
-            // Only populate if materialsData was successfully loaded and is not empty
-            if (Object.keys(materialsData).length > 0) {
+            if (materialsData && materialsData.length > 0) { // Check if array is not empty
                 populateMaterialTypes(material1TypeSelect);
                 populateMaterialTypes(material2TypeSelect);
                 // Initial population of finishes based on default selected type (which is empty)
@@ -647,8 +650,7 @@
 
                 generateMaterialLegend();
             } else {
-                // This block will be hit if fetchMaterialsData failed and set a fallback or empty object
-                showAlert("Material data could not be loaded. Material selection and legend may not function correctly. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON.");
+                showAlert("Material data could not be loaded or is empty. Material selection and legend may not function correctly. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON with the expected array structure.");
             }
             
             initializeFirebase();
