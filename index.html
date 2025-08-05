@@ -287,107 +287,8 @@
         let auth;
         let userId;
 
-        // materialsData is now embedded directly in the JavaScript
-        const materialsData = {
-            "T": {
-                "name": "Teakwood",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Oiled/Sealed",
-                    "2": "Clear Lacquer",
-                    "3": "Walnut Stain",
-                    "4": "Teak Stain"
-                }
-            },
-            "A": {
-                "name": "Ash",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Clear Lacquer",
-                    "2": "White Wash",
-                    "3": "Black Stain"
-                }
-            },
-            "O": {
-                "name": "Oak",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Natural Oil",
-                    "2": "Smoked Oak",
-                    "3": "White Oak Finish"
-                }
-            },
-            "M": {
-                "name": "Maple",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Clear Coat",
-                    "2": "Amber Stain"
-                }
-            },
-            "W": {
-                "name": "Walnut",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Natural Oil",
-                    "2": "Dark Walnut Stain"
-                }
-            },
-            "S": {
-                "name": "Steel",
-                "finishes": {
-                    "0": "Raw",
-                    "1": "Powder Coated Black",
-                    "2": "Powder Coated White",
-                    "3": "Brushed Stainless Steel",
-                    "4": "Polished Chrome"
-                }
-            },
-            "B": {
-                "name": "Brass",
-                "finishes": {
-                    "0": "Unfinished",
-                    "1": "Polished",
-                    "2": "Brushed",
-                    "3": "Antique"
-                }
-            },
-            "C": {
-                "name": "Copper",
-                "finishes": {
-                    "0": "Raw",
-                    "1": "Polished",
-                    "2": "Patina"
-                }
-            },
-            "G": {
-                "name": "Glass",
-                "finishes": {
-                    "0": "Clear",
-                    "1": "Frosted",
-                    "2": "Smoked"
-                }
-            },
-            "L": {
-                "name": "Leather",
-                "finishes": {
-                    "0": "Natural",
-                    "1": "Black",
-                    "2": "Brown",
-                    "3": "Cognac"
-                }
-            },
-            "F": {
-                "name": "Fabric",
-                "finishes": {
-                    "0": "Cotton",
-                    "1": "Linen",
-                    "2": "Velvet",
-                    "3": "Wool"
-                }
-            }
-        };
-        
+        // materialsData will be loaded from materials.json
+        let materialsData = {}; 
         let currentLoggedSkus = []; // Store logged SKUs to easily access for download
 
         let productCategorySelect;
@@ -414,7 +315,26 @@
             customAlert.classList.remove('hidden');
         }
 
-        // Removed fetchMaterialsData as data is now embedded
+        async function fetchMaterialsData() {
+            try {
+                // Changed the fetch path to be absolute from the root
+                const response = await fetch('/materials.json');
+                if (!response.ok) {
+                    console.error(`HTTP error! Status: ${response.status}, Text: ${response.statusText}`);
+                    throw new Error(`Failed to load materials.json. Status: ${response.status}`);
+                }
+                materialsData = await response.json();
+                console.log("Materials data loaded successfully:", materialsData);
+            } catch (error) {
+                console.error("Error fetching materials.json:", error);
+                showAlert(`Failed to load material data: ${error.message}. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON.`);
+                // Fallback to a minimal data set if loading fails
+                materialsData = {
+                    "T": { "name": "Teakwood (Fallback)", "finishes": { "0": "Unfinished" } },
+                    "A": { "name": "Ash (Fallback)", "finishes": { "0": "Unfinished" } }
+                };
+            }
+        }
 
         function populateMaterialTypes(selectElement) {
             const defaultOption = selectElement.querySelector('option[value=""][selected]');
@@ -601,7 +521,8 @@
             loggedSkusList = document.getElementById('loggedSkusList');
             downloadSkusBtn = document.getElementById('downloadSkusBtn'); // Get the new button
 
-            // Removed await fetchMaterialsData(); as data is now embedded
+            // Fetch materials data before populating dropdowns and legend
+            await fetchMaterialsData();
 
             alertCloseBtn.addEventListener('click', () => {
                 customAlert.classList.add('hidden');
@@ -708,22 +629,27 @@
             // Attach event listener for the new download button
             downloadSkusBtn.addEventListener('click', downloadSkus);
 
-            // Populate dropdowns and legend using the embedded materialsData
-            // No need for a check if materialsData is empty, as it's now directly defined.
-            populateMaterialTypes(material1TypeSelect);
-            populateMaterialTypes(material2TypeSelect);
-            // Initial population of finishes based on default selected type (which is empty)
-            populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
-            populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
-
-            material1TypeSelect.addEventListener('change', () => {
+            // Populate dropdowns and legend after materialsData is fetched
+            // Only populate if materialsData was successfully loaded and is not empty
+            if (Object.keys(materialsData).length > 0) {
+                populateMaterialTypes(material1TypeSelect);
+                populateMaterialTypes(material2TypeSelect);
+                // Initial population of finishes based on default selected type (which is empty)
                 populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
-            });
-            material2TypeSelect.addEventListener('change', () => {
                 populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
-            });
 
-            generateMaterialLegend();
+                material1TypeSelect.addEventListener('change', () => {
+                    populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+                });
+                material2TypeSelect.addEventListener('change', () => {
+                    populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+                });
+
+                generateMaterialLegend();
+            } else {
+                // This block will be hit if fetchMaterialsData failed and set a fallback or empty object
+                showAlert("Material data could not be loaded. Material selection and legend may not function correctly. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON.");
+            }
             
             initializeFirebase();
         });
