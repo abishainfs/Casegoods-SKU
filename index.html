@@ -183,7 +183,7 @@
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
+                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H) <span class="text-xs text-gray-500">(Select Type First)</span></label>
                         <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                             <option value="" selected>Select Finish</option>
                         </select>
@@ -202,7 +202,7 @@
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
+                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J) <span class="text-xs text-gray-500">(Select Type First)</span></label>
                         <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                             <option value="" selected>Select Finish</option>
                         </select>
@@ -483,7 +483,8 @@
             loggedSkusList.appendChild(ul);
         }
 
-        window.onload = () => {
+        // Use DOMContentLoaded for robust element access
+        document.addEventListener('DOMContentLoaded', () => {
             productCategorySelect = document.getElementById('productCategory');
             customCodeInput = document.getElementById('customCode');
             sizeTypeInput = document.getElementById('sizeType');
@@ -603,11 +604,20 @@
 
             populateMaterialTypes(material1TypeSelect);
             populateMaterialTypes(material2TypeSelect);
+            // Initial population of finishes based on default (empty) selection
             populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
             populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+
+            material1TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+            });
+            material2TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+            });
+
             generateMaterialLegend();
             initializeFirebase();
-        };
+        });
     </script>
 </body>
 </html>
