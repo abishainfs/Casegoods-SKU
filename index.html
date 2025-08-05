@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casegoods Product SKU Generator</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Casegoods: SKU Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Custom styles for Inter font and general body styling */
         body {
             font-family: 'Inter', sans-serif;
-            /* Apple-inspired very light gray background */
             background-color: #F5F5F7;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align items to the start to prevent stretching on short content */
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 2rem; /* Increased padding for wider screens */
+            padding: 2rem;
         }
-        /* Custom scrollbar for better aesthetics */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -34,41 +35,38 @@
             background: #555;
         }
 
-        /* Define custom colors for Tailwind JIT (Apple-inspired palette) */
-        /* Primary accent color (dark charcoal/black for buttons) */
         .bg-apple-primary { background-color: #1C1C1E; }
-        .hover\:bg-apple-primary-dark:hover { background-color: #3A3A3C; } /* Slightly lighter on hover for subtle effect */
-        .focus\:ring-apple-blue:focus { --tw-ring-color: #007AFF; } /* Apple blue for focus rings */
+        .hover\:bg-apple-primary-dark:hover { background-color: #3A3A3C; }
+        .focus\:ring-apple-blue:focus { --tw-ring-color: #007AFF; }
 
-        /* Dark text color (primary text) */
         .text-apple-dark { color: #1D1D1F; }
-        /* Medium dark text color (secondary text, labels) */
         .text-apple-medium { color: #3C3C43; }
-        /* Light off-white for main cards/containers */
         .bg-apple-light { background-color: #FFFFFF; }
-        /* Very light background for sections within the card */
         .bg-apple-section { background-color: #F9F9FB; }
-        /* Light border color */
         .border-apple-light-border { border-color: #E5E5EA; }
-        /* Accent color for generated SKU (Apple blue for emphasis) */
         .text-apple-accent { color: #007AFF; }
 
-        /* Ensure the main container can grow and wrap */
         .main-container {
             display: flex;
             flex-direction: column;
-            gap: 2rem; /* Space between the two main cards */
+            gap: 2rem;
             width: 100%;
-            max-width: 1200px; /* Max width for the entire layout */
+            max-width: 1600px;
         }
 
-        @media (min-width: 1024px) { /* On large screens (lg) and up */
+        @media (min-width: 1024px) {
             .main-container {
-                flex-direction: row; /* Side-by-side layout */
-                align-items: flex-start; /* Align tops of cards */
+                flex-direction: row;
+                align-items: flex-start;
             }
-            .main-form-card, .legend-card {
-                flex: 1; /* Distribute space equally */
+            .main-form-card {
+                flex: 2; /* Generator takes 2/3 of the space */
+            }
+            .sidebar-container {
+                flex: 1; /* Sidebar takes 1/3 of the space */
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
             }
         }
     </style>
@@ -77,13 +75,78 @@
     <div class="main-container">
         <!-- Main SKU Generation Form -->
         <div class="main-form-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
-            <!-- Casegoods Logo (Placeholder) -->
             <img src="https://placehold.co/150x50/1C1C1E/FFFFFF?text=CASEGOODS+LOGO" 
                  alt="Casegoods Logo" 
                  class="mx-auto mb-6 rounded-lg shadow-sm"
                  onerror="this.onerror=null;this.src='https://placehold.co/150x50/CCCCCC/666666?text=LOGO+NOT+FOUND';"
             >
-            <h1 class="text-3xl font-extrabold text-apple-dark mb-6 text-center">Casegoods product SKU generator</h1>
+            <h1 class="text-3xl font-extrabold text-apple-dark mb-6 text-center">Casegoods: SKU Generator</h1>
+
+            <!-- Instructions Dropdown -->
+            <details class="mb-6 p-4 bg-apple-section border border-apple-light-border rounded-lg">
+                <summary class="text-lg font-semibold text-apple-dark cursor-pointer">How SKUs Work & How to Use This Tool</summary>
+                <div class="mt-4 text-apple-medium text-sm leading-relaxed">
+                    <p class="mb-2">Welcome to the Casegoods SKU Generator! This tool helps us create unique codes for all our products, making it easier to organize and track everything. Think of an SKU (Stock Keeping Unit) as a product's unique fingerprint.</p>
+                    <p class="mb-4">Our SKUs follow a specific pattern: <strong class="text-apple-dark">X-ABCD-EF-GH-IJ</strong></p>
+                    
+                    <h4 class="font-bold text-apple-dark mb-2">The SKU Breakdown:</h4>
+                    <ul class="list-disc list-inside mb-3">
+                        <li class="mb-1"><strong class="text-apple-dark">X - Product Category (1 Letter):</strong> This first letter tells us what type of product it is.
+                            <ul class="list-circle list-inside ml-4 mt-1">
+                                <li><strong>F</strong> for Furniture</li>
+                                <li><strong>L</strong> for Lights</li>
+                                <li><strong>O</strong> for Objects</li>
+                                <li><strong>H</strong> for Hardware</li>
+                            </ul>
+                        </li>
+                        <li class="mb-1"><strong class="text-apple-dark">ABCD - Custom Code (Up to 4 Letters):</strong> This is a unique code for each specific product design. It's usually 3 letters, but can be up to 4. For example:
+                            <ul class="list-circle list-inside ml-4 mt-1">
+                                <li><strong>BND</strong> for Buenos Diyas</li>
+                                <li><strong>FFC</strong> for Folding Flat Chair</li>
+                            </ul>
+                            <p class="text-xs text-gray-500 mt-1">If you enter fewer than 4 letters, the system will automatically add spaces to fill it out (e.g., "BND" becomes "BND ").</p>
+                        </li>
+                        <li class="mb-1"><strong class="text-apple-dark">EF - Size/Type (2 Digits):</strong> This is a two-digit number, starting from `01`, `02`, `03`, and so on. It represents standard product configurations or sizes. For instance, `01` might be the smallest size, `02` the next, and so on.</li>
+                        <li class="mb-1"><strong class="text-apple-dark">GH - Customisable Material 1 (Optional: 1 Letter + 1 Digit):</strong> This part describes the <strong class="text-apple-dark">first main material</strong> used in the product and its finish.
+                            <ul class="list-circle list-inside ml-4 mt-1">
+                                <li>The <strong class="text-apple-dark">first letter (G)</strong> tells us the material type (e.g., <strong>T</strong> for Teakwood, <strong>A</strong> for Ash).</li>
+                                <li>The <strong class="text-apple-dark">second digit (H)</strong> tells us how that material is finished (e.g., <strong>0</strong> for Unfinished, <strong>1</strong> for Oiled/Sealed).</li>
+                            </ul>
+                            <p class="text-xs text-gray-500 mt-1">This section is optional. If a product doesn't have a first customisable material, you can leave both "Material Type (G)" and "Material Finish (H)" blank in the generator.</p>
+                        </li>
+                        <li class="mb-1"><strong class="text-apple-dark">IJ - Customisable Material 2 (Optional: 1 Letter + 1 Digit):</strong> This works exactly like `GH`, but it's for the <strong class="text-apple-dark">second customisable material</strong> (if there is one).
+                            <ul class="list-circle list-inside ml-4 mt-1">
+                                <li>The <strong class="text-apple-dark">first letter (I)</strong> is the material type.</li>
+                                <li>The <strong class="text-apple-dark">second digit (J)</strong> is its finish.</li>
+                            </ul>
+                            <p class="text-xs text-gray-500 mt-1">This section is also optional. If a product only has one customisable material, or none, you can leave this section blank.</p>
+                        </li>
+                    </ul>
+
+                    <h4 class="font-bold text-apple-dark mb-2">How to Use the SKU Generator:</h4>
+                    <ol class="list-decimal list-inside mb-3">
+                        <li class="mb-1"><strong class="text-apple-dark">Fill in the Blanks:</strong>
+                            <ul class="list-circle list-inside ml-4 mt-1">
+                                <li><strong>Product Category (X):</strong> Choose the correct category from the dropdown.</li>
+                                <li><strong>Custom Code (ABCD):</strong> Type in the unique code for the product design.</li>
+                                <li><strong>Size/Type (EF):</strong> Enter the 2-digit number for the size or configuration.</li>
+                                <li><strong>Customisable Material 1 (GH) & 2 (IJ):</strong> If your product has these materials, select both the <strong>Material Type</strong> and <strong>Material Finish</strong> from the dropdowns. If a product doesn't have a material for this section, simply leave both dropdowns blank.</li>
+                            </ul>
+                        </li>
+                        <li class="mb-1"><strong class="text-apple-dark">Generate SKU:</strong> Click the <strong>"Generate SKU"</strong> button. The complete SKU will appear below.</li>
+                        <li class="mb-1"><strong class="text-apple-dark">Copy SKU:</strong> Click the <strong>copy icon</strong> next to the generated SKU to quickly copy it to your clipboard. You can then paste it into our Google Sheet or Excel file.</li>
+                    </ol>
+
+                    <h4 class="font-bold text-apple-dark mb-2">Important Notes:</h4>
+                    <ul class="list-disc list-inside mb-3">
+                        <li class="mb-1"><strong>Material & Finish Legend:</strong> To the side, you'll find a <strong>"Material & Finish Legend"</strong> table. This is your go-to guide for all the material and finish codes. It's always up-to-date!</li>
+                        <li class="mb-1"><strong>Logged SKUs:</strong> Also to the side, there's a <strong>"Logged SKUs"</strong> section. This shows all the unique SKUs that have been generated and saved by anyone using this tool.</li>
+                        <li class="mb-1"><strong>No Duplicates!</strong> The system will check if an SKU you're trying to generate already exists in our records. If it does, you'll get an alert, and you'll need to adjust your inputs to create a unique SKU. This helps us keep our inventory clean and accurate.</li>
+                    </ul>
+
+                    <p class="font-bold text-apple-dark mt-4">Questions? If you have any doubts about how to use this tool or what codes to use, please don't hesitate to <strong class="text-apple-accent">ask the design team</strong>. They are here to help!</p>
+                </div>
+            </details>
 
             <!-- Product Category (X) -->
             <div class="mb-4">
@@ -97,10 +160,10 @@
                 </select>
             </div>
 
-            <!-- Product Code (ABCD) -->
+            <!-- Custom Input (ABCD) -->
             <div class="mb-4">
                 <label for="customCode" class="block text-sm font-medium text-apple-medium mb-1">Custom Code (ABCD - Max 4 letters)</label>
-                <input type="text" id="customCode" placeholder="e.g., BND, FFC" maxlength="4" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                <input type="text" id="customCode" placeholder="e.g., BND, FFC (ask design team if unsure)" maxlength="4" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
             </div>
 
             <!-- Size/Type (EF) -->
@@ -166,14 +229,24 @@
             </div>
         </div>
 
-        <!-- Material & Finish Legend -->
-        <div class="legend-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
-            <h2 class="text-3xl font-extrabold text-apple-dark mb-6 text-center">Material & Finish Legend</h2>
-            <div id="materialLegend" class="overflow-x-auto">
-                <!-- Legend table will be dynamically inserted here -->
+        <!-- Sidebar Container for Legend and Logged SKUs -->
+        <div class="sidebar-container">
+            <!-- Material & Finish Legend -->
+            <div class="legend-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
+                <h2 class="text-2xl font-extrabold text-apple-dark mb-6 text-center">Material & Finish Legend</h2>
+                <div id="materialLegend" class="overflow-x-auto">
+                    <!-- Legend table will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Logged SKUs Section -->
+            <div class="logged-skus-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
+                <h2 class="text-2xl font-extrabold text-apple-dark mb-6 text-center">Logged SKUs</h2>
+                <div id="loggedSkusList" class="p-4 bg-apple-section border border-apple-light-border rounded-lg max-h-96 overflow-y-auto">
+                    <!-- Logged SKUs will be dynamically inserted here -->
+                </div>
             </div>
         </div>
-
 
         <!-- Custom Modal for Alerts -->
         <div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -187,31 +260,24 @@
         </div>
     </div>
 
-    <script>
-        // Get references to DOM elements
-        const productCategorySelect = document.getElementById('productCategory');
-        const customCodeInput = document.getElementById('customCode');
-        const sizeTypeInput = document.getElementById('sizeType');
-        const material1TypeSelect = document.getElementById('material1Type');
-        const material1FinishSelect = document.getElementById('material1Finish');
-        const material2TypeSelect = document.getElementById('material2Type');
-        const material2FinishSelect = document.getElementById('material2Finish');
-        const generateSkuBtn = document.getElementById('generateSkuBtn');
-        const generatedSkuParagraph = document.getElementById('generatedSku');
-        const resultContainer = document.getElementById('resultContainer');
-        const copySkuBtn = document.getElementById('copySkuBtn');
-        const copyMessage = document.getElementById('copyMessage');
-        const customAlert = document.getElementById('customAlert');
-        const alertMessage = document.getElementById('alertMessage');
-        const alertCloseBtn = document.getElementById('alertCloseBtn');
-        const materialLegendDiv = document.getElementById('materialLegend');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, addDoc, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Define the material and finish data structure
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        let app;
+        let db;
+        let auth;
+        let userId;
+
         const materialsData = {
             "T": {
                 name: "Teakwood",
                 finishes: {
-                    "0": "Unfinished", // Changed from Raw
+                    "0": "Unfinished",
                     "1": "Oiled/Sealed",
                     "2": "Black Stained",
                     "3": "Dark Stained"
@@ -220,7 +286,7 @@
             "A": {
                 name: "Ash",
                 finishes: {
-                    "0": "Unfinished", // Changed from Raw
+                    "0": "Unfinished",
                     "1": "Oiled/Sealed",
                     "2": "Black Stained",
                     "3": "Dark Stained"
@@ -229,17 +295,17 @@
             "U": {
                 name: "Aluminium",
                 finishes: {
-                    "0": "Unfinished", // Changed from Raw
+                    "0": "Unfinished",
                     "1": "Neutral Anodised",
                     "2": "Black Anodised",
                     "3": "Nickel Plated",
-                    "4": "Raw/Waxed" // Added Raw/Waxed
+                    "4": "Raw/Waxed"
                 }
             },
             "S": {
                 name: "Stainless Steel",
                 finishes: {
-                    "0": "Unfinished", // Changed from Raw
+                    "0": "Unfinished",
                     "1": "Brushed",
                     "2": "Polished"
                 }
@@ -247,7 +313,7 @@
             "B": {
                 name: "Brass",
                 finishes: {
-                    "0": "Unfinished", // Changed from Raw
+                    "0": "Unfinished",
                     "1": "Satin",
                     "2": "Slightly Aged",
                     "3": "Blackened"
@@ -255,30 +321,34 @@
             }
         };
 
-        /**
-         * Displays a custom alert message.
-         * @param {string} message - The message to display in the alert.
-         */
+        let productCategorySelect;
+        let customCodeInput;
+        let sizeTypeInput;
+        let material1TypeSelect;
+        let material1FinishSelect;
+        let material2TypeSelect;
+        let material2FinishSelect;
+        let generateSkuBtn;
+        let generatedSkuParagraph;
+        let resultContainer;
+        let copySkuBtn;
+        let copyMessage;
+        let customAlert;
+        let alertMessage;
+        let alertCloseBtn;
+        let materialLegendDiv;
+        let loggedSkusList;
+
         function showAlert(message) {
             alertMessage.textContent = message;
             customAlert.classList.remove('hidden');
         }
 
-        // Event listener for the custom alert close button
-        alertCloseBtn.addEventListener('click', () => {
-            customAlert.classList.add('hidden');
-        });
-
-        /**
-         * Populates a material type dropdown with options from materialsData.
-         * @param {HTMLSelectElement} selectElement - The select element to populate.
-         */
         function populateMaterialTypes(selectElement) {
-            // Clear existing options, but keep the initial "Select Type" option if it's not disabled
             const defaultOption = selectElement.querySelector('option[value=""][selected]');
-            selectElement.innerHTML = ''; // Clear all options
+            selectElement.innerHTML = '';
             if (defaultOption) {
-                selectElement.appendChild(defaultOption.cloneNode(true)); // Re-add the default option
+                selectElement.appendChild(defaultOption.cloneNode(true));
             } else {
                 const newDefaultOption = document.createElement('option');
                 newDefaultOption.value = "";
@@ -286,7 +356,6 @@
                 newDefaultOption.selected = true;
                 selectElement.appendChild(newDefaultOption);
             }
-
 
             for (const code in materialsData) {
                 const option = document.createElement('option');
@@ -296,18 +365,12 @@
             }
         }
 
-        /**
-         * Populates a material finish dropdown based on the selected material type.
-         * @param {HTMLSelectElement} materialTypeSelect - The material type select element.
-         * @param {HTMLSelectElement} finishSelectElement - The finish select element to populate.
-         */
         function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
             const selectedMaterialCode = materialTypeSelect.value;
-            // Clear existing options, but keep the initial "Select Finish" option
             const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
-            finishSelectElement.innerHTML = ''; // Clear all options
+            finishSelectElement.innerHTML = '';
             if (defaultOption) {
-                finishSelectElement.appendChild(defaultOption.cloneNode(true)); // Re-add the default option
+                finishSelectElement.appendChild(defaultOption.cloneNode(true));
             } else {
                 const newDefaultOption = document.createElement('option');
                 newDefaultOption.value = "";
@@ -315,7 +378,6 @@
                 newDefaultOption.selected = true;
                 finishSelectElement.appendChild(newDefaultOption);
             }
-
 
             if (selectedMaterialCode && materialsData[selectedMaterialCode]) {
                 const finishes = materialsData[selectedMaterialCode].finishes;
@@ -328,9 +390,6 @@
             }
         }
 
-        /**
-         * Generates and displays the material and finish legend table.
-         */
         function generateMaterialLegend() {
             let legendHtml = '<table class="min-w-full bg-apple-light border border-apple-light-border rounded-lg shadow-sm">';
             legendHtml += '<thead>';
@@ -348,7 +407,6 @@
                 const finishes = material.finishes;
                 const finishKeys = Object.keys(finishes);
 
-                // Add the first row for the material with its first finish
                 legendHtml += `<tr>`;
                 legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${materialCode}</td>`;
                 legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
@@ -356,11 +414,10 @@
                 legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[0]]}</td>`;
                 legendHtml += `</tr>`;
 
-                // Add subsequent rows for other finishes of the same material, with empty material cells
                 for (let i = 1; i < finishKeys.length; i++) {
                     legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`; // Empty for subsequent finishes
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`; // Empty for subsequent finishes
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishKeys[i]}</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[finishKeys[i]]}</td>`;
                     legendHtml += `</tr>`;
@@ -372,115 +429,185 @@
             materialLegendDiv.innerHTML = legendHtml;
         }
 
-        // Initial population of material type dropdowns
-        populateMaterialTypes(material1TypeSelect);
-        populateMaterialTypes(material2TypeSelect);
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
 
-        // Event listeners for material type changes to update finish dropdowns
-        material1TypeSelect.addEventListener('change', () => {
-            populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
-        });
-        material2TypeSelect.addEventListener('change', () => {
-            populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
-        });
-
-        // Generate the initial material legend on page load
-        generateMaterialLegend();
-
-        /**
-         * Generates an SKU based on the new, more complex syntax: X-ABCD-EF-GH-IJ.
-         * X: Product Category (F, L, O, H)
-         * ABCD: Custom Input (up to 4 characters, padded with spaces if less than 4)
-         * EF: Size/Type (2-digit number, e.g., 01, 02)
-         * GH: Material 1 (Type + Finish, e.g., T0, A1) - Optional
-         * IJ: Material 2 (Type + Finish, e.g., T0, A1) - Optional
-         */
-        generateSkuBtn.addEventListener('click', () => {
-            const productCategory = productCategorySelect.value;
-            // Trim and convert to uppercase, then pad with spaces if less than 4 chars
-            const customCode = customCodeInput.value.trim().toUpperCase().padEnd(4, ' ').substring(0, 4);
-            const sizeType = sizeTypeInput.value.trim();
-            const material1Type = material1TypeSelect.value;
-            const material1Finish = material1FinishSelect.value;
-            const material2Type = material2TypeSelect.value;
-            const material2Finish = material2FinishSelect.value;
-
-            // Mandatory validation: Product Category, Custom Code, Size/Type
-            if (!productCategory || !customCode.trim() || !sizeType) {
-                showAlert('Please fill in Product Category, Custom Code, and Size/Type.');
-                return;
-            }
-
-            // Format Size/Type to be a 2-digit number
-            const formattedSizeType = String(sizeType).padStart(2, '0');
-
-            // Conditionally construct Material 1 code (GH)
-            let material1 = '';
-            if (material1Type && material1Finish) { // Both must be selected for GH to be included
-                material1 = material1Type + material1Finish;
-            } else if (material1Type || material1Finish) {
-                // If only one is selected, show an alert that both are needed for the segment
-                showAlert('For Material 1, please select both a Type and a Finish, or leave both blank.');
-                return;
-            }
-
-
-            // Conditionally construct Material 2 code (IJ)
-            let material2 = '';
-            if (material2Type && material2Finish) { // Both must be selected for IJ to be included
-                material2 = material2Type + material2Finish;
-            } else if (material2Type || material2Finish) {
-                // If only one is selected, show an alert that both are needed for the segment
-                showAlert('For Material 2, please select both a Type and a Finish, or leave both blank.');
-                return;
-            }
-
-            // Construct the base SKU
-            let sku = `${productCategory}-${customCode}-${formattedSizeType}`;
-
-            // Append optional material segments if they exist
-            if (material1) {
-                sku += `-${material1}`;
-            }
-            if (material2) {
-                sku += `-${material2}`;
-            }
-
-            // Display the SKU
-            generatedSkuParagraph.textContent = sku;
-            resultContainer.classList.remove('hidden'); // Show the result container
-
-            // Hide copy message if previously shown
-            copyMessage.classList.add('hidden');
-        });
-
-        /**
-         * Copies the generated SKU to the clipboard.
-         * Uses document.execCommand('copy') for broader compatibility in iframes.
-         */
-        copySkuBtn.addEventListener('click', () => {
-            const skuToCopy = generatedSkuParagraph.textContent;
-            if (skuToCopy) {
-                const tempInput = document.createElement('textarea');
-                tempInput.value = skuToCopy;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                try {
-                    document.execCommand('copy');
-                    copyMessage.classList.remove('hidden'); // Show copy success message
-                    setTimeout(() => {
-                        copyMessage.classList.add('hidden'); // Hide message after a few seconds
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy SKU: ', err);
-                    showAlert('Failed to copy SKU. Please copy it manually.');
-                } finally {
-                    document.body.removeChild(tempInput);
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
                 }
-            } else {
-                showAlert('No SKU to copy. Please generate one first.');
+
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                console.log("Firebase initialized and authenticated. User ID:", userId);
+                setupSkuListener();
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                showAlert("Failed to initialize database. Please try again later.");
             }
-        });
+        }
+
+        function setupSkuListener() {
+            const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
+            onSnapshot(skusCollectionRef, (snapshot) => {
+                const skus = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.sku) {
+                        skus.push(data.sku);
+                    }
+                });
+                displayLoggedSkus(skus);
+            }, (error) => {
+                console.error("Error listening to SKUs:", error);
+                showAlert("Failed to load logged SKUs.");
+            });
+        }
+
+        function displayLoggedSkus(skus) {
+            loggedSkusList.innerHTML = '';
+            if (skus.length === 0) {
+                loggedSkusList.innerHTML = '<p class="text-apple-medium text-center">No SKUs logged yet.</p>';
+                return;
+            }
+            const ul = document.createElement('ul');
+            ul.className = 'list-disc list-inside text-apple-medium space-y-1';
+            skus.sort().forEach(sku => {
+                const li = document.createElement('li');
+                li.textContent = sku;
+                ul.appendChild(li);
+            });
+            loggedSkusList.appendChild(ul);
+        }
+
+        window.onload = () => {
+            productCategorySelect = document.getElementById('productCategory');
+            customCodeInput = document.getElementById('customCode');
+            sizeTypeInput = document.getElementById('sizeType');
+            material1TypeSelect = document.getElementById('material1Type');
+            material1FinishSelect = document.getElementById('material1Finish');
+            material2TypeSelect = document.getElementById('material2Type');
+            material2FinishSelect = document.getElementById('material2Finish');
+            generateSkuBtn = document.getElementById('generateSkuBtn');
+            generatedSkuParagraph = document.getElementById('generatedSku');
+            resultContainer = document.getElementById('resultContainer');
+            copySkuBtn = document.getElementById('copySkuBtn');
+            copyMessage = document.getElementById('copyMessage');
+            customAlert = document.getElementById('customAlert');
+            alertMessage = document.getElementById('alertMessage');
+            alertCloseBtn = document.getElementById('alertCloseBtn');
+            materialLegendDiv = document.getElementById('materialLegend');
+            loggedSkusList = document.getElementById('loggedSkusList');
+
+            alertCloseBtn.addEventListener('click', () => {
+                customAlert.classList.add('hidden');
+            });
+
+            generateSkuBtn.addEventListener('click', async () => {
+                const productCategory = productCategorySelect.value;
+                const customCode = customCodeInput.value.trim().toUpperCase().padEnd(4, ' ').substring(0, 4);
+                const sizeType = sizeTypeInput.value.trim();
+                const material1Type = material1TypeSelect.value;
+                const material1Finish = material1FinishSelect.value;
+                const material2Type = material2TypeSelect.value;
+                const material2Finish = material2FinishSelect.value;
+
+                if (!productCategory || !customCode.trim() || !sizeType) {
+                    showAlert('Please fill in Product Category, Custom Code, and Size/Type.');
+                    return;
+                }
+
+                const formattedSizeType = String(sizeType).padStart(2, '0');
+
+                let material1 = '';
+                if (material1Type && material1Finish) {
+                    material1 = material1Type + material1Finish;
+                } else if (material1Type || material1Finish) {
+                    showAlert('For Material 1, please select both a Type and a Finish, or leave both blank.');
+                    return;
+                }
+
+                let material2 = '';
+                if (material2Type && material2Finish) {
+                    material2 = material2Type + material2Finish;
+                } else if (material2Type || material2Finish) {
+                    showAlert('For Material 2, please select both a Type and a Finish, or leave both blank.');
+                    return;
+                }
+
+                let sku = `${productCategory}-${customCode}-${formattedSizeType}`;
+                if (material1) {
+                    sku += `-${material1}`;
+                }
+                if (material2) {
+                    sku += `-${material2}`;
+                }
+
+                if (!db || !auth.currentUser) {
+                    showAlert("Database not ready or user not authenticated. Please try again.");
+                    return;
+                }
+
+                const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
+                try {
+                    const q = query(skusCollectionRef, where("sku", "==", sku));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        showAlert(`SKU "${sku}" already exists in the database. Please generate a unique SKU.`);
+                        return;
+                    }
+
+                    await addDoc(skusCollectionRef, {
+                        sku: sku,
+                        timestamp: serverTimestamp(),
+                        generatedBy: userId
+                    });
+                    console.log("SKU added successfully:", sku);
+                } catch (e) {
+                    console.error("Error adding SKU to database: ", e);
+                    showAlert("Failed to save SKU to database. Please try again.");
+                }
+
+                generatedSkuParagraph.textContent = sku;
+                resultContainer.classList.remove('hidden');
+                copyMessage.classList.add('hidden');
+            });
+
+            copySkuBtn.addEventListener('click', () => {
+                const skuToCopy = generatedSkuParagraph.textContent;
+                if (skuToCopy) {
+                    const tempInput = document.createElement('textarea');
+                    tempInput.value = skuToCopy;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    try {
+                        document.execCommand('copy');
+                        copyMessage.classList.remove('hidden');
+                        setTimeout(() => {
+                            copyMessage.classList.add('hidden');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy SKU: ', err);
+                        showAlert('Failed to copy SKU. Please copy it manually.');
+                    } finally {
+                        document.body.removeChild(tempInput);
+                    }
+                } else {
+                    showAlert('No SKU to copy. Please generate one first.');
+                }
+            });
+
+            populateMaterialTypes(material1TypeSelect);
+            populateMaterialTypes(material2TypeSelect);
+            populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+            populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+            generateMaterialLegend();
+            initializeFirebase();
+        };
     </script>
 </body>
 </html>
