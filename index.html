@@ -265,8 +265,18 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, where, addDoc, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        // IMPORTANT: For Vercel deployment, these values are hardcoded as they are not injected client-side
+        // from Vercel's environment variables for static HTML files.
+        const appId = 'casegoods-sku-generator'; // Your Firebase Project ID
+        const firebaseConfig = {
+          apiKey: "AIzaSyBi6frg0BYUKxPbhHD2AIuNsqcQtGGCTo0",
+          authDomain: "casegoods-sku-generator.firebaseapp.com",
+          projectId: "casegoods-sku-generator",
+          storageBucket: "casegoods-sku-generator.firebasestorage.app",
+          messagingSenderId: "875245303667",
+          appId: "1:875245303667:web:cd48fbb62822247ce4f706",
+          measurementId: "G-B0TLC9HCXJ"
+        };
 
         let app;
         let db;
@@ -435,11 +445,9 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                if (typeof __initial_auth_token !== 'undefined') {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // __initial_auth_token is specific to the Canvas environment.
+                // For Vercel, we will always sign in anonymously for public access.
+                await signInAnonymously(auth);
 
                 userId = auth.currentUser?.uid || crypto.randomUUID();
                 console.log("Firebase initialized and authenticated. User ID:", userId);
@@ -483,7 +491,6 @@
             loggedSkusList.appendChild(ul);
         }
 
-        // Use DOMContentLoaded for robust element access
         document.addEventListener('DOMContentLoaded', () => {
             productCategorySelect = document.getElementById('productCategory');
             customCodeInput = document.getElementById('customCode');
@@ -604,7 +611,6 @@
 
             populateMaterialTypes(material1TypeSelect);
             populateMaterialTypes(material2TypeSelect);
-            // Initial population of finishes based on default (empty) selection
             populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
             populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
 
