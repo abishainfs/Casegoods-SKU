@@ -1,0 +1,47 @@
+{
+  "T": {
+    "name": "Teakwood",
+    "finishes": {
+      "0": "Unfinished",
+      "1": "Oiled/Sealed",
+      "2": "Black Stained",
+      "3": "Dark Stained"
+    }
+  },
+  "A": {
+    "name": "Ash",
+    "finishes": {
+      "0": "Unfinished",
+      "1": "Oiled/Sealed",
+      "2": "Black Stained",
+      "3": "Dark Stained"
+    }
+  },
+  "U": {
+    "name": "Aluminium",
+    "finishes": {
+      "0": "Unfinished",
+      "1": "Neutral Anodised",
+      "2": "Black Anodised",
+      "3": "Nickel Plated",
+      "4": "Raw/Waxed"
+    }
+  },
+  "S": {
+    "name": "Stainless Steel",
+    "finishes": {
+      "0": "Unfinished",
+      "1": "Brushed",
+      "2": "Polished"
+    }
+  },
+  "B": {
+    "name": "Brass",
+    "finishes": {
+      "0": "Unfinished",
+      "1": "Satin",
+      "2": "Slightly Aged",
+      "3": "Blackened"
+    }
+  }
+}
