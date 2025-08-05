@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced SKU Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">Advanced SKU Generator</h1>
+
+        <!-- Product Category (X) -->
+        <div class="mb-4">
+            <label for="productCategory" class="block text-sm font-medium text-gray-700 mb-1">Product Category (X)</label>
+            <select id="productCategory" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                <option value="" disabled selected>Select Category</option>
+                <option value="F">F - Furniture</option>
+                <option value="L">L - Lights</option>
+                <option value="O">O - Objects</option>
+                <option value="H">H - Hardware</option>
+            </select>
+        </div>
+
+        <!-- Custom Input (ABCD) -->
+        <div class="mb-4">
+            <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Custom Code (ABCD - Max 4 letters)</label>
+            <input type="text" id="customCode" placeholder="e.g., BND, FFC" maxlength="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+        </div>
+
+        <!-- Size/Type (EF) -->
+        <div class="mb-6">
+            <label for="sizeType" class="block text-sm font-medium text-gray-700 mb-1">Size/Type (EF - 2-digit number)</label>
+            <input type="number" id="sizeType" placeholder="e.g., 01, 02" min="1" max="99" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+        </div>
+
+        <!-- Customisable Material 1 (GH) -->
+        <div class="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <h3 class="text-md font-semibold text-gray-800 mb-3">Customisable Material 1 (GH) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="material1Type" class="block text-sm font-medium text-gray-700 mb-1">Material Type (G)</label>
+                    <select id="material1Type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="" selected>Select Type</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="material1Finish" class="block text-sm font-medium text-gray-700 mb-1">Material Finish (H)</label>
+                    <select id="material1Finish" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="" selected>Select Finish</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customisable Material 2 (IJ) -->
+        <div class="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <h3 class="text-md font-semibold text-gray-800 mb-3">Customisable Material 2 (IJ) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="material2Type" class="block text-sm font-medium text-gray-700 mb-1">Material Type (I)</label>
+                    <select id="material2Type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="" selected>Select Type</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="material2Finish" class="block text-sm font-medium text-gray-700 mb-1">Material Finish (J)</label>
+                    <select id="material2Finish" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="" selected>Select Finish</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button id="generateSkuBtn" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out shadow-md">
+            Generate SKU
+        </button>
+
+        <div id="resultContainer" class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center hidden">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Generated SKU:</h2>
+            <div class="flex items-center justify-center space-x-2">
+                <p id="generatedSku" class="text-2xl font-bold text-blue-700 break-all"></p>
+                <button id="copySkuBtn" class="bg-gray-200 text-gray-700 p-2 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition duration-150 ease-in-out" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                        <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h4.586a1 1 0 00.707-.293l3.414-3.414a1 1 0 00.293-.707V5a2 2 0 00-2-2h-2V5a2 2 0 01-2 2H6a2 2 0 01-2-2V3zM15 11l-3 3V9l3 2z" />
+                    </svg>
+                </button>
+            </div>
+            <p id="copyMessage" class="text-sm text-green-600 mt-2 hidden">Copied to clipboard!</p>
+        </div>
+
+        <!-- Material & Finish Legend -->
+        <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 text-center">Material & Finish Legend</h2>
+            <div id="materialLegend" class="overflow-x-auto">
+                <!-- Legend table will be dynamically inserted here -->
+            </div>
+        </div>
+
+
+        <!-- Custom Modal for Alerts -->
+        <div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Input Required</h3>
+                <p id="alertMessage" class="text-gray-700 mb-6"></p>
+                <button id="alertCloseBtn" class="bg-blue-600 text-white p-2 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const productCategorySelect = document.getElementById('productCategory');
+        const customCodeInput = document.getElementById('customCode');
+        const sizeTypeInput = document.getElementById('sizeType');
+        const material1TypeSelect = document.getElementById('material1Type');
+        const material1FinishSelect = document.getElementById('material1Finish');
+        const material2TypeSelect = document.getElementById('material2Type');
+        const material2FinishSelect = document.getElementById('material2Finish');
+        const generateSkuBtn = document.getElementById('generateSkuBtn');
+        const generatedSkuParagraph = document.getElementById('generatedSku');
+        const resultContainer = document.getElementById('resultContainer');
+        const copySkuBtn = document.getElementById('copySkuBtn');
+        const copyMessage = document.getElementById('copyMessage');
+        const customAlert = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertCloseBtn = document.getElementById('alertCloseBtn');
+        const materialLegendDiv = document.getElementById('materialLegend');
+
+        // Define the material and finish data structure
+        const materialsData = {
+            "T": {
+                name: "Teakwood",
+                finishes: {
+                    "0": "Raw",
+                    "1": "Oiled/Sealed", // Changed from Oiled
+                    "2": "Sealed", // This was previously 'Sealed', now 'Oiled/Sealed' is '1', so '2' is available.
+                    "3": "Black Stained",
+                    "4": "Dark Stained" // Added Dark Stained
+                }
+            },
+            "A": {
+                name: "Ash",
+                finishes: {
+                    "0": "Raw",
+                    "1": "Oiled/Sealed", // Changed from Oiled
+                    "2": "Sealed", // This was previously 'Sealed', now 'Oiled/Sealed' is '1', so '2' is available.
+                    "3": "Black Stained",
+                    "4": "Dark Stained" // Added Dark Stained
+                }
+            },
+            "U": { // Using 'U' for Aluminium to avoid conflict with 'A' for Ash
+                name: "Aluminium",
+                finishes: {
+                    "0": "Raw",
+                    "1": "Neutral Anodised",
+                    "2": "Black Anodised",
+                    "3": "Nickel Plated"
+                }
+            },
+            "S": {
+                name: "Stainless Steel",
+                finishes: {
+                    "0": "Raw",
+                    "1": "Brushed",
+                    "2": "Polished"
+                }
+            },
+            "B": {
+                name: "Brass",
+                finishes: {
+                    "0": "Raw",
+                    "1": "Satin",
+                    "2": "Slightly Aged",
+                    "3": "Blackened"
+                }
+            }
+        };
+
+        /**
+         * Displays a custom alert message.
+         * @param {string} message - The message to display in the alert.
+         */
+        function showAlert(message) {
+            alertMessage.textContent = message;
+            customAlert.classList.remove('hidden');
+        }
+
+        // Event listener for the custom alert close button
+        alertCloseBtn.addEventListener('click', () => {
+            customAlert.classList.add('hidden');
+        });
+
+        /**
+         * Populates a material type dropdown with options from materialsData.
+         * @param {HTMLSelectElement} selectElement - The select element to populate.
+         */
+        function populateMaterialTypes(selectElement) {
+            // Clear existing options, but keep the initial "Select Type" option if it's not disabled
+            const defaultOption = selectElement.querySelector('option[value=""][selected]');
+            selectElement.innerHTML = ''; // Clear all options
+            if (defaultOption) {
+                selectElement.appendChild(defaultOption.cloneNode(true)); // Re-add the default option
+            } else {
+                const newDefaultOption = document.createElement('option');
+                newDefaultOption.value = "";
+                newDefaultOption.textContent = "Select Type";
+                newDefaultOption.selected = true;
+                selectElement.appendChild(newDefaultOption);
+            }
+
+
+            for (const code in materialsData) {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = `${code} - ${materialsData[code].name}`;
+                selectElement.appendChild(option);
+            }
+        }
+
+        /**
+         * Populates a material finish dropdown based on the selected material type.
+         * @param {HTMLSelectElement} materialTypeSelect - The material type select element.
+         * @param {HTMLSelectElement} finishSelectElement - The finish select element to populate.
+         */
+        function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
+            const selectedMaterialCode = materialTypeSelect.value;
+            // Clear existing options, but keep the initial "Select Finish" option
+            const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
+            finishSelectElement.innerHTML = ''; // Clear all options
+            if (defaultOption) {
+                finishSelectElement.appendChild(defaultOption.cloneNode(true)); // Re-add the default option
+            } else {
+                const newDefaultOption = document.createElement('option');
+                newDefaultOption.value = "";
+                newDefaultOption.textContent = "Select Finish";
+                newDefaultOption.selected = true;
+                finishSelectElement.appendChild(newDefaultOption);
+            }
+
+
+            if (selectedMaterialCode && materialsData[selectedMaterialCode]) {
+                const finishes = materialsData[selectedMaterialCode].finishes;
+                for (const code in finishes) {
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = `${code} - ${finishes[code]}`;
+                    finishSelectElement.appendChild(option);
+                }
+            }
+        }
+
+        /**
+         * Generates and displays the material and finish legend table.
+         */
+        function generateMaterialLegend() {
+            let legendHtml = '<table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">';
+            legendHtml += '<thead>';
+            legendHtml += '<tr class="bg-gray-100">';
+            legendHtml += '<th class="py-2 px-4 border-b text-left text-sm font-medium text-gray-700">Material Code</th>';
+            legendHtml += '<th class="py-2 px-4 border-b text-left text-sm font-medium text-gray-700">Material Name</th>';
+            legendHtml += '<th class="py-2 px-4 border-b text-left text-sm font-medium text-gray-700">Finish Code</th>';
+            legendHtml += '<th class="py-2 px-4 border-b text-left text-sm font-medium text-gray-700">Finish Name</th>';
+            legendHtml += '</tr>';
+            legendHtml += '</thead>';
+            legendHtml += '<tbody>';
+
+            for (const materialCode in materialsData) {
+                const material = materialsData[materialCode];
+                const finishes = material.finishes;
+                const finishKeys = Object.keys(finishes);
+
+                // Add the first row for the material with its first finish
+                legendHtml += `<tr>`;
+                legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800 font-semibold">${materialCode}</td>`;
+                legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800">${material.name}</td>`;
+                legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800">${finishKeys[0]}</td>`;
+                legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800">${finishes[finishKeys[0]]}</td>`;
+                legendHtml += `</tr>`;
+
+                // Add subsequent rows for other finishes of the same material, with empty material cells
+                for (let i = 1; i < finishKeys.length; i++) {
+                    legendHtml += `<tr>`;
+                    legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800"></td>`; // Empty for subsequent finishes
+                    legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800"></td>`; // Empty for subsequent finishes
+                    legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800">${finishKeys[i]}</td>`;
+                    legendHtml += `<td class="py-2 px-4 border-b text-sm text-gray-800">${finishes[finishKeys[i]]}</td>`;
+                    legendHtml += `</tr>`;
+                }
+            }
+
+            legendHtml += '</tbody>';
+            legendHtml += '</table>';
+            materialLegendDiv.innerHTML = legendHtml;
+        }
+
+        // Initial population of material type dropdowns
+        populateMaterialTypes(material1TypeSelect);
+        populateMaterialTypes(material2TypeSelect);
+
+        // Event listeners for material type changes to update finish dropdowns
+        material1TypeSelect.addEventListener('change', () => {
+            populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+        });
+        material2TypeSelect.addEventListener('change', () => {
+            populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+        });
+
+        // Generate the initial material legend on page load
+        generateMaterialLegend();
+
+        /**
+         * Generates an SKU based on the new, more complex syntax: X-ABCD-EF-GH-IJ.
+         * X: Product Category (F, L, O, H)
+         * ABCD: Custom Input (up to 4 characters, padded with spaces if less than 4)
+         * EF: Size/Type (2-digit number, e.g., 01, 02)
+         * GH: Material 1 (Type + Finish, e.g., T0, A1) - Optional
+         * IJ: Material 2 (Type + Finish, e.g., T0, A1) - Optional
+         */
+        generateSkuBtn.addEventListener('click', () => {
+            const productCategory = productCategorySelect.value;
+            // Trim and convert to uppercase, then pad with spaces if less than 4 chars
+            const customCode = customCodeInput.value.trim().toUpperCase().padEnd(4, ' ').substring(0, 4);
+            const sizeType = sizeTypeInput.value.trim();
+            const material1Type = material1TypeSelect.value;
+            const material1Finish = material1FinishSelect.value;
+            const material2Type = material2TypeSelect.value;
+            const material2Finish = material2FinishSelect.value;
+
+            // Mandatory validation: Product Category, Custom Code, Size/Type
+            if (!productCategory || !customCode.trim() || !sizeType) {
+                showAlert('Please fill in Product Category, Custom Code, and Size/Type.');
+                return;
+            }
+
+            // Format Size/Type to be a 2-digit number
+            const formattedSizeType = String(sizeType).padStart(2, '0');
+
+            // Conditionally construct Material 1 code (GH)
+            let material1 = '';
+            if (material1Type && material1Finish) { // Both must be selected for GH to be included
+                material1 = material1Type + material1Finish;
+            } else if (material1Type || material1Finish) {
+                // If only one is selected, show an alert that both are needed for the segment
+                showAlert('For Material 1, please select both a Type and a Finish, or leave both blank.');
+                return;
+            }
+
+
+            // Conditionally construct Material 2 code (IJ)
+            let material2 = '';
+            if (material2Type && material2Finish) { // Both must be selected for IJ to be included
+                material2 = material2Type + material2Finish;
+            } else if (material2Type || material2Finish) {
+                // If only one is selected, show an alert that both are needed for the segment
+                showAlert('For Material 2, please select both a Type and a Finish, or leave both blank.');
+                return;
+            }
+
+            // Construct the base SKU
+            let sku = `${productCategory}-${customCode}-${formattedSizeType}`;
+
+            // Append optional material segments if they exist
+            if (material1) {
+                sku += `-${material1}`;
+            }
+            if (material2) {
+                sku += `-${material2}`;
+            }
+
+            // Display the SKU
+            generatedSkuParagraph.textContent = sku;
+            resultContainer.classList.remove('hidden'); // Show the result container
+
+            // Hide copy message if previously shown
+            copyMessage.classList.add('hidden');
+        });
+
+        /**
+         * Copies the generated SKU to the clipboard.
+         * Uses document.execCommand('copy') for broader compatibility in iframes.
+         */
+        copySkuBtn.addEventListener('click', () => {
+            const skuToCopy = generatedSkuParagraph.textContent;
+            if (skuToCopy) {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = skuToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    copyMessage.classList.remove('hidden'); // Show copy success message
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden'); // Hide message after a few seconds
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy SKU: ', err);
+                    showAlert('Failed to copy SKU. Please copy it manually.');
+                } finally {
+                    document.body.removeChild(tempInput);
+                }
+            } else {
+                showAlert('No SKU to copy. Please generate one first.');
+            }
+        });
+    </script>
+</body>
+</html>
