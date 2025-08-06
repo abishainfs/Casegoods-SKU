@@ -84,67 +84,35 @@
 
             <!-- Instructions Dropdown -->
             <details class="mb-6 p-4 bg-apple-section border border-apple-light-border rounded-lg">
-                <summary class="text-lg font-semibold text-apple-dark cursor-pointer">How SKUs Work & How to Use This Tool</summary>
+                <summary class="text-lg font-semibold text-apple-dark cursor-pointer">Quick Guide: SKU Generation for Priyanka, Mallika, & Prashant</summary>
                 <div class="mt-4 text-apple-medium text-sm leading-relaxed">
-                    <p class="mb-2">Welcome to the Casegoods SKU Generator! This tool helps us create unique codes for all our products, making it easier to organize and track everything. Think of an SKU (Stock Keeping Unit) as a product's unique fingerprint.</p>
-                    <p class="mb-4">Our SKUs follow a specific pattern: <strong class="text-apple-dark">X-ABCD-EF-GH-IJ</strong></p>
+                    <p class="mb-2">Hey Team! This tool helps us create unique SKUs (Stock Keeping Units) for our products. Think of an SKU as a product's unique ID card.</p>
+                    <p class="mb-4">Our SKUs look like this: <strong class="text-apple-dark">X-ABCD-EF-GH-IJ</strong></p>
                     
-                    <h4 class="font-bold text-apple-dark mb-2">The SKU Breakdown:</h4>
+                    <h4 class="font-bold text-apple-dark mb-2">Here's the simple breakdown:</h4>
                     <ul class="list-disc list-inside mb-3">
-                        <li class="mb-1"><strong class="text-apple-dark">X - Product Category (1 Letter):</strong> This first letter tells us what type of product it is.
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li><strong>F</strong> for Furniture</li>
-                                <li><strong>L</strong> for Lights</li>
-                                <li><strong>O</strong> for Objects</li>
-                                <li><strong>H</strong> for Hardware</li>
-                            </ul>
-                        </li>
-                        <li class="mb-1"><strong class="text-apple-dark">ABCD - Custom Code (Up to 4 Letters):</strong> This is a unique code for each specific product design. It's usually 3 letters, but can be up to 4. For example:
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li><strong>BND</strong> for Buenos Diyas</li>
-                                <li><strong>FFC</strong> for Folding Flat Chair</li>
-                            </ul>
-                            <p class="text-xs text-gray-500 mt-1">If you enter fewer than 4 letters, the system will automatically add spaces to fill it out (e.g., "BND" becomes "BND ").</p>
-                        </li>
-                        <li class="mb-1"><strong class="text-apple-dark">EF - Size/Type (2 Digits):</strong> This is a two-digit number, starting from `01`, `02`, `03`, and so on. It represents standard product configurations or sizes. For instance, `01` might be the smallest size, `02` the next, and so on.</li>
-                        <li class="mb-1"><strong class="text-apple-dark">GH - Customisable Material 1 (Optional: 1 Letter + 1 Digit):</strong> This part describes the <strong class="text-apple-dark">first main material</strong> used in the product and its finish.
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li>The <strong class="text-apple-dark">first letter (G)</strong> tells us the material type (e.g., <strong>T</strong> for Teakwood, <strong>A</strong> for Ash).</li>
-                                <li>The <strong class="text-apple-dark">second digit (H)</strong> tells us how that material is finished (e.g., <strong>0</strong> for Unfinished, <strong>1</strong> for Oiled/Sealed).</li>
-                            </ul>
-                            <p class="text-xs text-gray-500 mt-1">This section is optional. If a product doesn't have a first customisable material, you can leave both "Material Type (G)" and "Material Finish (H)" blank in the generator.</p>
-                        </li>
-                        <li class="mb-1"><strong class="text-apple-dark">IJ - Customisable Material 2 (Optional: 1 Letter + 1 Digit):</strong> This works exactly like `GH`, but it's for the <strong class="text-apple-dark">second customisable material</strong> (if there is one).
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li>The <strong class="text-apple-dark">first letter (I)</strong> is the material type.</li>
-                                <li>The <strong class="text-apple-dark">second digit (J)</strong> is its finish.</li>
-                            </ul>
-                            <p class="text-xs text-gray-500 mt-1">This section is also optional. If a product only has one customisable material, or none, you can leave this section blank.</p>
-                        </li>
+                        <li class="mb-1"><strong class="text-apple-dark">X - Product Category:</strong> Just pick the product type from the dropdown (like 'F' for Furniture).</li>
+                        <li class="mb-1"><strong class="text-apple-dark">ABCD - Product Code:</strong> Select the product's unique code from the "Product Code" dropdown. This ensures we're using approved designs!</li>
+                        <li class="mb-1"><strong class="text-apple-dark">EF - Size/Type:</strong> Enter a 2-digit number for the size or specific version (e.g., '01' for small, '02' for medium).</li>
+                        <li class="mb-1"><strong class="text-apple-dark">GH & IJ - Materials (Optional):</strong> If the product has customisable materials, select the Material Type and its Finish. If not, just leave these blank.</li>
                     </ul>
 
-                    <h4 class="font-bold text-apple-dark mb-2">How to Use the SKU Generator:</h4>
+                    <h4 class="font-bold text-apple-dark mb-2">How to use it:</h4>
                     <ol class="list-decimal list-inside mb-3">
-                        <li class="mb-1"><strong class="text-apple-dark">Fill in the Blanks:</strong>
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li><strong>Product Category (X):</strong> Choose the correct category from the dropdown.</li>
-                                <li><strong>Custom Code (ABCD):</strong> Type in the unique code for the product design.</li>
-                                <li><strong>Size/Type (EF):</strong> Enter the 2-digit number for the size or configuration.</li>
-                                <li><strong>Customisable Material 1 (GH) & 2 (IJ):</strong> If your product has these materials, select both the <strong>Material Type</strong> and <strong>Material Finish</strong> from the dropdowns. If a product doesn't have a material for this section, simply leave both dropdowns blank.</li>
-                            </ul>
-                        </li>
-                        <li class="mb-1"><strong class="text-apple-dark">Generate SKU:</strong> Click the <strong>"Generate SKU"</strong> button. The complete SKU will appear below.</li>
-                        <li class="mb-1"><strong class="text-apple-dark">Copy SKU:</strong> Click the <strong>copy icon</strong> next to the generated SKU to quickly copy it to your clipboard. You can then paste it into our Google Sheet or Excel file.</li>
+                        <li class="mb-1"><strong>Fill in the Blanks:</strong> Choose from the dropdowns and fill in the numbers.</li>
+                        <li class="mb-1"><strong>Generate SKU:</strong> Click the button, and your SKU will appear!</li>
+                        <li class="mb-1"><strong>Copy SKU:</strong> Use the little copy icon to grab the SKU quickly.</li>
                     </ol>
 
-                    <h4 class="font-bold text-apple-dark mb-2">Important Notes:</h4>
+                    <h4 class="font-bold text-apple-dark mb-2">Important for you, Priyanka, Mallika, and Prashant:</h4>
                     <ul class="list-disc list-inside mb-3">
-                        <li class="mb-1"><strong>Material & Finish Legend:</strong> To the side, you'll find a <strong>"Material & Finish Legend"</strong> table. This is your go-to guide for all the material and finish codes. It's always up-to-date!</li>
-                        <li class="mb-1"><strong>Logged SKUs:</strong> Also to the side, there's a <strong>"Logged SKUs"</strong> section. This shows all the unique SKUs that have been generated and saved by anyone using this tool.</li>
-                        <li class="mb-1"><strong>No Duplicates!</strong> The system will check if an SKU you're trying to generate already exists in our records. If it does, you'll get an alert, and you'll need to adjust your inputs to create a unique SKU. This helps us keep our inventory clean and accurate.</li>
+                        <li class="mb-1"><strong>Product Codes:</strong> Make sure to always select a product code from the dropdown. If a product isn't there, you *cannot* generate an SKU for it. This helps us keep our inventory accurate.</li>
+                        <li class="mb-1"><strong>Adding New Products:</strong> If you need to add a brand new product to the list, use the "Add New Product" button next to the Product Code dropdown.</li>
+                        <li class="mb-1"><strong>Material & Finish Legend:</strong> The table on the right is always updated with the latest material and finish codes.</li>
+                        <li class="mb-1"><strong>Logged SKUs:</strong> You can see all generated SKUs on the right. Use the "Download SKUs" button to save a local copy.</li>
                     </ul>
 
-                    <p class="font-bold text-apple-dark mt-4">Questions? If you have any doubts about how to use this tool or what codes to use, please don't hesitate to <strong class="text-apple-accent">ask the design team</strong>. They are here to help!</p>
+                    <p class="font-bold text-apple-dark mt-4">Any questions or new product ideas? Just ask the design team!</p>
                 </div>
             </details>
 
@@ -160,10 +128,19 @@
                 </select>
             </div>
 
-            <!-- Custom Input (ABCD) -->
+            <!-- Product Code (ABCD) - New Dropdown -->
             <div class="mb-4">
-                <label for="customCode" class="block text-sm font-medium text-apple-medium mb-1">Custom Code (ABCD - Max 4 letters)</label>
-                <input type="text" id="customCode" placeholder="e.g., BND, FFC (ask design team if unsure)" maxlength="4" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                <label for="productCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
+                <div class="flex items-center gap-2">
+                    <select id="productCode" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <option value="" disabled selected>Select Product Code</option>
+                    </select>
+                    <button id="addNewProductBtn" class="flex-shrink-0 bg-apple-primary text-white p-3 rounded-lg font-semibold text-sm hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out shadow-md" title="Add New Product">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Size/Type (EF) -->
@@ -262,6 +239,29 @@
                 </button>
             </div>
         </div>
+
+        <!-- Add New Product Modal -->
+        <div id="addProductModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-apple-light p-6 rounded-lg shadow-xl w-full max-w-md">
+                <h3 class="text-lg font-semibold text-apple-dark mb-4">Add New Product</h3>
+                <div class="mb-4">
+                    <label for="newProductCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
+                    <input type="text" id="newProductCode" maxlength="4" placeholder="e.g., BND" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                </div>
+                <div class="mb-6">
+                    <label for="newProductName" class="block text-sm font-medium text-apple-medium mb-1">Product Name</label>
+                    <input type="text" id="newProductName" placeholder="e.g., Buenos Diyas" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button id="cancelAddProductBtn" class="bg-gray-200 text-apple-medium p-2 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out">
+                        Cancel
+                    </button>
+                    <button id="saveNewProductBtn" class="bg-apple-primary text-white p-2 rounded-lg font-semibold hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out">
+                        Save Product
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -269,30 +269,33 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, where, addDoc, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // IMPORTANT: For Vercel deployment, these values are hardcoded as they are not injected client-side
-        // from Vercel's environment variables for static HTML files.
-        const appId = 'casegoods-sku-generator'; // Your Firebase Project ID
-        const firebaseConfig = {
-          apiKey: "AIzaSyBi6frg0BYUKxPbhHD2AIuNsqcQtGGCTo0",
-          authDomain: "casegoods-sku-generator.firebaseapp.com",
-          projectId: "casegoods-sku-generator",
-          storageBucket: "casegoods-sku-generator.firebasestorage.app",
-          messagingSenderId: "875245303667",
-          appId: "1:875245303667:web:cd48fbb62822247ce4f706",
-          measurementId: "G-B0TLC9HCXJ"
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            // Fallback config for local development if not in Canvas environment
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
         };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app;
         let db;
         let auth;
         let userId;
 
-        // materialsData will be loaded from materials.json
-        let materialsData = []; // Changed to an array to match the new JSON structure
-        let currentLoggedSkus = []; // Store logged SKUs to easily access for download
+        // materialsData will now be an object for easier lookup by code
+        let materialsData = {}; 
+        let productsData = []; 
+        let currentLoggedSkus = []; 
 
+        // DOM Elements
         let productCategorySelect;
-        let customCodeInput;
+        let productCodeSelect; 
         let sizeTypeInput;
         let material1TypeSelect;
         let material1FinishSelect;
@@ -308,7 +311,13 @@
         let alertCloseBtn;
         let materialLegendDiv;
         let loggedSkusList;
-        let downloadSkusBtn; // New button element
+        let downloadSkusBtn;
+        let addNewProductBtn; 
+        let addProductModal; 
+        let newProductCodeInput;
+        let newProductNameInput;
+        let cancelAddProductBtn;
+        let saveNewProductBtn;
 
         function showAlert(message) {
             alertMessage.textContent = message;
@@ -317,27 +326,84 @@
 
         async function fetchMaterialsData() {
             try {
-                const response = await fetch('/materials.json');
-                if (!response.ok) {
-                    console.error(`HTTP error! Status: ${response.status}, Text: ${response.statusText}`);
-                    throw new Error(`Failed to load materials.json. Status: ${response.status}`);
-                }
-                materialsData = await response.json();
-                console.log("Materials data loaded successfully:", materialsData);
+                const materialsCollectionRef = collection(db, `artifacts/${appId}/public/data/materials`);
+                const querySnapshot = await getDocs(materialsCollectionRef);
+                materialsData = {}; // Reset to an empty object
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    // Store materials as an object keyed by their code for easy lookup
+                    materialsData[data.code] = data; 
+                });
+                console.log("Materials data loaded successfully from Firestore:", materialsData);
+                // After fetching, populate UI elements
+                populateMaterialTypes(material1TypeSelect);
+                populateMaterialTypes(material2TypeSelect);
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+                generateMaterialLegend();
             } catch (error) {
-                console.error("Error fetching materials.json:", error);
-                showAlert(`Failed to load material data: ${error.message}. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON.`);
+                console.error("Error fetching materials data from Firestore:", error);
+                showAlert("Failed to load material data from database. Please ensure 'materials' collection is populated in Firestore.");
                 // Fallback to a minimal data set if loading fails
-                materialsData = [
-                    { "code": "T", "name": "Teakwood (Fallback)", "finishes": [] },
-                    { "code": "A", "name": "Ash (Fallback)", "finishes": [] }
-                ];
+                materialsData = {
+                    "T": { "code": "T", "name": "Teakwood (Fallback)", "finishes": [] },
+                    "A": { "code": "A", "name": "Ash (Fallback)", "finishes": [] }
+                };
+                // Still attempt to populate with fallback data
+                populateMaterialTypes(material1TypeSelect);
+                populateMaterialTypes(material2TypeSelect);
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+                generateMaterialLegend();
             }
+        }
+
+        async function fetchProductsData() {
+            try {
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+                const querySnapshot = await getDocs(productsCollectionRef);
+                productsData = []; 
+                querySnapshot.forEach(doc => {
+                    productsData.push(doc.data());
+                });
+                console.log("Products data loaded successfully from Firestore:", productsData);
+                populateProductCodes(productCodeSelect); 
+            } catch (error) {
+                console.error("Error fetching products data from Firestore:", error);
+                showAlert("Failed to load product codes from database. Please try again later.");
+                productsData = [
+                    { "code": "BND", "name": "Buenos Diyas (Fallback)" },
+                    { "code": "FFC", "name": "Folding Flat Chair (Fallback)" }
+                ];
+                populateProductCodes(productCodeSelect); 
+            }
+        }
+
+        function populateProductCodes(selectElement) {
+            const defaultOption = selectElement.querySelector('option[value=""][disabled][selected]');
+            selectElement.innerHTML = ''; 
+            if (defaultOption) {
+                selectElement.appendChild(defaultOption.cloneNode(true));
+            } else {
+                const newDefaultOption = document.createElement('option');
+                newDefaultOption.value = "";
+                newDefaultOption.textContent = "Select Product Code";
+                newDefaultOption.disabled = true;
+                newDefaultOption.selected = true;
+                selectElement.appendChild(newDefaultOption);
+            }
+
+            productsData.sort((a, b) => a.code.localeCompare(b.code)).forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.code;
+                option.textContent = `${product.code} - ${product.name}`;
+                selectElement.appendChild(option);
+            });
         }
 
         function populateMaterialTypes(selectElement) {
             const defaultOption = selectElement.querySelector('option[value=""][selected]');
-            selectElement.innerHTML = ''; // Clear existing options
+            selectElement.innerHTML = ''; 
             if (defaultOption) {
                 selectElement.appendChild(defaultOption.cloneNode(true));
             } else {
@@ -348,19 +414,20 @@
                 selectElement.appendChild(newDefaultOption);
             }
 
-            // Iterate over the materialsData array
-            materialsData.forEach(material => {
+            // Iterate over the keys of the materialsData object
+            for (const code in materialsData) {
+                const material = materialsData[code];
                 const option = document.createElement('option');
                 option.value = material.code;
                 option.textContent = `${material.code} - ${material.name}`;
                 selectElement.appendChild(option);
-            });
+            }
         }
 
         function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
             const selectedMaterialCode = materialTypeSelect.value;
             const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
-            finishSelectElement.innerHTML = ''; // Clear existing options
+            finishSelectElement.innerHTML = ''; 
             if (defaultOption) {
                 finishSelectElement.appendChild(defaultOption.cloneNode(true));
             } else {
@@ -371,11 +438,10 @@
                 finishSelectElement.appendChild(newDefaultOption);
             }
 
-            // Find the selected material object in the materialsData array
-            const selectedMaterial = materialsData.find(material => material.code === selectedMaterialCode);
+            // Directly access the material object using the selected code
+            const selectedMaterial = materialsData[selectedMaterialCode];
 
             if (selectedMaterial && selectedMaterial.finishes) {
-                // Iterate over the finishes array within the selected material
                 selectedMaterial.finishes.forEach(finish => {
                     const option = document.createElement('option');
                     option.value = finish.code;
@@ -397,8 +463,9 @@
             legendHtml += '</thead>';
             legendHtml += '<tbody>';
 
-            // Iterate over the materialsData array
-            materialsData.forEach(material => {
+            // Iterate over the keys of the materialsData object
+            for (const materialCode in materialsData) {
+                const material = materialsData[materialCode];
                 const finishes = material.finishes;
                 
                 if (!finishes || finishes.length === 0) {
@@ -409,7 +476,6 @@
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">No Finishes</td>`;
                     legendHtml += `</tr>`;
                 } else {
-                    // For the first finish, display material code and name
                     legendHtml += `<tr>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${material.code}</td>`;
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
@@ -417,7 +483,6 @@
                     legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[0].name}</td>`;
                     legendHtml += `</tr>`;
 
-                    // For subsequent finishes, leave material code and name empty
                     for (let i = 1; i < finishes.length; i++) {
                         legendHtml += `<tr>`;
                         legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
@@ -427,7 +492,7 @@
                         legendHtml += `</tr>`;
                     }
                 }
-            });
+            }
 
             legendHtml += '</tbody>';
             legendHtml += '</table>';
@@ -440,11 +505,17 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                await signInAnonymously(auth);
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
 
                 userId = auth.currentUser?.uid || crypto.randomUUID();
                 console.log("Firebase initialized and authenticated. User ID:", userId);
                 setupSkuListener();
+                await fetchMaterialsData(); // Fetch materials data from Firestore
+                await fetchProductsData(); // Fetch products data from Firestore
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
                 showAlert("Failed to initialize database. Please try again later.");
@@ -461,7 +532,7 @@
                         skus.push(data.sku);
                     }
                 });
-                currentLoggedSkus = skus; // Update the array for download
+                currentLoggedSkus = skus; 
                 displayLoggedSkus(skus);
             }, (error) => {
                 console.error("Error listening to SKUs:", error);
@@ -485,7 +556,6 @@
             loggedSkusList.appendChild(ul);
         }
 
-        // Function to download SKUs as a text file
         function downloadSkus() {
             if (currentLoggedSkus.length === 0) {
                 showAlert("No SKUs to download.");
@@ -498,16 +568,16 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = 'logged_skus.txt';
-            document.body.appendChild(a); // Append to body to make it clickable
-            a.click(); // Programmatically click the link to trigger download
-            document.body.removeChild(a); // Clean up the temporary link
-            URL.revokeObjectURL(url); // Release the object URL
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+            URL.revokeObjectURL(url); 
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Assign DOM elements once the window is loaded
+            // Assign DOM elements
             productCategorySelect = document.getElementById('productCategory');
-            customCodeInput = document.getElementById('customCode');
+            productCodeSelect = document.getElementById('productCode'); 
             sizeTypeInput = document.getElementById('sizeType');
             material1TypeSelect = document.getElementById('material1Type');
             material1FinishSelect = document.getElementById('material1Finish');
@@ -523,26 +593,36 @@
             alertCloseBtn = document.getElementById('alertCloseBtn');
             materialLegendDiv = document.getElementById('materialLegend');
             loggedSkusList = document.getElementById('loggedSkusList');
-            downloadSkusBtn = document.getElementById('downloadSkusBtn'); // Get the new button
+            downloadSkusBtn = document.getElementById('downloadSkusBtn');
+            addNewProductBtn = document.getElementById('addNewProductBtn'); 
+            addProductModal = document.getElementById('addProductModal'); 
+            newProductCodeInput = document.getElementById('newProductCode');
+            newProductNameInput = document.getElementById('newProductName');
+            cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
+            saveNewProductBtn = document.getElementById('saveNewProductBtn');
 
-            // Fetch materials data before populating dropdowns and legend
-            await fetchMaterialsData();
-
+            // Event Listeners
             alertCloseBtn.addEventListener('click', () => {
                 customAlert.classList.add('hidden');
             });
 
             generateSkuBtn.addEventListener('click', async () => {
                 const productCategory = productCategorySelect.value;
-                const customCode = customCodeInput.value.trim().toUpperCase().padEnd(4, ' ').substring(0, 4);
+                const productCode = productCodeSelect.value; 
                 const sizeType = sizeTypeInput.value.trim();
                 const material1Type = material1TypeSelect.value;
                 const material1Finish = material1FinishSelect.value;
                 const material2Type = material2TypeSelect.value;
                 const material2Finish = material2FinishSelect.value;
 
-                if (!productCategory || !customCode.trim() || !sizeType) {
-                    showAlert('Please fill in Product Category, Custom Code, and Size/Type.');
+                if (!productCategory || !productCode || !sizeType) {
+                    showAlert('Please fill in Product Category, Product Code, and Size/Type.');
+                    return;
+                }
+
+                const selectedProductExists = productsData.some(p => p.code === productCode);
+                if (!selectedProductExists) {
+                    showAlert(`Product code "${productCode}" does not exist in the directory. Please select an existing product or add a new one.`);
                     return;
                 }
 
@@ -564,7 +644,7 @@
                     return;
                 }
 
-                let sku = `${productCategory}-${customCode}-${formattedSizeType}`;
+                let sku = `${productCategory}-${productCode}-${formattedSizeType}`;
                 if (material1) {
                     sku += `-${material1}`;
                 }
@@ -572,12 +652,10 @@
                     sku += `-${material2}`;
                 }
 
-                // Display the SKU in the current generator result area immediately
                 generatedSkuParagraph.textContent = sku;
                 resultContainer.classList.remove('hidden');
                 copyMessage.classList.add('hidden');
 
-                // Database operations for SKU logging (only if unique)
                 if (!db || !auth.currentUser) {
                     showAlert("Database not ready or user not authenticated. Please try again.");
                     return;
@@ -590,7 +668,6 @@
 
                     if (!querySnapshot.empty) {
                         showAlert(`SKU "${sku}" already exists in the database. It will not be logged again.`);
-                        // Do NOT addDoc if it's a duplicate
                     } else {
                         await addDoc(skusCollectionRef, {
                             sku: sku,
@@ -598,7 +675,6 @@
                             generatedBy: userId
                         });
                         console.log("SKU added successfully:", sku);
-                        // The onSnapshot listener will automatically update the list
                     }
                 } catch (e) {
                     console.error("Error checking or adding SKU to database: ", e);
@@ -630,30 +706,64 @@
                 }
             });
 
-            // Attach event listener for the new download button
             downloadSkusBtn.addEventListener('click', downloadSkus);
 
-            // Populate dropdowns and legend after materialsData is fetched
-            if (materialsData && materialsData.length > 0) { // Check if array is not empty
-                populateMaterialTypes(material1TypeSelect);
-                populateMaterialTypes(material2TypeSelect);
-                // Initial population of finishes based on default selected type (which is empty)
-                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
-                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+            // Add New Product Modal Logic
+            addNewProductBtn.addEventListener('click', () => {
+                addProductModal.classList.remove('hidden');
+                newProductCodeInput.value = ''; 
+                newProductNameInput.value = '';
+            });
 
-                material1TypeSelect.addEventListener('change', () => {
-                    populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
-                });
-                material2TypeSelect.addEventListener('change', () => {
-                    populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
-                });
+            cancelAddProductBtn.addEventListener('click', () => {
+                addProductModal.classList.add('hidden');
+            });
 
-                generateMaterialLegend();
-            } else {
-                showAlert("Material data could not be loaded or is empty. Material selection and legend may not function correctly. Please ensure 'materials.json' exists at the root of your deployment and is valid JSON with the expected array structure.");
-            }
-            
-            initializeFirebase();
+            saveNewProductBtn.addEventListener('click', async () => {
+                const newCode = newProductCodeInput.value.trim().toUpperCase();
+                const newName = newProductNameInput.value.trim();
+
+                if (!newCode || !newName) {
+                    showAlert('Please enter both Product Code and Product Name.');
+                    return;
+                }
+                if (newCode.length > 4) {
+                    showAlert('Product Code cannot be more than 4 characters.');
+                    return;
+                }
+
+                if (!db || !auth.currentUser) {
+                    showAlert("Database not ready or user not authenticated. Cannot add product.");
+                    return;
+                }
+
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+                try {
+                    const q = query(productsCollectionRef, where("code", "==", newCode));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        showAlert(`Product code "${newCode}" already exists. Please use a unique code.`);
+                        return;
+                    }
+
+                    await addDoc(productsCollectionRef, {
+                        code: newCode,
+                        name: newName,
+                        timestamp: serverTimestamp(),
+                        addedBy: userId
+                    });
+                    console.log("New product added successfully:", { code: newCode, name: newName });
+                    addProductModal.classList.add('hidden');
+                    showAlert(`Product "${newCode} - ${newName}" added successfully!`);
+                    fetchProductsData(); // Refresh product dropdown
+                } catch (e) {
+                    console.error("Error adding new product:", e);
+                    showAlert("Failed to add new product to database. Please try again.");
+                }
+            });
+
+            initializeFirebase(); 
         });
     </script>
 </body>
