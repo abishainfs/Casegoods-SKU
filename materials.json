@@ -48,5 +48,13 @@
       { "code": "2", "name": "Slightly Aged" },
       { "code": "3", "name": "Blackened" }
     ]
+     },
+  {
+    "code": "M",
+    "name": "Mahogany",
+    "finishes": [
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Oiled/Sealed" },
+    ]
   }
 ]
