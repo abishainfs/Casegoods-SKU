@@ -54,7 +54,7 @@
     "name": "Mahogany",
     "finishes": [
       { "code": "0", "name": "Unfinished" },
-      { "code": "1", "name": "Oiled/Sealed" },
+      { "code": "1", "name": "Oiled/Sealed" }
     ]
   }
 ]
