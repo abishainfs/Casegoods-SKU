@@ -270,9 +270,8 @@
         import { getFirestore, collection, query, where, addDoc, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global variables provided by the Canvas environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'casegoods-sku-generator';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            // Fallback config for local development if not in Canvas environment
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
             projectId: "YOUR_PROJECT_ID",
@@ -288,7 +287,6 @@
         let auth;
         let userId;
 
-        // materialsData will now be an object for easier lookup by code
         let materialsData = {}; 
         let productsData = []; 
         let currentLoggedSkus = []; 
@@ -324,6 +322,11 @@
             customAlert.classList.remove('hidden');
         }
 
+        /**
+         * Fetches materials data from Firestore and populates related UI elements.
+         * Materials are stored as documents in artifacts/{appId}/public/data/materials
+         * with the material code as the document ID.
+         */
         async function fetchMaterialsData() {
             try {
                 const materialsCollectionRef = collection(db, `artifacts/${appId}/public/data/materials`);
@@ -358,27 +361,36 @@
             }
         }
 
+        /**
+         * Fetches products data from Firestore and populates the product code dropdown.
+         * Products are stored as documents in artifacts/{appId}/public/data/products.
+         */
         async function fetchProductsData() {
             try {
                 const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
                 const querySnapshot = await getDocs(productsCollectionRef);
-                productsData = []; 
+                productsData = []; // Clear existing data
                 querySnapshot.forEach(doc => {
                     productsData.push(doc.data());
                 });
                 console.log("Products data loaded successfully from Firestore:", productsData);
-                populateProductCodes(productCodeSelect); 
+                populateProductCodes(productCodeSelect); // Repopulate dropdown after fetching
             } catch (error) {
                 console.error("Error fetching products data from Firestore:", error);
                 showAlert("Failed to load product codes from database. Please try again later.");
+                // Fallback to a minimal data set if loading fails or for initial setup
                 productsData = [
                     { "code": "BND", "name": "Buenos Diyas (Fallback)" },
                     { "code": "FFC", "name": "Folding Flat Chair (Fallback)" }
                 ];
-                populateProductCodes(productCodeSelect); 
+                populateProductCodes(productCodeSelect); // Populate with fallback
             }
         }
 
+        /**
+         * Populates a given select element with product codes and names.
+         * @param {HTMLSelectElement} selectElement The select element to populate.
+         */
         function populateProductCodes(selectElement) {
             const defaultOption = selectElement.querySelector('option[value=""][disabled][selected]');
             selectElement.innerHTML = ''; 
@@ -401,6 +413,10 @@
             });
         }
 
+        /**
+         * Populates a given select element with material types.
+         * @param {HTMLSelectElement} selectElement The select element to populate.
+         */
         function populateMaterialTypes(selectElement) {
             const defaultOption = selectElement.querySelector('option[value=""][selected]');
             selectElement.innerHTML = ''; 
@@ -424,6 +440,11 @@
             }
         }
 
+        /**
+         * Populates a given select element with finishes for a selected material type.
+         * @param {HTMLSelectElement} materialTypeSelect The select element for material type.
+         * @param {HTMLSelectElement} finishSelectElement The select element for finishes.
+         */
         function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
             const selectedMaterialCode = materialTypeSelect.value;
             const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
@@ -451,6 +472,9 @@
             }
         }
 
+        /**
+         * Generates and displays the Material & Finish Legend table.
+         */
         function generateMaterialLegend() {
             let legendHtml = '<table class="min-w-full bg-apple-light border border-apple-light-border rounded-lg shadow-sm">';
             legendHtml += '<thead>';
@@ -499,6 +523,10 @@
             materialLegendDiv.innerHTML = legendHtml;
         }
 
+        /**
+         * Initializes Firebase app, authentication, and Firestore.
+         * Also triggers initial data fetches.
+         */
         async function initializeFirebase() {
             try {
                 app = initializeApp(firebaseConfig);
@@ -522,6 +550,9 @@
             }
         }
 
+        /**
+         * Sets up a real-time listener for logged SKUs from Firestore.
+         */
         function setupSkuListener() {
             const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
             onSnapshot(skusCollectionRef, (snapshot) => {
@@ -540,6 +571,10 @@
             });
         }
 
+        /**
+         * Displays the list of logged SKUs in the UI.
+         * @param {string[]} skus An array of SKU strings.
+         */
         function displayLoggedSkus(skus) {
             loggedSkusList.innerHTML = '';
             if (skus.length === 0) {
@@ -556,6 +591,9 @@
             loggedSkusList.appendChild(ul);
         }
 
+        /**
+         * Downloads the current list of logged SKUs as a text file.
+         */
         function downloadSkus() {
             if (currentLoggedSkus.length === 0) {
                 showAlert("No SKUs to download.");
@@ -574,6 +612,7 @@
             URL.revokeObjectURL(url); 
         }
 
+        // --- Event Listeners and Initial Setup ---
         document.addEventListener('DOMContentLoaded', async () => {
             // Assign DOM elements
             productCategorySelect = document.getElementById('productCategory');
@@ -601,7 +640,7 @@
             cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
             saveNewProductBtn = document.getElementById('saveNewProductBtn');
 
-            // Event Listeners
+            // Event Listeners for UI interaction
             alertCloseBtn.addEventListener('click', () => {
                 customAlert.classList.add('hidden');
             });
@@ -615,11 +654,13 @@
                 const material2Type = material2TypeSelect.value;
                 const material2Finish = material2FinishSelect.value;
 
+                // Validation for SKU generation
                 if (!productCategory || !productCode || !sizeType) {
                     showAlert('Please fill in Product Category, Product Code, and Size/Type.');
                     return;
                 }
 
+                // Validate if selected product code exists in productsData
                 const selectedProductExists = productsData.some(p => p.code === productCode);
                 if (!selectedProductExists) {
                     showAlert(`Product code "${productCode}" does not exist in the directory. Please select an existing product or add a new one.`);
@@ -656,6 +697,7 @@
                 resultContainer.classList.remove('hidden');
                 copyMessage.classList.add('hidden');
 
+                // Database operations for SKU logging (only if unique)
                 if (!db || !auth.currentUser) {
                     showAlert("Database not ready or user not authenticated. Please try again.");
                     return;
@@ -763,6 +805,7 @@
                 }
             });
 
+            // Initialize Firebase and fetch all necessary data
             initializeFirebase(); 
         });
     </script>
