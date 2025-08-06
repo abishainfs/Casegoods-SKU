@@ -270,15 +270,15 @@
         import { getFirestore, collection, query, where, addDoc, getDocs, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global variables provided by the Canvas environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'casegoods-sku-generator';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
-            measurementId: "YOUR_MEASUREMENT_ID"
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = {
+            apiKey: "AIzaSyBi6frg0BYUKxPbhHD2AIuNsqcQtGGCTo0",
+            authDomain: "casegoods-sku-generator.firebaseapp.com",
+            projectId: "casegoods-sku-generator",
+            storageBucket: "casegoods-sku-generator.firebasestorage.app",
+            messagingSenderId: "875245303667",
+            appId: "1:875245303667:web:cd48fbb62822247ce4f706",
+            measurementId: "G-B0TLC9HCXJ"
         };
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -287,6 +287,7 @@
         let auth;
         let userId;
 
+        // materialsData will now be an object for easier lookup by code
         let materialsData = {}; 
         let productsData = []; 
         let currentLoggedSkus = []; 
@@ -317,6 +318,10 @@
         let cancelAddProductBtn;
         let saveNewProductBtn;
 
+        /**
+         * Displays a custom alert message.
+         * @param {string} message - The message to display in the alert.
+         */
         function showAlert(message) {
             alertMessage.textContent = message;
             customAlert.classList.remove('hidden');
@@ -525,33 +530,37 @@
 
         /**
          * Initializes Firebase app, authentication, and Firestore.
-         * Also triggers initial data fetches.
+         * Sets up real-time listener for SKUs and fetches initial data.
          */
         async function initializeFirebase() {
             try {
+                // Initialize Firebase app with the user's provided config
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // Since the user has explicitly provided firebaseConfig,
+                // we should sign in anonymously to their project.
+                // The __initial_auth_token is for the Canvas environment's Firebase instance,
+                // and would cause a mismatch if used with the user's project config.
+                await signInAnonymously(auth);
 
                 userId = auth.currentUser?.uid || crypto.randomUUID();
                 console.log("Firebase initialized and authenticated. User ID:", userId);
+                
+                // Setup real-time listeners and initial data fetches
                 setupSkuListener();
                 await fetchMaterialsData(); // Fetch materials data from Firestore
                 await fetchProductsData(); // Fetch products data from Firestore
             } catch (error) {
                 console.error("Error initializing Firebase or authenticating:", error);
-                showAlert("Failed to initialize database. Please try again later.");
+                showAlert(`Failed to initialize database: ${error.message}. Please try again later.`);
             }
         }
 
         /**
-         * Sets up a real-time listener for logged SKUs from Firestore.
+         * Sets up a real-time listener for SKUs stored in Firestore.
+         * SKUs are stored in artifacts/{appId}/public/data/skus.
          */
         function setupSkuListener() {
             const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
@@ -563,7 +572,7 @@
                         skus.push(data.sku);
                     }
                 });
-                currentLoggedSkus = skus; 
+                currentLoggedSkus = skus; // Update the global array
                 displayLoggedSkus(skus);
             }, (error) => {
                 console.error("Error listening to SKUs:", error);
@@ -573,7 +582,7 @@
 
         /**
          * Displays the list of logged SKUs in the UI.
-         * @param {string[]} skus An array of SKU strings.
+         * @param {Array<string>} skus - An array of SKU strings to display.
          */
         function displayLoggedSkus(skus) {
             loggedSkusList.innerHTML = '';
@@ -605,18 +614,165 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'logged_skus.txt';
-            document.body.appendChild(a); 
-            a.click(); 
-            document.body.removeChild(a); 
-            URL.revokeObjectURL(url); 
+            a.download = 'casegoods_skus.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url); // Clean up the object URL
+        }
+
+        /**
+         * Shows the modal for adding a new product.
+         */
+        function addNewProduct() {
+            newProductCodeInput.value = '';
+            newProductNameInput.value = '';
+            addProductModal.classList.remove('hidden');
+        }
+
+        /**
+         * Saves a new product to Firestore.
+         */
+        async function saveNewProduct() {
+            const code = newProductCodeInput.value.trim().toUpperCase();
+            const name = newProductNameInput.value.trim();
+
+            if (!code || !name) {
+                showAlert("Product Code and Product Name are required.");
+                return;
+            }
+
+            if (code.length !== 4) {
+                showAlert("Product Code must be exactly 4 characters long.");
+                return;
+            }
+
+            // Check if product code already exists
+            const exists = productsData.some(product => product.code === code);
+            if (exists) {
+                showAlert(`Product code "${code}" already exists. Please use a unique code.`);
+                return;
+            }
+
+            try {
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+                await addDoc(productsCollectionRef, {
+                    code: code,
+                    name: name,
+                    createdAt: serverTimestamp() // Add a timestamp
+                });
+                console.log("New product added successfully:", { code, name });
+                showAlert(`Product "${name}" (${code}) added successfully!`);
+                addProductModal.classList.add('hidden');
+                await fetchProductsData(); // Re-fetch products to update the dropdown
+            } catch (error) {
+                console.error("Error adding new product:", error);
+                showAlert(`Failed to add new product: ${error.message}`);
+            }
+        }
+
+        /**
+         * Generates the SKU based on selected and entered values.
+         * Validates inputs and logs the SKU to Firestore.
+         */
+        async function generateSku() {
+            const category = productCategorySelect.value;
+            const productCode = productCodeSelect.value;
+            let sizeType = sizeTypeInput.value.trim();
+            const material1Type = material1TypeSelect.value;
+            const material1Finish = material1FinishSelect.value;
+            const material2Type = material2TypeSelect.value;
+            const material2Finish = material2FinishSelect.value;
+
+            // Input validation
+            if (!category) {
+                showAlert("Please select a Product Category.");
+                return;
+            }
+            if (!productCode) {
+                showAlert("Please select a Product Code.");
+                return;
+            }
+            if (!sizeType) {
+                showAlert("Please enter a Size/Type (EF).");
+                return;
+            }
+            if (sizeType.length !== 1 && sizeType.length !== 2) {
+                showAlert("Size/Type (EF) must be a 1 or 2-digit number.");
+                return;
+            }
+            // Pad sizeType with leading zero if it's a single digit
+            sizeType = sizeType.padStart(2, '0');
+
+            // Construct material parts, ensuring both type and finish are selected if one is.
+            let material1Part = '';
+            if (material1Type && material1Finish) {
+                material1Part = `-${material1Type}${material1Finish}`;
+            } else if (material1Type || material1Finish) {
+                showAlert("Please select both Material Type and Finish for Material 1, or leave both blank.");
+                return;
+            }
+
+            let material2Part = '';
+            if (material2Type && material2Finish) {
+                material2Part = `-${material2Type}${material2Finish}`;
+            } else if (material2Type || material2Finish) {
+                showAlert("Please select both Material Type and Finish for Material 2, or leave both blank.");
+                return;
+            }
+
+            const generatedSku = `${category}-${productCode}-${sizeType}${material1Part}${material2Part}`;
+            generatedSkuParagraph.textContent = generatedSku;
+            resultContainer.classList.remove('hidden');
+
+            // Log SKU to Firestore
+            try {
+                const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
+                await addDoc(skusCollectionRef, {
+                    sku: generatedSku,
+                    generatedAt: serverTimestamp(),
+                    userId: userId
+                });
+                console.log("SKU logged to Firestore:", generatedSku);
+            } catch (error) {
+                console.error("Error logging SKU to Firestore:", error);
+                showAlert(`Failed to log SKU: ${error.message}`);
+            }
+        }
+
+        /**
+         * Copies the generated SKU to the clipboard.
+         */
+        function copySku() {
+            const skuText = generatedSkuParagraph.textContent;
+            if (skuText) {
+                // Use document.execCommand('copy') for better compatibility in iframes
+                const textarea = document.createElement('textarea');
+                textarea.value = skuText;
+                textarea.style.position = 'fixed'; // Prevent scrolling to bottom of page
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    copyMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text:', err);
+                    showAlert('Failed to copy SKU. Please copy manually.');
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
         }
 
         // --- Event Listeners and Initial Setup ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Assign DOM elements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get DOM elements
             productCategorySelect = document.getElementById('productCategory');
-            productCodeSelect = document.getElementById('productCode'); 
+            productCodeSelect = document.getElementById('productCode');
             sizeTypeInput = document.getElementById('sizeType');
             material1TypeSelect = document.getElementById('material1Type');
             material1FinishSelect = document.getElementById('material1Finish');
@@ -633,180 +789,40 @@
             materialLegendDiv = document.getElementById('materialLegend');
             loggedSkusList = document.getElementById('loggedSkusList');
             downloadSkusBtn = document.getElementById('downloadSkusBtn');
-            addNewProductBtn = document.getElementById('addNewProductBtn'); 
-            addProductModal = document.getElementById('addProductModal'); 
+            addNewProductBtn = document.getElementById('addNewProductBtn');
+            addProductModal = document.getElementById('addProductModal');
             newProductCodeInput = document.getElementById('newProductCode');
             newProductNameInput = document.getElementById('newProductName');
             cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
             saveNewProductBtn = document.getElementById('saveNewProductBtn');
 
-            // Event Listeners for UI interaction
-            alertCloseBtn.addEventListener('click', () => {
-                customAlert.classList.add('hidden');
+            // Add event listeners
+            productCategorySelect.addEventListener('change', generateSku);
+            productCodeSelect.addEventListener('change', generateSku);
+            sizeTypeInput.addEventListener('input', generateSku);
+
+            material1TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+                generateSku(); // Regenerate SKU if material type changes
             });
+            material1FinishSelect.addEventListener('change', generateSku);
 
-            generateSkuBtn.addEventListener('click', async () => {
-                const productCategory = productCategorySelect.value;
-                const productCode = productCodeSelect.value; 
-                const sizeType = sizeTypeInput.value.trim();
-                const material1Type = material1TypeSelect.value;
-                const material1Finish = material1FinishSelect.value;
-                const material2Type = material2TypeSelect.value;
-                const material2Finish = material2FinishSelect.value;
-
-                // Validation for SKU generation
-                if (!productCategory || !productCode || !sizeType) {
-                    showAlert('Please fill in Product Category, Product Code, and Size/Type.');
-                    return;
-                }
-
-                // Validate if selected product code exists in productsData
-                const selectedProductExists = productsData.some(p => p.code === productCode);
-                if (!selectedProductExists) {
-                    showAlert(`Product code "${productCode}" does not exist in the directory. Please select an existing product or add a new one.`);
-                    return;
-                }
-
-                const formattedSizeType = String(sizeType).padStart(2, '0');
-
-                let material1 = '';
-                if (material1Type && material1Finish) {
-                    material1 = material1Type + material1Finish;
-                } else if (material1Type || material1Finish) {
-                    showAlert('For Material 1, please select both a Type and a Finish, or leave both blank.');
-                    return;
-                }
-
-                let material2 = '';
-                if (material2Type && material2Finish) {
-                    material2 = material2Type + material2Finish;
-                } else if (material2Type || material2Finish) {
-                    showAlert('For Material 2, please select both a Type and a Finish, or leave both blank.');
-                    return;
-                }
-
-                let sku = `${productCategory}-${productCode}-${formattedSizeType}`;
-                if (material1) {
-                    sku += `-${material1}`;
-                }
-                if (material2) {
-                    sku += `-${material2}`;
-                }
-
-                generatedSkuParagraph.textContent = sku;
-                resultContainer.classList.remove('hidden');
-                copyMessage.classList.add('hidden');
-
-                // Database operations for SKU logging (only if unique)
-                if (!db || !auth.currentUser) {
-                    showAlert("Database not ready or user not authenticated. Please try again.");
-                    return;
-                }
-
-                const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
-                try {
-                    const q = query(skusCollectionRef, where("sku", "==", sku));
-                    const querySnapshot = await getDocs(q);
-
-                    if (!querySnapshot.empty) {
-                        showAlert(`SKU "${sku}" already exists in the database. It will not be logged again.`);
-                    } else {
-                        await addDoc(skusCollectionRef, {
-                            sku: sku,
-                            timestamp: serverTimestamp(),
-                            generatedBy: userId
-                        });
-                        console.log("SKU added successfully:", sku);
-                    }
-                } catch (e) {
-                    console.error("Error checking or adding SKU to database: ", e);
-                    showAlert("Failed to interact with database. Please try again.");
-                }
+            material2TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+                generateSku(); // Regenerate SKU if material type changes
             });
+            material2FinishSelect.addEventListener('change', generateSku);
 
-            copySkuBtn.addEventListener('click', () => {
-                const skuToCopy = generatedSkuParagraph.textContent;
-                if (skuToCopy) {
-                    const tempInput = document.createElement('textarea');
-                    tempInput.value = skuToCopy;
-                    document.body.appendChild(tempInput);
-                    tempInput.select();
-                    try {
-                        document.execCommand('copy');
-                        copyMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            copyMessage.classList.add('hidden');
-                        }, 2000);
-                    } catch (err) {
-                        console.error('Failed to copy SKU: ', err);
-                        showAlert('Failed to copy SKU. Please copy it manually.');
-                    } finally {
-                        document.body.removeChild(tempInput);
-                    }
-                } else {
-                    showAlert('No SKU to copy. Please generate one first.');
-                }
-            });
-
+            generateSkuBtn.addEventListener('click', generateSku);
+            copySkuBtn.addEventListener('click', copySku);
+            alertCloseBtn.addEventListener('click', () => customAlert.classList.add('hidden'));
             downloadSkusBtn.addEventListener('click', downloadSkus);
+            addNewProductBtn.addEventListener('click', addNewProduct);
+            cancelAddProductBtn.addEventListener('click', () => addProductModal.classList.add('hidden'));
+            saveNewProductBtn.addEventListener('click', saveNewProduct);
 
-            // Add New Product Modal Logic
-            addNewProductBtn.addEventListener('click', () => {
-                addProductModal.classList.remove('hidden');
-                newProductCodeInput.value = ''; 
-                newProductNameInput.value = '';
-            });
-
-            cancelAddProductBtn.addEventListener('click', () => {
-                addProductModal.classList.add('hidden');
-            });
-
-            saveNewProductBtn.addEventListener('click', async () => {
-                const newCode = newProductCodeInput.value.trim().toUpperCase();
-                const newName = newProductNameInput.value.trim();
-
-                if (!newCode || !newName) {
-                    showAlert('Please enter both Product Code and Product Name.');
-                    return;
-                }
-                if (newCode.length > 4) {
-                    showAlert('Product Code cannot be more than 4 characters.');
-                    return;
-                }
-
-                if (!db || !auth.currentUser) {
-                    showAlert("Database not ready or user not authenticated. Cannot add product.");
-                    return;
-                }
-
-                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
-                try {
-                    const q = query(productsCollectionRef, where("code", "==", newCode));
-                    const querySnapshot = await getDocs(q);
-
-                    if (!querySnapshot.empty) {
-                        showAlert(`Product code "${newCode}" already exists. Please use a unique code.`);
-                        return;
-                    }
-
-                    await addDoc(productsCollectionRef, {
-                        code: newCode,
-                        name: newName,
-                        timestamp: serverTimestamp(),
-                        addedBy: userId
-                    });
-                    console.log("New product added successfully:", { code: newCode, name: newName });
-                    addProductModal.classList.add('hidden');
-                    showAlert(`Product "${newCode} - ${newName}" added successfully!`);
-                    fetchProductsData(); // Refresh product dropdown
-                } catch (e) {
-                    console.error("Error adding new product:", e);
-                    showAlert("Failed to add new product to database. Please try again.");
-                }
-            });
-
-            // Initialize Firebase and fetch all necessary data
-            initializeFirebase(); 
+            // Initialize Firebase and fetch data
+            initializeFirebase();
         });
     </script>
 </body>
