@@ -6,6 +6,9 @@
     <title>Casegoods: SKU Generator</title>
     <!-- Font Awesome for the question mark icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -230,66 +233,69 @@
                 </div>
             </details>
 
-            <!-- Main form inputs -->
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 1.5rem;">
-                <!-- Product Details -->
-                <div>
-                    <label>Product Details</label>
-                    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem;">
+            <!-- Product Details Section (Updated UI) -->
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Product Details</h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="productCategory">Category</label>
                         <select id="productCategory">
-                            <option value="" disabled selected>Cat</option>
-                            <option value="F">F</option>
-                            <option value="L">L</option>
-                            <option value="O">O</option>
-                            <option value="H">H</option>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="F">F - Furniture</option>
+                            <option value="L">L - Light</option>
+                            <option value="O">O - Objects</option>
+                            <option value="H">H - Hardware</option>
                         </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="productCode">Product Code</label>
                         <select id="productCode">
                             <option value="" disabled selected>Loading Products...</option>
                         </select>
-                        <input type="text" id="sizeType" value="00" maxlength="2" style="text-align: center;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="sizeType">Type/Variation</label>
+                        <select id="sizeType">
+                            <option value="" disabled selected>Select Product First</option>
+                        </select>
                     </div>
                 </div>
+            </div>
 
-                <!-- Dynamic Product Details Section -->
-                <div id="productDetailsSection" style="display: none;" class="card-section">
-                    <!-- Product specific details will be displayed here -->
-                </div>
-
-                <!-- Primary Material (GH) -->
-                <div class="card-section">
-                    <h3 style="display: flex; align-items: center;">Primary Material <i id="primaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(GH)</span></h3>
-                    <div class="flex-container">
-                        <div style="flex: 1;">
-                            <label for="material1Type">Material Type (G)</label>
-                            <select id="material1Type">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label for="material1Finish">Material Finish (H)</label>
-                            <select id="material1Finish">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
+            <!-- Primary Material (GH) -->
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Primary Material <i id="primaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(GH)</span></h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="material1Type">Material Type (G)</label>
+                        <select id="material1Type">
+                            <option value="" disabled selected>Loading Materials...</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="material1Finish">Material Finish (H)</label>
+                        <select id="material1Finish">
+                            <option value="" disabled selected>Select Type First</option>
+                        </select>
                     </div>
                 </div>
+            </div>
 
-                <!-- Secondary Material (IJ) -->
-                <div class="card-section">
-                    <h3 style="display: flex; align-items: center;">Secondary Material <i id="secondaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(IJ) (Optional)</span></h3>
-                    <div class="flex-container">
-                        <div style="flex: 1;">
-                            <label for="material2Type">Material Type (I)</label>
-                            <select id="material2Type">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label for="material2Finish">Material Finish (J)</label>
-                            <select id="material2Finish">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
+            <!-- Secondary Material (IJ) -->
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Secondary Material <i id="secondaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(IJ) (Optional)</span></h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="material2Type">Material Type (I)</label>
+                        <select id="material2Type">
+                            <option value="" disabled selected>Loading Materials...</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="material2Finish">Material Finish (J)</label>
+                        <select id="material2Finish">
+                            <option value="" disabled selected>Select Type First</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -373,10 +379,10 @@
         let skus = [];
 
         // Element references
-        let productCategorySelect, productCodeSelect, sizeTypeInput, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
+        let productCategorySelect, productCodeSelect, sizeTypeSelect, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
         let generateSkuBtn, copySkuBtn, primaryMaterialTooltipBtn, secondaryMaterialTooltipBtn;
         let generatedSkuEl, generatedDescriptionEl;
-        let legendTableBody, historyTableBody, productDetailsSection;
+        let legendTableBody, historyTableBody;
         let customAlert, alertMessage, alertCloseBtn;
         
         const showCustomAlert = (message) => {
@@ -425,20 +431,16 @@
             }
         };
 
-        const updateProductDetails = (productCode) => {
+        const populateProductSizes = (productCode) => {
             const details = productDetails.find(p => p.code === productCode);
-            productDetailsSection.innerHTML = '';
-            if (details) {
-                let html = `<p style="font-weight: 700;">Available Sizes/Types for ${details.name}:</p>`;
-                html += '<ul>';
+            sizeTypeSelect.innerHTML = `<option value="" disabled selected>Select Type</option>`;
+            if (details && details.sizes) {
                 details.sizes.forEach(size => {
-                    html += `<li><strong style="font-family: monospace;">${size.code}</strong>: ${size.name}</li>`;
+                    const option = document.createElement('option');
+                    option.value = size.code;
+                    option.textContent = `${size.code} - ${size.name}`;
+                    sizeTypeSelect.appendChild(option);
                 });
-                html += '</ul>';
-                productDetailsSection.innerHTML = html;
-                productDetailsSection.style.display = 'block';
-            } else {
-                productDetailsSection.style.display = 'none';
             }
         };
 
@@ -453,7 +455,7 @@
         const generateSku = () => {
             const productCategory = productCategorySelect.value;
             const productCode = productCodeSelect.value;
-            let sizeType = sizeTypeInput.value;
+            const sizeType = sizeTypeSelect.value;
             const material1Type = material1TypeSelect.value;
             const material1Finish = material1FinishSelect.value;
             const material2Type = material2TypeSelect.value;
@@ -464,25 +466,19 @@
                 return;
             }
 
-            sizeType = sizeType.padStart(2, '0');
-
             let sku = `${productCategory}-${productCode}-${sizeType}`;
             let description = '';
 
             const product = products.find(p => p.code === productCode);
-            const sizeDetails = productDetails.find(p => p.code === productCode)?.sizes.find(s => s.code === sizeType);
-            
-            description = `This SKU represents the ${product.name}`;
-            if (sizeDetails) {
-                description += ` (${sizeDetails.name})`;
-            }
             
             if (material1Type && material1Finish) {
                 sku += `-${material1Type}${material1Finish}`;
                 const m1 = materials.find(m => m.code === material1Type);
                 const f1 = m1?.finishes.find(f => f.code === material1Finish);
+                
+                description = `A ${product.name}`;
                 if (m1 && f1) {
-                    description += `, featuring ${m1.name} with a ${f1.name} finish`;
+                    description += `, made in ${m1.name} with a ${f1.name} finish`;
                 }
 
                 if (material2Type && material2Finish) {
@@ -496,6 +492,8 @@
             } else if (material2Type || material2Finish) {
                 showCustomAlert('Please select both a Primary Material Type and Finish before selecting a Secondary Material.');
                 return;
+            } else {
+                description = `A ${product.name}`;
             }
 
             description += '.';
@@ -561,7 +559,7 @@
         const runApplication = () => {
             productCategorySelect = document.getElementById('productCategory');
             productCodeSelect = document.getElementById('productCode');
-            sizeTypeInput = document.getElementById('sizeType');
+            sizeTypeSelect = document.getElementById('sizeType');
             material1TypeSelect = document.getElementById('material1Type');
             material1FinishSelect = document.getElementById('material1Finish');
             material2TypeSelect = document.getElementById('material2Type');
@@ -574,13 +572,12 @@
             generatedDescriptionEl = document.getElementById('generatedDescription');
             legendTableBody = document.getElementById('legendTableBody');
             historyTableBody = document.getElementById('historyTableBody');
-            productDetailsSection = document.getElementById('productDetailsSection');
             customAlert = document.getElementById('customAlert');
             alertMessage = document.getElementById('alertMessage');
             alertCloseBtn = document.getElementById('alertCloseBtn');
 
             productCodeSelect.addEventListener('change', () => {
-                updateProductDetails(productCodeSelect.value);
+                populateProductSizes(productCodeSelect.value);
             });
             material1TypeSelect.addEventListener('change', () => {
                 populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
