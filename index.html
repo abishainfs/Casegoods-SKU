@@ -646,6 +646,7 @@
             saveNewProductBtn = document.getElementById('saveNewProductBtn');
 
             // Handle database connection first
+            console.log("Firebase Config provided by Canvas:", firebaseConfig); // ADDED THIS LINE FOR DEBUGGING
             if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey) {
                 showCustomAlert("Database connection failed: The Firebase configuration is invalid or missing. The app will work, but you will not be able to save or load data.");
                 // Use the embedded data as a fallback
