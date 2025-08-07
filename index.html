@@ -319,6 +319,7 @@
         let db;
         let auth;
         let userId;
+        let firebaseInitialized = false;
 
         // --- DOM Elements ---
         let productCategorySelect;
@@ -519,7 +520,11 @@
             generatedSkuElement.textContent = newSku;
             resultContainer.classList.remove('hidden');
 
-            saveLoggedSku(newSku);
+            if (firebaseInitialized) {
+                saveLoggedSku(newSku);
+            } else {
+                showCustomAlert("SKU generated, but cannot be saved to the log as the database is not connected.");
+            }
         }
 
         // Saves a newly generated SKU to the logged SKUs list in Firestore
@@ -579,6 +584,11 @@
 
         // Adds a new product to the database
         async function addNewProduct() {
+            if (!firebaseInitialized) {
+                showCustomAlert("Cannot add new products. The database is not connected.");
+                return;
+            }
+            
             const code = newProductCodeInput.value.trim().toUpperCase();
             const name = newProductNameInput.value.trim();
 
@@ -635,43 +645,59 @@
             cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
             saveNewProductBtn = document.getElementById('saveNewProductBtn');
 
-            // Initialize Firebase and set up auth
-            try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Sign in the user
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Wait for auth state to be ready and get the user ID
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        console.log("User authenticated:", userId);
-                        // Fetch initial data now that we have a user
-                        await fetchAndPopulateData();
-                        
-                        // Set up real-time listener for logged SKUs
-                        const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
-                        onSnapshot(loggedSkusCollectionRef, (snapshot) => {
-                            loggedSkus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                            renderLoggedSkus();
-                        });
+            // Handle database connection first
+            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey) {
+                showCustomAlert("Database connection failed: The Firebase configuration is invalid or missing. The app will work, but you will not be able to save or load data.");
+                // Use the embedded data as a fallback
+                products = productsData;
+                materials = materialsData;
+                populateSelect(productCodeSelect, products);
+                populateSelect(material1TypeSelect, materials);
+                populateSelect(material2TypeSelect, materials);
+                generateMaterialLegend();
+            } else {
+                try {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
                     } else {
-                        console.log("No user is signed in.");
-                        showCustomAlert("Failed to authenticate. The app may not function correctly.");
+                        await signInAnonymously(auth);
                     }
-                });
 
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                showCustomAlert("Failed to initialize the application. Please check the console for details.");
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            firebaseInitialized = true;
+                            console.log("User authenticated:", userId);
+                            await fetchAndPopulateData();
+                            
+                            const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
+                            onSnapshot(loggedSkusCollectionRef, (snapshot) => {
+                                loggedSkus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                                renderLoggedSkus();
+                            });
+                        } else {
+                            console.log("No user is signed in.");
+                            showCustomAlert("Failed to authenticate. The app may not function correctly.");
+                        }
+                    });
+
+                } catch (error) {
+                    console.error("Firebase initialization failed:", error);
+                    showCustomAlert("A critical error occurred during Firebase initialization. The app will not be able to connect to the database.");
+                    // Use the embedded data as a fallback
+                    products = productsData;
+                    materials = materialsData;
+                    populateSelect(productCodeSelect, products);
+                    populateSelect(material1TypeSelect, materials);
+                    populateSelect(material2TypeSelect, materials);
+                    generateMaterialLegend();
+                }
             }
+
 
             // Add event listeners
             material1TypeSelect.addEventListener('change', () => {
