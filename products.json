@@ -1,0 +1,22 @@
+[
+  { "code": "7TL", "name": "Seven Tube Light" },
+  { "code": "1TL", "name": "One Tube Light" },
+  { "code": "AH", "name": "Architectural Hardware" },
+  { "code": "ART", "name": "Art Light" },
+  { "code": "SST", "name": "Slant Side Table" },
+  { "code": "COD", "name": "Chulha Oil Diffuser" },
+  { "code": "BBL", "name": "Building Block" },
+  { "code": "BND", "name": "Buenos Diya" },
+  { "code": "000", "name": "Before Casegoods" },
+  { "code": "RTT", "name": "Right Triangle Table" },
+  { "code": "TPT", "name": "Truncated Pyramid Table" },
+  { "code": "PSC", "name": "Profiled Stone Console" },
+  { "code": "RRL", "name": "Rolling Round Light" },
+  { "code": "TBL", "name": "Topologic Bowls" },
+  { "code": "FJC", "name": "Fillet Joint Collection" },
+  { "code": "SPT", "name": "Splayed Plank Collection" },
+  { "code": "SWT", "name": "Stone Wood Table" },
+  { "code": "FF", "name": "Folding Flat Collection" },
+  { "code": "ALC", "name": "Alcove Candle Light" },
+  { "code": "FJD", "name": "Fold Jute Dhurries" }
+]
