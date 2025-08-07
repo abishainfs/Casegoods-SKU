@@ -22,5 +22,6 @@
   { "code": "FFT", "name": "Folding Flat Table" },
   { "code": "FFTR", "name": "Folding Flat Trestles" },
   { "code": "FFC", "name": "Folding Flat Chair" },
-  { "code": "FFTB", "name": "Folding Flat Side Table" }
+  { "code": "FFTB", "name": "Folding Flat Side Table" },
+  { "code": "DOL", "name": "Dīpā Oil Lamp" }
 ]
