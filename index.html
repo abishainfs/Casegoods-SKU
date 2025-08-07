@@ -476,10 +476,7 @@
                 const m1 = materials.find(m => m.code === material1Type);
                 const f1 = m1?.finishes.find(f => f.code === material1Finish);
                 
-                description = `A ${product.name}`;
-                if (m1 && f1) {
-                    description += `, made in ${m1.name} with a ${f1.name} finish`;
-                }
+                description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
 
                 if (material2Type && material2Finish) {
                     sku += `-${material2Type}${material2Finish}`;
@@ -493,7 +490,7 @@
                 showCustomAlert('Please select both a Primary Material Type and Finish before selecting a Secondary Material.');
                 return;
             } else {
-                description = `A ${product.name}`;
+                description = `${product.name}`;
             }
 
             description += '.';
