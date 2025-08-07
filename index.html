@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casegoods: SKU Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -264,24 +262,13 @@
             </div>
         </div>
     </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, onSnapshot, addDoc, doc, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables provided by the Canvas environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app;
-        let db;
-        let auth;
-        let userId;
-
-        // Static data from uploaded JSON files
-        const products_json_data = [
+        // --- Data from uploaded JSON files embedded directly into the script ---
+        const productsData = [
             { "code": "7TL", "name": "Seven Tube Light" },
             { "code": "1TL", "name": "One Tube Light" },
             { "code": "AH", "name": "Architectural Hardware" },
@@ -313,571 +300,378 @@
             { "code": "BSS", "name": "Brass Sanitiser Stand" }
         ];
 
-        const materials_json_data = [
-            {
-                "code": "T",
-                "name": "Teakwood",
-                "finishes": [
-                    { "code": "0", "name": "Unfinished" },
-                    { "code": "1", "name": "Oiled/Sealed" },
-                    { "code": "2", "name": "Black Stained" },
-                    { "code": "3", "name": "Dark Stained" }
-                ]
-            },
-            {
-                "code": "A",
-                "name": "Ash",
-                "finishes": [
-                    { "code": "0", "name": "Unfinished" },
-                    { "code": "1", "name": "Oiled/Sealed" },
-                    { "code": "2", "name": "Black Stained" },
-                    { "code": "3", "name": "Dark Stained" }
-                ]
-            },
-            {
-                "code": "U",
-                "name": "Aluminium",
-                "finishes": [
-                    { "code": "0", "name": "Unfinished" },
-                    { "code": "1", "name": "Neutral Anodised" },
-                    { "code": "2", "name": "Black Anodised" },
-                    { "code": "3", "name": "Nickel Plated" },
-                    { "code": "4", "name": "Raw/Waxed" }
-                ]
-            },
-            {
-                "code": "S",
-                "name": "Stainless Steel",
-                "finishes": [
-                    { "code": "0", "name": "Unfinished" },
-                    { "code": "1", "name": "Brushed" },
-                    { "code": "2", "name": "Polished" }
-                ]
-            },
-            {
-                "code": "B",
-                "name": "Brass",
-                "finishes": [
-                    { "code": "0", "name": "Unfinished" },
-                    { "code": "1", "name": "Satin" },
-                    { "code": "2", "name": "Slightly Aged" },
-                    { "code": "3", "name": "Blackened" }
-                ]
-            }
+        const materialsData = [
+            { "code": "T", "name": "Teakwood", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Oiled/Sealed" }, { "code": "2", "name": "Black Stained" }, { "code": "3", "name": "Dark Stained" }] },
+            { "code": "A", "name": "Ash", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Oiled/Sealed" }, { "code": "2", "name": "Black Stained" }, { "code": "3", "name": "Dark Stained" }] },
+            { "code": "U", "name": "Aluminium", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Neutral Anodised" }, { "code": "2", "name": "Black Anodised" }, { "code": "3", "name": "Nickel Plated" }, { "code": "4", "name": "Raw/Waxed" }] },
+            { "code": "S", "name": "Stainless Steel", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Brushed" }, { "code": "2", "name": "Polished" }] },
+            { "code": "B", "name": "Brass", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Satin" }, { "code": "2", "name": "Slightly Aged" }, { "code": "3", "name": "Blackened" }] }
         ];
 
+        // --- Global Variables ---
+        // These are provided by the Canvas environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        let materialsData = {};
-        let productsData = [];
-        let currentLoggedSkus = [];
+        // --- Firebase App and Services ---
+        let app;
+        let db;
+        let auth;
+        let userId;
 
-        // DOM Elements
+        // --- DOM Elements ---
         let productCategorySelect;
         let productCodeSelect;
+        let addNewProductBtn;
         let sizeTypeInput;
         let material1TypeSelect;
         let material1FinishSelect;
         let material2TypeSelect;
         let material2FinishSelect;
         let generateSkuBtn;
-        let generatedSkuParagraph;
         let resultContainer;
+        let generatedSkuElement;
         let copySkuBtn;
-        let copyMessage;
-        let customAlert;
-        let alertMessage;
-        let alertCloseBtn;
-        let materialLegendDiv;
+        let copyMessageElement;
+        let materialLegendContainer;
         let loggedSkusList;
         let downloadSkusBtn;
-        let addNewProductBtn;
+
+        // Modals
+        let customAlert;
+        let alertMessageElement;
+        let alertCloseBtn;
         let addProductModal;
         let newProductCodeInput;
         let newProductNameInput;
         let cancelAddProductBtn;
         let saveNewProductBtn;
 
-        /**
-         * Displays a custom alert message.
-         * @param {string} message - The message to display in the alert.
-         */
-        function showAlert(message) {
-            alertMessage.textContent = message;
+        // --- Data Arrays ---
+        let products = [];
+        let materials = [];
+        let loggedSkus = [];
+
+        // Function to show a custom alert modal instead of `alert()`
+        function showCustomAlert(message) {
+            alertMessageElement.textContent = message;
             customAlert.classList.remove('hidden');
         }
 
-        /**
-         * Commits the static JSON data to Firestore.
-         */
-        async function commitDataToFirestore() {
-            try {
-                // Products data
-                const productsDocRef = doc(db, `artifacts/${appId}/public/data/products_list`);
-                await setDoc(productsDocRef, {
-                    products: products_json_data
-                });
-
-                // Materials data
-                const materialsDocRef = doc(db, `artifacts/${appId}/public/data/materials_list`);
-                await setDoc(materialsDocRef, {
-                    materials: materials_json_data
-                });
-
-                console.log("Static data committed to Firestore successfully.");
-            } catch (error) {
-                console.error("Error committing static data to Firestore:", error);
-            }
-        }
-
-        /**
-         * Fetches materials data from Firestore and populates related UI elements.
-         */
-        async function fetchMaterialsData() {
-            try {
-                const docRef = doc(db, `artifacts/${appId}/public/data/materials_list`);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data().materials;
-                    materialsData = {};
-                    data.forEach(material => {
-                        materialsData[material.code] = material;
-                    });
-                    console.log("Materials data loaded successfully from Firestore.");
-                    populateMaterialTypes(material1TypeSelect);
-                    populateMaterialTypes(material2TypeSelect);
-                    generateMaterialLegend();
-                } else {
-                    console.warn("Materials data not found. Committing static data to Firestore.");
-                    await commitDataToFirestore();
-                    await fetchMaterialsData(); // Retry fetching after committing
-                }
-            } catch (error) {
-                console.error("Error fetching materials data from Firestore:", error);
-                showAlert("Failed to load material data from database.");
-            }
-        }
-
-        /**
-         * Fetches products data from Firestore and populates the product code dropdown.
-         */
-        async function fetchProductsData() {
-            try {
-                const docRef = doc(db, `artifacts/${appId}/public/data/products_list`);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    productsData = docSnap.data().products;
-                    console.log("Products data loaded successfully from Firestore.");
-                    populateProductCodes(productCodeSelect);
-                } else {
-                    console.warn("Products data not found. Committing static data to Firestore.");
-                    await commitDataToFirestore();
-                    await fetchProductsData(); // Retry fetching after committing
-                }
-            } catch (error) {
-                console.error("Error fetching products data from Firestore:", error);
-                showAlert("Failed to load product codes from database.");
-            }
-        }
-
-        /**
-         * Populates a given select element with product codes and names.
-         * @param {HTMLSelectElement} selectElement The select element to populate.
-         */
-        function populateProductCodes(selectElement) {
-            const defaultOption = selectElement.querySelector('option[value=""][disabled][selected]');
-            selectElement.innerHTML = '';
-            if (defaultOption) {
-                selectElement.appendChild(defaultOption.cloneNode(true));
-            } else {
-                const newDefaultOption = document.createElement('option');
-                newDefaultOption.value = "";
-                newDefaultOption.textContent = "Select Product Code";
-                newDefaultOption.disabled = true;
-                newDefaultOption.selected = true;
-                selectElement.appendChild(newDefaultOption);
-            }
-
-            productsData.sort((a, b) => a.code.localeCompare(b.code)).forEach(product => {
+        // Populates a select element with options from an array
+        function populateSelect(selectElement, dataArray) {
+            selectElement.innerHTML = '<option value="" disabled selected>Select an option</option>';
+            dataArray.forEach(item => {
                 const option = document.createElement('option');
-                option.value = product.code;
-                option.textContent = `${product.code} - ${product.name}`;
+                option.value = item.code;
+                option.textContent = `${item.code} - ${item.name}`;
                 selectElement.appendChild(option);
             });
         }
 
-        /**
-         * Populates a given select element with material types.
-         * @param {HTMLSelectElement} selectElement The select element to populate.
-         */
-        function populateMaterialTypes(selectElement) {
-            const defaultOption = selectElement.querySelector('option[value=""][selected]');
-            selectElement.innerHTML = '';
-            if (defaultOption) {
-                selectElement.appendChild(defaultOption.cloneNode(true));
-            } else {
-                const newDefaultOption = document.createElement('option');
-                newDefaultOption.value = "";
-                newDefaultOption.textContent = "Select Type";
-                newDefaultOption.selected = true;
-                selectElement.appendChild(newDefaultOption);
-            }
-
-            for (const code in materialsData) {
-                const material = materialsData[code];
-                const option = document.createElement('option');
-                option.value = material.code;
-                option.textContent = `${material.code} - ${material.name}`;
-                selectElement.appendChild(option);
-            }
-        }
-
-        /**
-         * Populates a given select element with finishes for a selected material type.
-         * @param {HTMLSelectElement} materialTypeSelect The select element for material type.
-         * @param {HTMLSelectElement} finishSelectElement The select element for finishes.
-         */
-        function populateMaterialFinishes(materialTypeSelect, finishSelectElement) {
+        // Populates the finish select element based on the selected material type
+        function populateMaterialFinishes(materialTypeSelect, finishSelect) {
+            finishSelect.innerHTML = '<option value="" disabled selected>Select Finish</option>';
             const selectedMaterialCode = materialTypeSelect.value;
-            const defaultOption = finishSelectElement.querySelector('option[value=""][selected]');
-            finishSelectElement.innerHTML = '';
-            if (defaultOption) {
-                finishSelectElement.appendChild(defaultOption.cloneNode(true));
-            } else {
-                const newDefaultOption = document.createElement('option');
-                newDefaultOption.value = "";
-                newDefaultOption.textContent = "Select Finish";
-                newDefaultOption.selected = true;
-                finishSelectElement.appendChild(newDefaultOption);
-            }
-
-            const selectedMaterial = materialsData[selectedMaterialCode];
+            const selectedMaterial = materials.find(m => m.code === selectedMaterialCode);
 
             if (selectedMaterial && selectedMaterial.finishes) {
                 selectedMaterial.finishes.forEach(finish => {
                     const option = document.createElement('option');
                     option.value = finish.code;
                     option.textContent = `${finish.code} - ${finish.name}`;
-                    finishSelectElement.appendChild(option);
+                    finishSelect.appendChild(option);
                 });
             }
         }
 
-        /**
-         * Generates and displays the Material & Finish Legend table.
-         */
+        // Generates the Material & Finish Legend table
         function generateMaterialLegend() {
-            let legendHtml = '<table class="min-w-full bg-apple-light border border-apple-light-border rounded-lg shadow-sm">';
-            legendHtml += '<thead>';
-            legendHtml += '<tr class="bg-apple-section">';
-            legendHtml += '<th class="py-2 px-4 border-b border-apple-light-border text-left text-sm font-medium text-apple-medium">Material Code</th>';
-            legendHtml += '<th class="py-2 px-4 border-b border-apple-light-border text-left text-sm font-medium text-apple-medium">Material Name</th>';
-            legendHtml += '<th class="py-2 px-4 border-b border-apple-light-border text-left text-sm font-medium text-apple-medium">Finish Code</th>';
-            legendHtml += '<th class="py-2 px-4 border-b border-apple-light-border text-left text-sm font-medium text-apple-medium">Finish Name</th>';
-            legendHtml += '</tr>';
-            legendHtml += '</thead>';
-            legendHtml += '<tbody>';
-
-            for (const materialCode in materialsData) {
-                const material = materialsData[materialCode];
-                const finishes = material.finishes;
-
-                if (!finishes || finishes.length === 0) {
-                    legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${material.code}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">N/A</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">No Finishes</td>`;
-                    legendHtml += `</tr>`;
-                } else {
-                    legendHtml += `<tr>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark font-semibold">${material.code}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${material.name}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[0].code}</td>`;
-                    legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[0].name}</td>`;
-                    legendHtml += `</tr>`;
-
-                    for (let i = 1; i < finishes.length; i++) {
-                        legendHtml += `<tr>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark"></td>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[i].code}</td>`;
-                        legendHtml += `<td class="py-2 px-4 border-b border-apple-light-border text-sm text-apple-dark">${finishes[i].name}</td>`;
-                        legendHtml += `</tr>`;
-                    }
+            let tableHtml = `
+                <table class="min-w-full divide-y divide-apple-light-border">
+                    <thead class="bg-apple-section">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-apple-medium uppercase tracking-wider">Material Code (G/I)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-apple-medium uppercase tracking-wider">Material Name</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-apple-light divide-y divide-apple-light-border">
+            `;
+            materials.forEach(material => {
+                tableHtml += `
+                    <tr class="bg-apple-section">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-apple-dark">${material.code}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-apple-medium">${material.name}</td>
+                    </tr>
+                `;
+                if (material.finishes && material.finishes.length > 0) {
+                    tableHtml += `
+                        <tr class="bg-white">
+                            <td colspan="2" class="px-6 py-2">
+                                <ul class="list-disc list-inside text-sm text-apple-medium">
+                    `;
+                    material.finishes.forEach(finish => {
+                        tableHtml += `<li>${finish.code}: ${finish.name}</li>`;
+                    });
+                    tableHtml += `
+                                </ul>
+                            </td>
+                        </tr>
+                    `;
                 }
-            }
-
-            legendHtml += '</tbody>';
-            legendHtml += '</table>';
-            materialLegendDiv.innerHTML = legendHtml;
+            });
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            materialLegendContainer.innerHTML = tableHtml;
         }
 
-        /**
-         * Initializes Firebase app, authentication, and Firestore.
-         * Sets up real-time listener for SKUs and fetches initial data.
-         */
-        async function initializeFirebase() {
+        // Fetches and populates products and materials data from Firestore
+        async function fetchAndPopulateData() {
             try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Use the provided initialAuthToken for sign-in
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
+                // Fetch products
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products_list`);
+                const productsSnapshot = await getDocs(productsCollectionRef);
+                products = productsSnapshot.docs.map(doc => doc.data());
+                
+                // If products collection is empty, populate it from the embedded data
+                if (products.length === 0) {
+                    const batch = writeBatch(db);
+                    productsData.forEach(product => {
+                        const newDocRef = doc(productsCollectionRef);
+                        batch.set(newDocRef, product);
+                    });
+                    await batch.commit();
+                    products = productsData; // Use the embedded data
+                    console.log('Products collection populated from embedded data');
                 }
-                userId = auth.currentUser?.uid || crypto.randomUUID();
-                console.log("Firebase initialized and authenticated. User ID:", userId);
 
-                // Setup real-time listeners and initial data fetches
-                setupSkuListener();
-                await fetchMaterialsData(); // Fetch materials data from Firestore
-                await fetchProductsData(); // Fetch products data from Firestore
+                // Populate the product code dropdown
+                populateSelect(productCodeSelect, products);
+
+                // Fetch materials
+                const materialsCollectionRef = collection(db, `artifacts/${appId}/public/data/materials_list`);
+                const materialsSnapshot = await getDocs(materialsCollectionRef);
+                materials = materialsSnapshot.docs.map(doc => doc.data());
+
+                // If materials collection is empty, populate it from the embedded data
+                if (materials.length === 0) {
+                    const batch = writeBatch(db);
+                    materialsData.forEach(material => {
+                        const newDocRef = doc(materialsCollectionRef);
+                        batch.set(newDocRef, material);
+                    });
+                    await batch.commit();
+                    materials = materialsData; // Use the embedded data
+                    console.log('Materials collection populated from embedded data');
+                }
+
+                // Populate material dropdowns and the legend
+                populateSelect(material1TypeSelect, materials);
+                populateSelect(material2TypeSelect, materials);
+                generateMaterialLegend();
+
             } catch (error) {
-                console.error("Error initializing Firebase or authenticating:", error);
-                showAlert(`Failed to initialize database: ${error.message}. Please try again later.`);
+                console.error("Error fetching or populating data:", error);
+                showCustomAlert("Failed to load product and material data. Please check the console for details.");
             }
         }
 
-        /**
-         * Sets up a real-time listener for SKUs stored in Firestore.
-         * SKUs are stored in artifacts/{appId}/public/data/skus.
-         */
-        function setupSkuListener() {
-            const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
-            onSnapshot(skusCollectionRef, (snapshot) => {
-                const skus = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.sku) {
-                        skus.push(data.sku);
-                    }
-                });
-                currentLoggedSkus = skus; // Update the global array
-                displayLoggedSkus(skus);
-            }, (error) => {
-                console.error("Error listening to SKUs:", error);
-                showAlert("Failed to load logged SKUs.");
-            });
-        }
+        // --- Core Application Logic ---
 
-        /**
-         * Displays the list of logged SKUs in the UI.
-         * @param {Array<string>} skus - An array of SKU strings to display.
-         */
-        function displayLoggedSkus(skus) {
-            loggedSkusList.innerHTML = '';
-            if (skus.length === 0) {
-                loggedSkusList.innerHTML = '<p class="text-apple-medium text-center">No SKUs logged yet.</p>';
-                return;
-            }
-            const ul = document.createElement('ul');
-            ul.className = 'list-disc list-inside text-apple-medium space-y-1';
-            skus.sort().forEach(sku => {
-                const li = document.createElement('li');
-                li.textContent = sku;
-                ul.appendChild(li);
-            });
-            loggedSkusList.appendChild(ul);
-        }
-
-        /**
-         * Downloads the current list of logged SKUs as a text file.
-         */
-        function downloadSkus() {
-            if (currentLoggedSkus.length === 0) {
-                showAlert("No SKUs to download.");
-                return;
-            }
-
-            const skusText = currentLoggedSkus.join('\n');
-            const blob = new Blob([skusText], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'casegoods_skus.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url); // Clean up the object URL
-        }
-
-        /**
-         * Shows the modal for adding a new product.
-         */
-        function addNewProduct() {
-            newProductCodeInput.value = '';
-            newProductNameInput.value = '';
-            addProductModal.classList.remove('hidden');
-        }
-
-        /**
-         * Saves a new product to Firestore.
-         */
-        async function saveNewProduct() {
-            const code = newProductCodeInput.value.trim().toUpperCase();
-            const name = newProductNameInput.value.trim();
-
-            if (!code || !name) {
-                showAlert("Product Code and Product Name are required.");
-                return;
-            }
-
-            if (code.length !== 4) {
-                showAlert("Product Code must be exactly 4 characters long.");
-                return;
-            }
-
-            // Check if product code already exists
-            const exists = productsData.some(product => product.code === code);
-            if (exists) {
-                showAlert(`Product code "${code}" already exists. Please use a unique code.`);
-                return;
-            }
-
-            try {
-                // Add the new product to the local array
-                productsData.push({ code: code, name: name });
-                // Update the document in Firestore
-                const productsDocRef = doc(db, `artifacts/${appId}/public/data/products_list`);
-                await setDoc(productsDocRef, { products: productsData });
-
-                console.log("New product added successfully:", { code, name });
-                showAlert(`Product "${name}" (${code}) added successfully!`);
-                addProductModal.classList.add('hidden');
-                populateProductCodes(productCodeSelect); // Re-populate dropdown
-            } catch (error) {
-                console.error("Error adding new product:", error);
-                showAlert(`Failed to add new product: ${error.message}`);
-            }
-        }
-
-        /**
-         * Generates the SKU based on selected and entered values.
-         * Validates inputs and logs the SKU to Firestore.
-         */
-        async function generateSku() {
-            const category = productCategorySelect.value;
+        // Generates the SKU string
+        function generateSku() {
+            const productCategory = productCategorySelect.value;
             const productCode = productCodeSelect.value;
-            let sizeType = sizeTypeInput.value.trim();
+            const sizeType = sizeTypeInput.value.padStart(2, '0');
             const material1Type = material1TypeSelect.value;
             const material1Finish = material1FinishSelect.value;
             const material2Type = material2TypeSelect.value;
             const material2Finish = material2FinishSelect.value;
 
-            // Input validation
-            if (!category) {
-                showAlert("Please select a Product Category.");
-                return;
-            }
-            if (!productCode) {
-                showAlert("Please select a Product Code.");
-                return;
-            }
-            if (!sizeType) {
-                showAlert("Please enter a Size/Type (EF).");
-                return;
-            }
-            if (sizeType.length !== 1 && sizeType.length !== 2) {
-                showAlert("Size/Type (EF) must be a 1 or 2-digit number.");
-                return;
-            }
-            // Pad sizeType with leading zero if it's a single digit
-            sizeType = sizeType.padStart(2, '0');
-
-            let material1Part = '';
-            if (material1Type && material1Finish) {
-                material1Part = `-${material1Type}${material1Finish}`;
-            } else if (material1Type || material1Finish) {
-                showAlert("Please select both Material Type and Finish for Material 1, or leave both blank.");
+            // Check for required fields
+            if (!productCategory || !productCode || !sizeType) {
+                showCustomAlert("Please fill in Product Category, Product Code, and Size/Type.");
                 return;
             }
 
-            let material2Part = '';
-            if (material2Type && material2Finish) {
-                material2Part = `-${material2Type}${material2Finish}`;
-            } else if (material2Type || material2Finish) {
-                showAlert("Please select both Material Type and Finish for Material 2, or leave both blank.");
-                return;
+            let skuSegments = [productCategory, productCode, sizeType];
+
+            // Add optional material segments
+            if (material1Type) {
+                if (!material1Finish) {
+                    showCustomAlert("Please select a finish for Material 1.");
+                    return;
+                }
+                skuSegments.push(material1Type + material1Finish);
+            }
+            if (material2Type) {
+                if (!material2Finish) {
+                    showCustomAlert("Please select a finish for Material 2.");
+                    return;
+                }
+                skuSegments.push(material2Type + material2Finish);
             }
 
-            const generatedSku = `${category}-${productCode}-${sizeType}${material1Part}${material2Part}`;
-            generatedSkuParagraph.textContent = generatedSku;
+            const newSku = skuSegments.join('-');
+            generatedSkuElement.textContent = newSku;
             resultContainer.classList.remove('hidden');
 
-            // Log SKU to Firestore
+            saveLoggedSku(newSku);
+        }
+
+        // Saves a newly generated SKU to the logged SKUs list in Firestore
+        async function saveLoggedSku(sku) {
             try {
-                const skusCollectionRef = collection(db, `artifacts/${appId}/public/data/skus`);
-                await addDoc(skusCollectionRef, {
-                    sku: generatedSku,
-                    generatedAt: serverTimestamp(),
-                    userId: userId
-                });
-                console.log("SKU logged to Firestore:", generatedSku);
-            } catch (error) {
-                console.error("Error logging SKU to Firestore:", error);
-                showAlert(`Failed to log SKU: ${error.message}`);
-            }
-        }
-
-        /**
-         * Copies the generated SKU to the clipboard.
-         */
-        function copySku() {
-            const skuText = generatedSkuParagraph.textContent;
-            if (skuText) {
-                const textarea = document.createElement('textarea');
-                textarea.value = skuText;
-                textarea.style.position = 'fixed';
-                document.body.appendChild(textarea);
-                textarea.focus();
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    copyMessage.classList.remove('hidden');
-                    setTimeout(() => {
-                        copyMessage.classList.add('hidden');
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy text:', err);
-                    showAlert('Failed to copy SKU. Please copy manually.');
-                } finally {
-                    document.body.removeChild(textarea);
+                if (!userId) {
+                    showCustomAlert("User not authenticated. Cannot save SKU.");
+                    return;
                 }
+                
+                const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
+                await addDoc(loggedSkusCollectionRef, {
+                    sku: sku,
+                    timestamp: new Date()
+                });
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                showCustomAlert("Failed to save SKU to log. Please check the console.");
             }
         }
 
-        // --- Event Listeners and Initial Setup ---
-        document.addEventListener('DOMContentLoaded', () => {
+        // Renders the logged SKUs from the Firestore listener
+        function renderLoggedSkus() {
+            if (loggedSkus.length === 0) {
+                loggedSkusList.innerHTML = '<p class="text-center text-apple-medium">No SKUs logged yet.</p>';
+            } else {
+                loggedSkusList.innerHTML = loggedSkus.map(log => `
+                    <div class="flex justify-between items-center p-3 border-b border-apple-light-border last:border-b-0">
+                        <span class="font-mono text-sm text-apple-dark">${log.sku}</span>
+                        <span class="text-xs text-apple-medium">${new Date(log.timestamp.seconds * 1000).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Downloads logged SKUs as a CSV file
+        function downloadSkus() {
+            if (loggedSkus.length === 0) {
+                showCustomAlert("No SKUs to download.");
+                return;
+            }
+            
+            const csvRows = ['SKU,Timestamp'];
+            loggedSkus.forEach(log => {
+                const timestamp = new Date(log.timestamp.seconds * 1000).toISOString();
+                csvRows.push(`${log.sku},${timestamp}`);
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `logged_skus_${new Date().toISOString()}.csv`);
+            a.click();
+        }
+
+        // Adds a new product to the database
+        async function addNewProduct() {
+            const code = newProductCodeInput.value.trim().toUpperCase();
+            const name = newProductNameInput.value.trim();
+
+            if (!code || !name) {
+                showCustomAlert("Product code and name are required.");
+                return;
+            }
+            
+            if (products.some(p => p.code === code)) {
+                showCustomAlert(`A product with code "${code}" already exists.`);
+                return;
+            }
+
+            try {
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products_list`);
+                await addDoc(productsCollectionRef, { code, name });
+                addProductModal.classList.add('hidden');
+                // Re-fetch data to update the UI
+                fetchAndPopulateData();
+                showCustomAlert(`Product "${name}" added successfully.`);
+            } catch (e) {
+                console.error("Error adding new product: ", e);
+                showCustomAlert("Failed to add new product. Please check the console.");
+            }
+        }
+
+        // --- Initialization and Event Listeners ---
+        window.addEventListener('DOMContentLoaded', async (event) => {
             // Get DOM elements
             productCategorySelect = document.getElementById('productCategory');
             productCodeSelect = document.getElementById('productCode');
+            addNewProductBtn = document.getElementById('addNewProductBtn');
             sizeTypeInput = document.getElementById('sizeType');
             material1TypeSelect = document.getElementById('material1Type');
             material1FinishSelect = document.getElementById('material1Finish');
             material2TypeSelect = document.getElementById('material2Type');
             material2FinishSelect = document.getElementById('material2Finish');
             generateSkuBtn = document.getElementById('generateSkuBtn');
-            generatedSkuParagraph = document.getElementById('generatedSku');
             resultContainer = document.getElementById('resultContainer');
+            generatedSkuElement = document.getElementById('generatedSku');
             copySkuBtn = document.getElementById('copySkuBtn');
-            copyMessage = document.getElementById('copyMessage');
-            customAlert = document.getElementById('customAlert');
-            alertMessage = document.getElementById('alertMessage');
-            alertCloseBtn = document.getElementById('alertCloseBtn');
-            materialLegendDiv = document.getElementById('materialLegend');
+            copyMessageElement = document.getElementById('copyMessage');
+            materialLegendContainer = document.getElementById('materialLegend');
             loggedSkusList = document.getElementById('loggedSkusList');
             downloadSkusBtn = document.getElementById('downloadSkusBtn');
-            addNewProductBtn = document.getElementById('addNewProductBtn');
+
+            // Modals
+            customAlert = document.getElementById('customAlert');
+            alertMessageElement = document.getElementById('alertMessage');
+            alertCloseBtn = document.getElementById('alertCloseBtn');
             addProductModal = document.getElementById('addProductModal');
             newProductCodeInput = document.getElementById('newProductCode');
             newProductNameInput = document.getElementById('newProductName');
             cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
             saveNewProductBtn = document.getElementById('saveNewProductBtn');
+
+            // Initialize Firebase and set up auth
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Sign in the user
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Wait for auth state to be ready and get the user ID
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("User authenticated:", userId);
+                        // Fetch initial data now that we have a user
+                        await fetchAndPopulateData();
+                        
+                        // Set up real-time listener for logged SKUs
+                        const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
+                        onSnapshot(loggedSkusCollectionRef, (snapshot) => {
+                            loggedSkus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            renderLoggedSkus();
+                        });
+                    } else {
+                        console.log("No user is signed in.");
+                        showCustomAlert("Failed to authenticate. The app may not function correctly.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                showCustomAlert("Failed to initialize the application. Please check the console for details.");
+            }
 
             // Add event listeners
             material1TypeSelect.addEventListener('change', () => {
@@ -887,15 +681,26 @@
                 populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
             });
             generateSkuBtn.addEventListener('click', generateSku);
-            copySkuBtn.addEventListener('click', copySku);
-            alertCloseBtn.addEventListener('click', () => customAlert.classList.add('hidden'));
+            copySkuBtn.addEventListener('click', () => {
+                // Use the older `document.execCommand` for better cross-browser support in iframes
+                const textArea = document.createElement("textarea");
+                textArea.value = generatedSkuElement.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyMessageElement.classList.remove('hidden');
+                    setTimeout(() => copyMessageElement.classList.add('hidden'), 2000);
+                } catch (err) {
+                    showCustomAlert("Failed to copy SKU.");
+                }
+                document.body.removeChild(textArea);
+            });
             downloadSkusBtn.addEventListener('click', downloadSkus);
-            addNewProductBtn.addEventListener('click', addNewProduct);
+            addNewProductBtn.addEventListener('click', () => addProductModal.classList.remove('hidden'));
             cancelAddProductBtn.addEventListener('click', () => addProductModal.classList.add('hidden'));
-            saveNewProductBtn.addEventListener('click', saveNewProduct);
-
-            // Initialize Firebase and fetch data
-            initializeFirebase();
+            saveNewProductBtn.addEventListener('click', addNewProduct);
+            alertCloseBtn.addEventListener('click', () => customAlert.classList.add('hidden'));
         });
     </script>
 </body>
