@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casegoods: SKU Generator</title>
+    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,10 +34,10 @@
             background: #555;
         }
 
+        /* Custom "Apple-like" color palette and layout */
         .bg-apple-primary { background-color: #1C1C1E; }
         .hover\:bg-apple-primary-dark:hover { background-color: #3A3A3C; }
         .focus\:ring-apple-blue:focus { --tw-ring-color: #007AFF; }
-
         .text-apple-dark { color: #1D1D1F; }
         .text-apple-medium { color: #3C3C43; }
         .bg-apple-light { background-color: #FFFFFF; }
@@ -82,63 +83,38 @@
 
             <!-- Instructions Dropdown -->
             <details class="mb-6 p-4 bg-apple-section border border-apple-light-border rounded-lg">
-                <summary class="text-lg font-semibold text-apple-dark cursor-pointer">Quick Guide: SKU Generation for Priyanka, Mallika, & Prashant</summary>
+                <summary class="text-lg font-semibold text-apple-dark cursor-pointer">Quick Guide: SKU Generation</summary>
                 <div class="mt-4 text-apple-medium text-sm leading-relaxed">
-                    <p class="mb-2">Hey Team! This tool helps us create unique SKUs (Stock Keeping Units) for our products. Think of an SKU as a product's unique ID card.</p>
-
-                    <p class="mb-4">Our SKUs look like this: <strong class="text-apple-dark">X-ABCD-EF-GH-IJ</strong></p>
-
+                    <p class="mb-2">This tool helps create unique SKUs (Stock Keeping Units). Our SKUs follow this format: <strong class="text-apple-dark">X-ABCD-EF-GH-IJ</strong></p>
                     <h4 class="font-bold text-apple-dark mb-2">Here's the simple breakdown:</h4>
                     <ul class="list-disc list-inside mb-3">
-                        <li class="mb-1"><strong class="text-apple-dark">X - Product Category:</strong> Just pick the product type from the dropdown (like 'F' for Furniture).</li>
-                        <li class="mb-1"><strong class="text-apple-dark">ABCD - Product Code:</strong> Select the product's unique code from the "Product Code" dropdown. This ensures we're using approved designs!</li>
-                        <li class="mb-1"><strong class="text-apple-dark">EF - Size/Type:</strong> Enter a 2-digit number for the size or specific version (e.g., '01' for small, '02' for medium).</li>
-                        <li class="mb-1"><strong class="text-apple-dark">GH & IJ - Materials (Optional):</strong> If the product has customisable materials, select the Material Type and its Finish. If not, just leave these blank.</li>
+                        <li class="mb-1"><strong class="text-apple-dark">X - Product Category:</strong> Pick the product type from the dropdown.</li>
+                        <li class="mb-1"><strong class="text-apple-dark">ABCD - Product Code:</strong> Select the product's unique code.</li>
+                        <li class="mb-1"><strong class="text-apple-dark">EF - Size/Type:</strong> Enter a 2-digit number for the size or specific version (e.g., '01').</li>
+                        <li class="mb-1"><strong class="text-apple-dark">GH & IJ - Materials:</strong> Select Material Type and its Finish. These are optional.</li>
                     </ul>
-
-                    <h4 class="font-bold text-apple-dark mb-2">How to use it:</h4>
-                    <ol class="list-decimal list-inside mb-3">
-                        <li class="mb-1"><strong>Fill in the Blanks:</strong> Choose from the dropdowns and fill in the numbers.</li>
-                        <li class="mb-1"><strong>Generate SKU:</strong> Click the button, and your SKU will appear!</li>
-                        <li class="mb-1"><strong>Copy SKU:</strong> Use the little copy icon to grab the SKU quickly.</li>
-                    </ol>
-
-                    <h4 class="font-bold text-apple-dark mb-2">Important for you, Priyanka, Mallika, and Prashant:</h4>
-                    <ul class="list-disc list-inside mb-3">
-                        <li class="mb-1"><strong>Product Codes:</strong> Make sure to always select a product code from the dropdown. If a product isn't there, you *cannot* generate an SKU for it. This helps us keep our inventory accurate.</li>
-                        <li class="mb-1"><strong>Adding New Products:</strong> If you need to add a brand new product to the list, you can use the "Add New Product" button next to the Product Code dropdown.</li>
-                        <li class="mb-1"><strong>Material & Finish Legend:</strong> The table on the right is always updated with the latest material and finish codes.</li>
-                        <li class="mb-1"><strong>Logged SKUs:</strong> You can see all generated SKUs on the right. Use the "Download SKUs" button to save a local copy.</li>
-                    </ul>
-
-                    <p class="font-bold text-apple-dark mt-4">Any questions or new product ideas? Just ask the design team!</p>
                 </div>
             </details>
 
-            <!-- Product Category (X) -->
-            <div class="mb-4">
-                <label for="productCategory" class="block text-sm font-medium text-apple-medium mb-1">Product Category (X)</label>
-                <select id="productCategory" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                    <option value="" disabled selected>Select Category</option>
-                    <option value="F">F - Furniture</option>
-                    <option value="L">L - Lights</option>
-                    <option value="O">O - Objects</option>
-                    <option value="H">H - Hardware</option>
-                </select>
-            </div>
-
-            <!-- Product Code (ABCD) - New Dropdown -->
-            <div class="mb-4">
-                <label for="productCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
-                <div class="flex items-center gap-2">
-                    <select id="productCode" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                        <option value="" disabled selected>Select Product Code</option>
+            <!-- SKU Generation Form -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+                <!-- Product Category (X) -->
+                <div>
+                    <label for="productCategory" class="block text-sm font-medium text-apple-medium mb-1">Product Category (X)</label>
+                    <select id="productCategory" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="F">F - Furniture</option>
+                        <option value="L">L - Lights</option>
+                        <option value="O">O - Objects</option>
+                        <option value="H">H - Hardware</option>
                     </select>
-                    <button id="addNewProductBtn" class="flex-shrink-0 bg-apple-primary text-white p-3 rounded-lg font-semibold text-sm hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out shadow-md" title="Add New Product">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
+                </div>
+                <!-- Product Code (ABCD) -->
+                <div>
+                    <label for="productCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
+                    <select id="productCode" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <option value="" disabled selected>Loading Products...</option>
+                    </select>
                 </div>
             </div>
 
@@ -155,13 +131,13 @@
                     <div class="flex-1">
                         <label for="material1Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (G)</label>
                         <select id="material1Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" selected>Select Type</option>
+                            <option value="" disabled selected>Loading Materials...</option>
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H) <span class="text-xs text-gray-500">(Select Type First)</span></label>
+                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
                         <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" selected>Select Finish</option>
+                            <option value="" disabled selected>Select Type First</option>
                         </select>
                     </div>
                 </div>
@@ -174,561 +150,261 @@
                     <div class="flex-1">
                         <label for="material2Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (I)</label>
                         <select id="material2Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" selected>Select Type</option>
+                            <option value="" disabled selected>Loading Materials...</option>
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J) <span class="text-xs text-gray-500">(Select Type First)</span></label>
+                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
                         <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" selected>Select Finish</option>
+                            <option value="" disabled selected>Select Type First</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <button id="generateSkuBtn" class="w-full bg-apple-primary text-white p-3 rounded-lg font-semibold hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out shadow-md">
-                Generate SKU
-            </button>
-
-            <div id="resultContainer" class="mt-8 p-4 bg-apple-section border border-apple-light-border rounded-lg text-center hidden">
-                <h2 class="text-lg font-semibold text-apple-dark mb-2">Generated SKU:</h2>
-                <div class="flex items-center justify-center space-x-2">
-                    <p id="generatedSku" class="text-2xl font-bold text-apple-accent break-all"></p>
-                    <button id="copySkuBtn" class="bg-gray-200 text-apple-medium p-2 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out" title="Copy to clipboard">
+            <!-- Generated SKU and Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 bg-apple-section p-4 rounded-lg border border-apple-light-border">
+                <div id="generatedSku" class="flex-1 font-mono text-lg text-apple-dark bg-white p-3 rounded-lg border border-apple-light-border break-words w-full text-center">
+                    SKU-CODE
+                </div>
+                <div class="flex flex-shrink-0 gap-2">
+                    <button id="generateSkuBtn" class="px-5 py-3 bg-apple-primary text-white rounded-lg font-semibold shadow-md hover:bg-apple-primary-dark transition duration-150 ease-in-out">
+                        Generate SKU
+                    </button>
+                    <button id="copySkuBtn" class="px-5 py-3 bg-gray-200 text-gray-800 rounded-lg shadow-md hover:bg-gray-300 transition duration-150 ease-in-out">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h4.586a1 1 0 00.707-.293l3.414-3.414a1 1 0 00.293-.707V5a2 2 0 00-2-2h-2V5a2 2 0 01-2 2H6a2 2 0 01-2-2V3zM15 11l-3 3V9l3 2z" />
+                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
                         </svg>
                     </button>
                 </div>
-                <p id="copyMessage" class="text-sm text-green-600 mt-2 hidden">Copied to clipboard!</p>
             </div>
         </div>
 
-        <!-- Sidebar Container for Legend and Logged SKUs -->
+        <!-- Sidebar for Legend and History -->
         <div class="sidebar-container">
-            <!-- Material & Finish Legend -->
-            <div class="legend-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
-                <h2 class="text-2xl font-extrabold text-apple-dark mb-6 text-center">Material & Finish Legend</h2>
-                <div id="materialLegend" class="overflow-x-auto">
-                    <!-- Legend table will be dynamically inserted here -->
+            <!-- Material Legend -->
+            <div class="bg-apple-light p-6 rounded-xl shadow-lg w-full border border-apple-light-border overflow-auto">
+                <h2 class="text-xl font-bold text-apple-dark mb-4">Material & Finish Legend</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-apple-light-border">
+                        <thead class="bg-apple-section">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">Material</th>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">Finishes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="legendTableBody" class="bg-white divide-y divide-apple-light-border">
+                            <!-- Material and finish rows will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Logged SKUs Section -->
-            <div class="logged-skus-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
-                <h2 class="text-2xl font-extrabold text-apple-dark mb-6 text-center">Logged SKUs</h2>
-                <div id="loggedSkusList" class="p-4 bg-apple-section border border-apple-light-border rounded-lg max-h-96 overflow-y-auto">
-                    <!-- Logged SKUs will be dynamically inserted here -->
+            <!-- SKU History -->
+            <div class="bg-apple-light p-6 rounded-xl shadow-lg w-full border border-apple-light-border overflow-auto">
+                <h2 class="text-xl font-bold text-apple-dark mb-4">SKU History</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-apple-light-border">
+                        <thead class="bg-apple-section">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">SKU</th>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">Product</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="bg-white divide-y divide-apple-light-border">
+                            <!-- SKU history rows will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
-                <!-- New Download SKUs Button -->
-                <button id="downloadSkusBtn" class="mt-4 w-full bg-apple-primary text-white p-3 rounded-lg font-semibold hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out shadow-md">
-                    Download SKUs
-                </button>
-            </div>
-        </div>
-
-        <!-- Custom Modal for Alerts -->
-        <div id="customAlert" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-apple-light p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
-                <h3 class="text-lg font-semibold text-apple-dark mb-4">Input Required</h3>
-                <p id="alertMessage" class="text-apple-medium mb-6"></p>
-                <button id="alertCloseBtn" class="bg-apple-primary text-white p-2 rounded-lg font-semibold hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out">
-                    OK
-                </button>
-            </div>
-        </div>
-
-        <!-- Add New Product Modal -->
-        <div id="addProductModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="bg-apple-light p-6 rounded-lg shadow-xl w-full max-w-md">
-                <h3 class="text-lg font-semibold text-apple-dark mb-4">Add New Product</h3>
-                <div class="mb-4">
-                    <label for="newProductCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
-                    <input type="text" id="newProductCode" maxlength="4" placeholder="e.g., BND" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                </div>
-                <div class="mb-6">
-                    <label for="newProductName" class="block text-sm font-medium text-apple-medium mb-1">Product Name</label>
-                    <input type="text" id="newProductName" placeholder="e.g., Buenos Diyas" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                </div>
-                <div class="flex justify-end gap-3">
-                    <button id="cancelAddProductBtn" class="bg-gray-200 text-apple-medium p-2 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out">
-                        Cancel
-                    </button>
-                    <button id="saveNewProductBtn" class="bg-apple-primary text-white p-2 rounded-lg font-semibold hover:bg-apple-primary-dark focus:outline-none focus:ring-2 focus:ring-apple-blue focus:ring-offset-2 transition duration-150 ease-in-out">
-                        Save Product
-                    </button>
-                </div>
+                <p class="text-xs text-gray-500 mt-4">Note: This history is temporary and will be cleared when the page is refreshed.</p>
             </div>
         </div>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, onSnapshot, addDoc, doc, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Data from uploaded JSON files embedded directly into the script ---
-        const productsData = [
-            { "code": "7TL", "name": "Seven Tube Light" },
-            { "code": "1TL", "name": "One Tube Light" },
-            { "code": "AH", "name": "Architectural Hardware" },
-            { "code": "ART", "name": "Art Light" },
-            { "code": "SST", "name": "Slant Side Table" },
-            { "code": "COD", "name": "Chulha Oil Diffuser" },
-            { "code": "BBL", "name": "Building Block" },
-            { "code": "BND", "name": "Buenos Diya" },
-            { "code": "000", "name": "Before Casegoods" },
-            { "code": "RTT", "name": "Right Triangle Table" },
-            { "code": "TPT", "name": "Truncated Pyramid Table" },
-            { "code": "PSC", "name": "Profiled Stone Console" },
-            { "code": "RRL", "name": "Rolling Round Light" },
-            { "code": "TBL", "name": "Topologic Bowls" },
-            { "code": "FJC", "name": "Fillet Joint Collection" },
-            { "code": "SPT", "name": "Splayed Plank Collection" },
-            { "code": "SWT", "name": "Stone Wood Table" },
-            { "code": "FF", "name": "Folding Flat Collection" },
-            { "code": "ALC", "name": "Alcove Candle Light" },
-            { "code": "FJD", "name": "Fold Jute Dhurries" },
-            { "code": "DOL", "name": "Dipā Oil Lamp" },
-            { "code": "PTT", "name": "Pinned Trestle Table" },
-            { "code": "3CT", "name": "Three Cylinder Table" },
-            { "code": "FFL", "name": "Front Facing Light" },
-            { "code": "TRT", "name": "Trestle Table" },
-            { "code": "3LT", "name": "Three Leg Table" },
-            { "code": "CHS", "name": "Capital Hold Shelf" },
-            { "code": "SSL", "name": "Straight Standing Lamp" },
-            { "code": "BSS", "name": "Brass Sanitiser Stand" }
-        ];
+    <!-- Custom Alert Modal -->
+    <div id="customAlert" class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6 shadow-xl">
+            <p id="alertMessage" class="text-lg text-gray-800"></p>
+            <div class="mt-4 text-right">
+                <button id="alertCloseBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md">OK</button>
+            </div>
+        </div>
+    </div>
 
-        const materialsData = [
-            { "code": "T", "name": "Teakwood", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Oiled/Sealed" }, { "code": "2", "name": "Black Stained" }, { "code": "3", "name": "Dark Stained" }] },
-            { "code": "A", "name": "Ash", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Oiled/Sealed" }, { "code": "2", "name": "Black Stained" }, { "code": "3", "name": "Dark Stained" }] },
-            { "code": "U", "name": "Aluminium", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Neutral Anodised" }, { "code": "2", "name": "Black Anodised" }, { "code": "3", "name": "Nickel Plated" }, { "code": "4", "name": "Raw/Waxed" }] },
-            { "code": "S", "name": "Stainless Steel", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Brushed" }, { "code": "2", "name": "Polished" }] },
-            { "code": "B", "name": "Brass", "finishes": [{ "code": "0", "name": "Unfinished" }, { "code": "1", "name": "Satin" }, { "code": "2", "name": "Slightly Aged" }, { "code": "3", "name": "Blackened" }] }
-        ];
-
-        // --- Global Variables ---
-        // These are provided by the Canvas environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // --- Firebase App and Services ---
-        let app;
-        let db;
-        let auth;
-        let userId;
-        let firebaseInitialized = false;
-
-        // --- DOM Elements ---
-        let productCategorySelect;
-        let productCodeSelect;
-        let addNewProductBtn;
-        let sizeTypeInput;
-        let material1TypeSelect;
-        let material1FinishSelect;
-        let material2TypeSelect;
-        let material2FinishSelect;
-        let generateSkuBtn;
-        let resultContainer;
-        let generatedSkuElement;
-        let copySkuBtn;
-        let copyMessageElement;
-        let materialLegendContainer;
-        let loggedSkusList;
-        let downloadSkusBtn;
-
-        // Modals
-        let customAlert;
-        let alertMessageElement;
-        let alertCloseBtn;
-        let addProductModal;
-        let newProductCodeInput;
-        let newProductNameInput;
-        let cancelAddProductBtn;
-        let saveNewProductBtn;
-
-        // --- Data Arrays ---
+    <script>
         let products = [];
         let materials = [];
-        let loggedSkus = [];
+        let skus = [];
 
-        // Function to show a custom alert modal instead of `alert()`
-        function showCustomAlert(message) {
-            alertMessageElement.textContent = message;
+        // Element references
+        let productCategorySelect, productCodeSelect, sizeTypeInput, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
+        let generateSkuBtn, copySkuBtn;
+        let generatedSkuEl;
+        let legendTableBody, historyTableBody;
+        let customAlert, alertMessage, alertCloseBtn;
+
+        const showCustomAlert = (message) => {
+            alertMessage.textContent = message;
             customAlert.classList.remove('hidden');
-        }
+        };
 
-        // Populates a select element with options from an array
-        function populateSelect(selectElement, dataArray) {
-            selectElement.innerHTML = '<option value="" disabled selected>Select an option</option>';
-            dataArray.forEach(item => {
+        const copyToClipboard = (text) => {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showCustomAlert('SKU copied to clipboard!');
+        };
+
+        const populateSelect = (selectElement, items, placeholder) => {
+            selectElement.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            items.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.code;
                 option.textContent = `${item.code} - ${item.name}`;
                 selectElement.appendChild(option);
             });
-        }
+        };
 
-        // Populates the finish select element based on the selected material type
-        function populateMaterialFinishes(materialTypeSelect, finishSelect) {
-            finishSelect.innerHTML = '<option value="" disabled selected>Select Finish</option>';
+        const populateMaterialFinishes = (materialTypeSelect, materialFinishSelect, placeholder) => {
             const selectedMaterialCode = materialTypeSelect.value;
-            const selectedMaterial = materials.find(m => m.code === selectedMaterialCode);
-
-            if (selectedMaterial && selectedMaterial.finishes) {
-                selectedMaterial.finishes.forEach(finish => {
-                    const option = document.createElement('option');
-                    option.value = finish.code;
-                    option.textContent = `${finish.code} - ${finish.name}`;
-                    finishSelect.appendChild(option);
-                });
-            }
-        }
-
-        // Generates the Material & Finish Legend table
-        function generateMaterialLegend() {
-            let tableHtml = `
-                <table class="min-w-full divide-y divide-apple-light-border">
-                    <thead class="bg-apple-section">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-apple-medium uppercase tracking-wider">Material Code (G/I)</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-apple-medium uppercase tracking-wider">Material Name</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-apple-light divide-y divide-apple-light-border">
-            `;
-            materials.forEach(material => {
-                tableHtml += `
-                    <tr class="bg-apple-section">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-apple-dark">${material.code}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-apple-medium">${material.name}</td>
-                    </tr>
-                `;
-                if (material.finishes && material.finishes.length > 0) {
-                    tableHtml += `
-                        <tr class="bg-white">
-                            <td colspan="2" class="px-6 py-2">
-                                <ul class="list-disc list-inside text-sm text-apple-medium">
-                    `;
+            materialFinishSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            if (selectedMaterialCode) {
+                const material = materials.find(m => m.code === selectedMaterialCode);
+                if (material && material.finishes) {
                     material.finishes.forEach(finish => {
-                        tableHtml += `<li>${finish.code}: ${finish.name}</li>`;
+                        const option = document.createElement('option');
+                        option.value = finish.code;
+                        option.textContent = `${finish.code} - ${finish.name}`;
+                        materialFinishSelect.appendChild(option);
                     });
-                    tableHtml += `
-                                </ul>
-                            </td>
-                        </tr>
-                    `;
                 }
-            });
-            tableHtml += `
-                    </tbody>
-                </table>
-            `;
-            materialLegendContainer.innerHTML = tableHtml;
-        }
-
-        // Fetches and populates products and materials data from Firestore
-        async function fetchAndPopulateData() {
-            try {
-                // Fetch products
-                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products_list`);
-                const productsSnapshot = await getDocs(productsCollectionRef);
-                products = productsSnapshot.docs.map(doc => doc.data());
-                
-                // If products collection is empty, populate it from the embedded data
-                if (products.length === 0) {
-                    const batch = writeBatch(db);
-                    productsData.forEach(product => {
-                        const newDocRef = doc(productsCollectionRef);
-                        batch.set(newDocRef, product);
-                    });
-                    await batch.commit();
-                    products = productsData; // Use the embedded data
-                    console.log('Products collection populated from embedded data');
-                }
-
-                // Populate the product code dropdown
-                populateSelect(productCodeSelect, products);
-
-                // Fetch materials
-                const materialsCollectionRef = collection(db, `artifacts/${appId}/public/data/materials_list`);
-                const materialsSnapshot = await getDocs(materialsCollectionRef);
-                materials = materialsSnapshot.docs.map(doc => doc.data());
-
-                // If materials collection is empty, populate it from the embedded data
-                if (materials.length === 0) {
-                    const batch = writeBatch(db);
-                    materialsData.forEach(material => {
-                        const newDocRef = doc(materialsCollectionRef);
-                        batch.set(newDocRef, material);
-                    });
-                    await batch.commit();
-                    materials = materialsData; // Use the embedded data
-                    console.log('Materials collection populated from embedded data');
-                }
-
-                // Populate material dropdowns and the legend
-                populateSelect(material1TypeSelect, materials);
-                populateSelect(material2TypeSelect, materials);
-                generateMaterialLegend();
-
-            } catch (error) {
-                console.error("Error fetching or populating data:", error);
-                showCustomAlert("Failed to load product and material data. Please check the console for details.");
             }
-        }
+        };
 
-        // --- Core Application Logic ---
-
-        // Generates the SKU string
-        function generateSku() {
+        const generateSku = () => {
             const productCategory = productCategorySelect.value;
             const productCode = productCodeSelect.value;
-            const sizeType = sizeTypeInput.value.padStart(2, '0');
+            let sizeType = sizeTypeInput.value;
             const material1Type = material1TypeSelect.value;
             const material1Finish = material1FinishSelect.value;
             const material2Type = material2TypeSelect.value;
             const material2Finish = material2FinishSelect.value;
 
-            // Check for required fields
             if (!productCategory || !productCode || !sizeType) {
-                showCustomAlert("Please fill in Product Category, Product Code, and Size/Type.");
-                return;
-            }
-
-            let skuSegments = [productCategory, productCode, sizeType];
-
-            // Add optional material segments
-            if (material1Type) {
-                if (!material1Finish) {
-                    showCustomAlert("Please select a finish for Material 1.");
-                    return;
-                }
-                skuSegments.push(material1Type + material1Finish);
-            }
-            if (material2Type) {
-                if (!material2Finish) {
-                    showCustomAlert("Please select a finish for Material 2.");
-                    return;
-                }
-                skuSegments.push(material2Type + material2Finish);
-            }
-
-            const newSku = skuSegments.join('-');
-            generatedSkuElement.textContent = newSku;
-            resultContainer.classList.remove('hidden');
-
-            if (firebaseInitialized) {
-                saveLoggedSku(newSku);
-            } else {
-                showCustomAlert("SKU generated, but cannot be saved to the log as the database is not connected.");
-            }
-        }
-
-        // Saves a newly generated SKU to the logged SKUs list in Firestore
-        async function saveLoggedSku(sku) {
-            try {
-                if (!userId) {
-                    showCustomAlert("User not authenticated. Cannot save SKU.");
-                    return;
-                }
-                
-                const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
-                await addDoc(loggedSkusCollectionRef, {
-                    sku: sku,
-                    timestamp: new Date()
-                });
-            } catch (e) {
-                console.error("Error adding document: ", e);
-                showCustomAlert("Failed to save SKU to log. Please check the console.");
-            }
-        }
-
-        // Renders the logged SKUs from the Firestore listener
-        function renderLoggedSkus() {
-            if (loggedSkus.length === 0) {
-                loggedSkusList.innerHTML = '<p class="text-center text-apple-medium">No SKUs logged yet.</p>';
-            } else {
-                loggedSkusList.innerHTML = loggedSkus.map(log => `
-                    <div class="flex justify-between items-center p-3 border-b border-apple-light-border last:border-b-0">
-                        <span class="font-mono text-sm text-apple-dark">${log.sku}</span>
-                        <span class="text-xs text-apple-medium">${new Date(log.timestamp.seconds * 1000).toLocaleDateString()}</span>
-                    </div>
-                `).join('');
-            }
-        }
-        
-        // Downloads logged SKUs as a CSV file
-        function downloadSkus() {
-            if (loggedSkus.length === 0) {
-                showCustomAlert("No SKUs to download.");
+                showCustomAlert('Please select a product category, code, and size/type.');
                 return;
             }
             
-            const csvRows = ['SKU,Timestamp'];
-            loggedSkus.forEach(log => {
-                const timestamp = new Date(log.timestamp.seconds * 1000).toISOString();
-                csvRows.push(`${log.sku},${timestamp}`);
+            // Format sizeType to be a 2-digit number
+            sizeType = sizeType.padStart(2, '0');
+
+            let sku = `${productCategory}-${productCode}-${sizeType}`;
+
+            if (material1Type && material1Finish) {
+                sku += `-${material1Type}${material1Finish}`;
+                if (material2Type && material2Finish) {
+                    sku += `-${material2Type}${material2Finish}`;
+                }
+            } else if (material2Type || material2Finish) {
+                showCustomAlert('Please select both a Material 1 Type and Finish before selecting Material 2.');
+                return;
+            }
+
+            generatedSkuEl.textContent = sku;
+            
+            // Add to history
+            const product = products.find(p => p.code === productCode);
+            skus.push({ sku: sku, product: product ? product.name : 'Unknown' });
+            updateHistoryTable();
+        };
+
+        const updateHistoryTable = () => {
+            historyTableBody.innerHTML = '';
+            skus.forEach(item => {
+                const row = `
+                    <tr class="hover:bg-gray-100">
+                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-apple-dark">${item.sku}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-apple-medium">${item.product}</td>
+                    </tr>
+                `;
+                historyTableBody.insertAdjacentHTML('beforeend', row);
             });
+        };
 
-            const csvString = csvRows.join('\n');
-            const blob = new Blob([csvString], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `logged_skus_${new Date().toISOString()}.csv`);
-            a.click();
-        }
+        const populateLegend = () => {
+            legendTableBody.innerHTML = '';
+            materials.forEach(material => {
+                const finishes = material.finishes.map(f => `${f.code}-${f.name}`).join(', ');
+                const row = `
+                    <tr>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-apple-dark">${material.code} - ${material.name}</td>
+                        <td class="px-4 py-2 text-sm text-apple-medium break-words">${finishes}</td>
+                    </tr>
+                `;
+                legendTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        };
 
-        // Adds a new product to the database
-        async function addNewProduct() {
-            if (!firebaseInitialized) {
-                showCustomAlert("Cannot add new products. The database is not connected.");
-                return;
-            }
-            
-            const code = newProductCodeInput.value.trim().toUpperCase();
-            const name = newProductNameInput.value.trim();
-
-            if (!code || !name) {
-                showCustomAlert("Product code and name are required.");
-                return;
-            }
-            
-            if (products.some(p => p.code === code)) {
-                showCustomAlert(`A product with code "${code}" already exists.`);
-                return;
-            }
-
+        const fetchAndPopulateData = async () => {
             try {
-                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products_list`);
-                await addDoc(productsCollectionRef, { code, name });
-                addProductModal.classList.add('hidden');
-                // Re-fetch data to update the UI
-                fetchAndPopulateData();
-                showCustomAlert(`Product "${name}" added successfully.`);
-            } catch (e) {
-                console.error("Error adding new product: ", e);
-                showCustomAlert("Failed to add new product. Please check the console.");
-            }
-        }
+                // Fetch products data
+                const productsResponse = await fetch('products.json');
+                products = await productsResponse.json();
+                populateSelect(productCodeSelect, products, 'Select Product Code');
 
-        // --- Initialization and Event Listeners ---
-        window.addEventListener('DOMContentLoaded', async (event) => {
-            // Get DOM elements
+                // Fetch materials data
+                const materialsResponse = await fetch('materials.json');
+                materials = await materialsResponse.json();
+                populateSelect(material1TypeSelect, materials, 'Select Type');
+                populateSelect(material2TypeSelect, materials, 'Select Type');
+                
+                populateLegend();
+            } catch (e) {
+                console.error("Error fetching data:", e);
+                showCustomAlert("Error loading product and material data. Please check if the files exist.");
+            }
+        };
+
+        // Main function to run the application
+        const runApplication = () => {
+            // Get element references
             productCategorySelect = document.getElementById('productCategory');
             productCodeSelect = document.getElementById('productCode');
-            addNewProductBtn = document.getElementById('addNewProductBtn');
             sizeTypeInput = document.getElementById('sizeType');
             material1TypeSelect = document.getElementById('material1Type');
             material1FinishSelect = document.getElementById('material1Finish');
             material2TypeSelect = document.getElementById('material2Type');
             material2FinishSelect = document.getElementById('material2Finish');
             generateSkuBtn = document.getElementById('generateSkuBtn');
-            resultContainer = document.getElementById('resultContainer');
-            generatedSkuElement = document.getElementById('generatedSku');
             copySkuBtn = document.getElementById('copySkuBtn');
-            copyMessageElement = document.getElementById('copyMessage');
-            materialLegendContainer = document.getElementById('materialLegend');
-            loggedSkusList = document.getElementById('loggedSkusList');
-            downloadSkusBtn = document.getElementById('downloadSkusBtn');
-
-            // Modals
+            generatedSkuEl = document.getElementById('generatedSku');
+            legendTableBody = document.getElementById('legendTableBody');
+            historyTableBody = document.getElementById('historyTableBody');
             customAlert = document.getElementById('customAlert');
-            alertMessageElement = document.getElementById('alertMessage');
+            alertMessage = document.getElementById('alertMessage');
             alertCloseBtn = document.getElementById('alertCloseBtn');
-            addProductModal = document.getElementById('addProductModal');
-            newProductCodeInput = document.getElementById('newProductCode');
-            newProductNameInput = document.getElementById('newProductName');
-            cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
-            saveNewProductBtn = document.getElementById('saveNewProductBtn');
-
-            // Handle database connection first
-            console.log("Firebase Config provided by Canvas:", firebaseConfig); // ADDED THIS LINE FOR DEBUGGING
-            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey) {
-                showCustomAlert("Database connection failed: The Firebase configuration is invalid or missing. The app will work, but you will not be able to save or load data.");
-                // Use the embedded data as a fallback
-                products = productsData;
-                materials = materialsData;
-                populateSelect(productCodeSelect, products);
-                populateSelect(material1TypeSelect, materials);
-                populateSelect(material2TypeSelect, materials);
-                generateMaterialLegend();
-            } else {
-                try {
-                    app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
-                    
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-
-                    onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            userId = user.uid;
-                            firebaseInitialized = true;
-                            console.log("User authenticated:", userId);
-                            await fetchAndPopulateData();
-                            
-                            const loggedSkusCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/logged_skus`);
-                            onSnapshot(loggedSkusCollectionRef, (snapshot) => {
-                                loggedSkus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                                renderLoggedSkus();
-                            });
-                        } else {
-                            console.log("No user is signed in.");
-                            showCustomAlert("Failed to authenticate. The app may not function correctly.");
-                        }
-                    });
-
-                } catch (error) {
-                    console.error("Firebase initialization failed:", error);
-                    showCustomAlert("A critical error occurred during Firebase initialization. The app will not be able to connect to the database.");
-                    // Use the embedded data as a fallback
-                    products = productsData;
-                    materials = materialsData;
-                    populateSelect(productCodeSelect, products);
-                    populateSelect(material1TypeSelect, materials);
-                    populateSelect(material2TypeSelect, materials);
-                    generateMaterialLegend();
-                }
-            }
-
 
             // Add event listeners
             material1TypeSelect.addEventListener('change', () => {
-                populateMaterialFinishes(material1TypeSelect, material1FinishSelect);
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
             });
             material2TypeSelect.addEventListener('change', () => {
-                populateMaterialFinishes(material2TypeSelect, material2FinishSelect);
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect, 'Select Finish');
             });
             generateSkuBtn.addEventListener('click', generateSku);
-            copySkuBtn.addEventListener('click', () => {
-                // Use the older `document.execCommand` for better cross-browser support in iframes
-                const textArea = document.createElement("textarea");
-                textArea.value = generatedSkuElement.textContent;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    copyMessageElement.classList.remove('hidden');
-                    setTimeout(() => copyMessageElement.classList.add('hidden'), 2000);
-                } catch (err) {
-                    showCustomAlert("Failed to copy SKU.");
-                }
-                document.body.removeChild(textArea);
-            });
-            downloadSkusBtn.addEventListener('click', downloadSkus);
-            addNewProductBtn.addEventListener('click', () => addProductModal.classList.remove('hidden'));
-            cancelAddProductBtn.addEventListener('click', () => addProductModal.classList.add('hidden'));
-            saveNewProductBtn.addEventListener('click', addNewProduct);
+            copySkuBtn.addEventListener('click', () => copyToClipboard(generatedSkuEl.textContent));
             alertCloseBtn.addEventListener('click', () => customAlert.classList.add('hidden'));
-        });
+
+            // Fetch and populate data on load
+            fetchAndPopulateData();
+        };
+
+        // Call the main function when the window loads
+        window.onload = runApplication;
     </script>
 </body>
 </html>
