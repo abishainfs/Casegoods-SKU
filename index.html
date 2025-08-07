@@ -74,15 +74,12 @@
     <div class="main-container">
         <!-- Main SKU Generation Form -->
         <div class="main-form-card bg-apple-light p-8 rounded-xl shadow-lg w-full border border-apple-light-border">
-            <!-- Updated Header: Logo and Title on the same line -->
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6">
-                <img src="Casegoods_Logo.png"
-                     alt="Casegoods Logo"
-                     class="h-48 w-48 rounded-lg shadow-sm"
-                     onerror="this.onerror=null;this.src='https://placehold.co/192x192/CCCCCC/666666?text=LOGO+NOT+FOUND';"
-                >
-                <h1 class="text-3xl md:text-5xl font-extrabold text-apple-dark text-center md:text-left">Casegoods: SKU Generator</h1>
-            </div>
+            <img src="https://placehold.co/150x50/1C1C1E/FFFFFF?text=CASEGOODS+LOGO"
+                 alt="Casegoods Logo"
+                 class="mx-auto mb-6 rounded-lg shadow-sm"
+                 onerror="this.onerror=null;this.src='https://placehold.co/150x50/CCCCCC/666666?text=LOGO+NOT+FOUND';"
+            >
+            <h1 class="text-3xl font-extrabold text-apple-dark mb-6 text-center">Casegoods: SKU Generator</h1>
 
             <!-- Instructions Dropdown -->
             <details class="mb-6 p-4 bg-apple-section border border-apple-light-border rounded-lg">
@@ -99,81 +96,76 @@
                 </div>
             </details>
 
-            <!-- Main form inputs, now with consistent spacing -->
-            <div class="flex flex-col gap-6 mb-6">
-                <!-- Product Category, Code, and Size/Type on one line -->
+            <!-- SKU Generation Form -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+                <!-- Product Category (X) -->
                 <div>
-                    <label class="block text-sm font-medium text-apple-medium mb-1">Product Details</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <!-- Product Category (X) -->
-                        <select id="productCategory" class="p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Cat</option>
-                            <option value="F">F</option>
-                            <option value="L">L</option>
-                            <option value="O">O</option>
-                            <option value="H">H</option>
+                    <label for="productCategory" class="block text-sm font-medium text-apple-medium mb-1">Product Category (X)</label>
+                    <select id="productCategory" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="F">F - Furniture</option>
+                        <option value="L">L - Lights</option>
+                        <option value="O">O - Objects</option>
+                        <option value="H">H - Hardware</option>
+                    </select>
+                </div>
+                <!-- Product Code (ABCD) -->
+                <div>
+                    <label for="productCode" class="block text-sm font-medium text-apple-medium mb-1">Product Code (ABCD)</label>
+                    <select id="productCode" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <option value="" disabled selected>Loading Products...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Size/Type (EF) -->
+            <div class="mb-6">
+                <label for="sizeType" class="block text-sm font-medium text-apple-medium mb-1">Size/Type (EF - 2-digit number)</label>
+                <input type="number" id="sizeType" placeholder="e.g., 01, 02" min="1" max="99" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+            </div>
+
+            <!-- Customisable Material 1 (GH) -->
+            <div class="mb-4 p-4 border border-apple-light-border rounded-lg bg-apple-section">
+                <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 1 (GH) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="material1Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (G)</label>
+                        <select id="material1Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                            <option value="" disabled selected>Loading Materials...</option>
                         </select>
-                        <!-- Product Code (ABCD) -->
-                        <select id="productCode" class="p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Loading Products...</option>
+                    </div>
+                    <div class="flex-1">
+                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
+                        <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                            <option value="" disabled selected>Select Type First</option>
                         </select>
-                        <!-- Size/Type (EF) -->
-                        <input type="text" id="sizeType" value="00" maxlength="2" class="p-3 border text-center border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                     </div>
                 </div>
+            </div>
 
-                <!-- Dynamic Product Details Section -->
-                <div id="productDetailsSection" class="hidden p-4 border border-apple-light-border rounded-lg bg-apple-section text-sm text-apple-medium">
-                    <!-- Product specific details will be displayed here -->
-                </div>
-
-                <!-- Customisable Material 1 (GH) -->
-                <div class="p-4 border border-apple-light-border rounded-lg bg-apple-section">
-                    <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 1 (GH) <span class="text-gray-500 text-sm">(Optional)</span></h3>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-1">
-                            <label for="material1Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (G)</label>
-                            <select id="material1Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                        <div class="flex-1">
-                            <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
-                            <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
+            <!-- Customisable Material 2 (IJ) -->
+            <div class="mb-6 p-4 border border-apple-light-border rounded-lg bg-apple-section">
+                <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 2 (IJ) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="material2Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (I)</label>
+                        <select id="material2Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                            <option value="" disabled selected>Loading Materials...</option>
+                        </select>
                     </div>
-                </div>
-
-                <!-- Customisable Material 2 (IJ) -->
-                <div class="p-4 border border-apple-light-border rounded-lg bg-apple-section">
-                    <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 2 (IJ) <span class="text-gray-500 text-sm">(Optional)</span></h3>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-1">
-                            <label for="material2Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (I)</label>
-                            <select id="material2Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                        <div class="flex-1">
-                            <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
-                            <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
+                    <div class="flex-1">
+                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
+                        <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                            <option value="" disabled selected>Select Type First</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
             <!-- Generated SKU and Action Buttons -->
             <div class="flex flex-col sm:flex-row items-center gap-4 bg-apple-section p-4 rounded-lg border border-apple-light-border">
-                <div class="flex-1">
-                    <p class="text-sm text-gray-500 mb-1">Generated SKU</p>
-                    <div id="generatedSku" class="font-mono text-lg text-apple-dark bg-white p-3 rounded-lg border border-apple-light-border break-words w-full text-center">
-                        SKU-CODE
-                    </div>
-                    <p id="generatedDescription" class="mt-2 text-sm text-apple-medium text-center italic"></p>
+                <div id="generatedSku" class="flex-1 font-mono text-lg text-apple-dark bg-white p-3 rounded-lg border border-apple-light-border break-words w-full text-center">
+                    SKU-CODE
                 </div>
                 <div class="flex flex-shrink-0 gap-2">
                     <button id="generateSkuBtn" class="px-5 py-3 bg-apple-primary text-white rounded-lg font-semibold shadow-md hover:bg-apple-primary-dark transition duration-150 ease-in-out">
@@ -217,7 +209,7 @@
                         <thead class="bg-apple-section">
                             <tr>
                                 <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">SKU</th>
-                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">Description</th>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-apple-medium uppercase tracking-wider">Product</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody" class="bg-white divide-y divide-apple-light-border">
@@ -243,14 +235,13 @@
     <script>
         let products = [];
         let materials = [];
-        let productDetails = [];
         let skus = [];
 
         // Element references
         let productCategorySelect, productCodeSelect, sizeTypeInput, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
         let generateSkuBtn, copySkuBtn;
-        let generatedSkuEl, generatedDescriptionEl;
-        let legendTableBody, historyTableBody, productDetailsSection;
+        let generatedSkuEl;
+        let legendTableBody, historyTableBody;
         let customAlert, alertMessage, alertCloseBtn;
 
         const showCustomAlert = (message) => {
@@ -294,23 +285,6 @@
             }
         };
 
-        const updateProductDetails = (productCode) => {
-            const details = productDetails.find(p => p.code === productCode);
-            productDetailsSection.innerHTML = '';
-            if (details) {
-                let html = `<p class="font-bold">Available Sizes/Types for ${details.name}:</p>`;
-                html += '<ul>';
-                details.sizes.forEach(size => {
-                    html += `<li><strong class="font-mono text-apple-dark">${size.code}</strong>: ${size.name}</li>`;
-                });
-                html += '</ul>';
-                productDetailsSection.innerHTML = html;
-                productDetailsSection.classList.remove('hidden');
-            } else {
-                productDetailsSection.classList.add('hidden');
-            }
-        };
-
         const generateSku = () => {
             const productCategory = productCategorySelect.value;
             const productCode = productCodeSelect.value;
@@ -329,28 +303,11 @@
             sizeType = sizeType.padStart(2, '0');
 
             let sku = `${productCategory}-${productCode}-${sizeType}`;
-            let description = '';
-
-            const product = products.find(p => p.code === productCode);
-            if(product) {
-                description += `${product.name}`;
-            }
 
             if (material1Type && material1Finish) {
                 sku += `-${material1Type}${material1Finish}`;
-                const m1 = materials.find(m => m.code === material1Type);
-                const f1 = m1.finishes.find(f => f.code === material1Finish);
-                if(m1 && f1) {
-                     description += ` in ${m1.name} with ${f1.name} finish`;
-                }
-
                 if (material2Type && material2Finish) {
                     sku += `-${material2Type}${material2Finish}`;
-                    const m2 = materials.find(m => m.code === material2Type);
-                    const f2 = m2.finishes.find(f => f.code === material2Finish);
-                    if(m2 && f2) {
-                        description += ` and ${m2.name} with ${f2.name} finish`;
-                    }
                 }
             } else if (material2Type || material2Finish) {
                 showCustomAlert('Please select both a Material 1 Type and Finish before selecting Material 2.');
@@ -358,10 +315,10 @@
             }
 
             generatedSkuEl.textContent = sku;
-            generatedDescriptionEl.textContent = description;
             
             // Add to history
-            skus.push({ sku: sku, description: description });
+            const product = products.find(p => p.code === productCode);
+            skus.push({ sku: sku, product: product ? product.name : 'Unknown' });
             updateHistoryTable();
         };
 
@@ -371,7 +328,7 @@
                 const row = `
                     <tr class="hover:bg-gray-100">
                         <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-apple-dark">${item.sku}</td>
-                        <td class="px-4 py-2 text-sm text-apple-medium break-words">${item.description}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-apple-medium">${item.product}</td>
                     </tr>
                 `;
                 historyTableBody.insertAdjacentHTML('beforeend', row);
@@ -381,7 +338,7 @@
         const populateLegend = () => {
             legendTableBody.innerHTML = '';
             materials.forEach(material => {
-                const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
+                const finishes = material.finishes.map(f => `${f.code}-${f.name}`).join(', ');
                 const row = `
                     <tr>
                         <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-apple-dark">${material.code} - ${material.name}</td>
@@ -397,17 +354,13 @@
                 // Fetch products data
                 const productsResponse = await fetch('products.json');
                 products = await productsResponse.json();
-                populateSelect(productCodeSelect, products, 'Product Code');
+                populateSelect(productCodeSelect, products, 'Select Product Code');
 
                 // Fetch materials data
                 const materialsResponse = await fetch('materials.json');
                 materials = await materialsResponse.json();
                 populateSelect(material1TypeSelect, materials, 'Select Type');
                 populateSelect(material2TypeSelect, materials, 'Select Type');
-
-                // Fetch product details data
-                const productDetailsResponse = await fetch('product_details.json');
-                productDetails = await productDetailsResponse.json();
                 
                 populateLegend();
             } catch (e) {
@@ -429,18 +382,13 @@
             generateSkuBtn = document.getElementById('generateSkuBtn');
             copySkuBtn = document.getElementById('copySkuBtn');
             generatedSkuEl = document.getElementById('generatedSku');
-            generatedDescriptionEl = document.getElementById('generatedDescription');
             legendTableBody = document.getElementById('legendTableBody');
             historyTableBody = document.getElementById('historyTableBody');
-            productDetailsSection = document.getElementById('productDetailsSection');
             customAlert = document.getElementById('customAlert');
             alertMessage = document.getElementById('alertMessage');
             alertCloseBtn = document.getElementById('alertCloseBtn');
 
             // Add event listeners
-            productCodeSelect.addEventListener('change', () => {
-                updateProductDetails(productCodeSelect.value);
-            });
             material1TypeSelect.addEventListener('change', () => {
                 populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
             });
