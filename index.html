@@ -233,7 +233,7 @@
                 </div>
             </details>
 
-            <!-- Product Details Section (Updated UI) -->
+            <!-- Product Details Section -->
             <div class="card-section">
                 <h3 style="display: flex; align-items: center;">Product Details</h3>
                 <div class="flex-container">
@@ -384,7 +384,7 @@
         let generatedSkuEl, generatedDescriptionEl;
         let legendTableBody, historyTableBody;
         let customAlert, alertMessage, alertCloseBtn;
-        
+
         const showCustomAlert = (message) => {
             alertMessage.textContent = message;
             customAlert.classList.add('visible');
@@ -441,6 +441,8 @@
                     option.textContent = `${size.code} - ${size.name}`;
                     sizeTypeSelect.appendChild(option);
                 });
+            } else {
+                sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default</option>`;
             }
         };
 
@@ -470,12 +472,12 @@
             let description = '';
 
             const product = products.find(p => p.code === productCode);
-            
+
             if (material1Type && material1Finish) {
                 sku += `-${material1Type}${material1Finish}`;
                 const m1 = materials.find(m => m.code === material1Type);
                 const f1 = m1?.finishes.find(f => f.code === material1Finish);
-                
+
                 description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
 
                 if (material2Type && material2Finish) {
@@ -494,10 +496,10 @@
             }
 
             description += '.';
-            
+
             generatedSkuEl.textContent = sku;
             generatedDescriptionEl.textContent = description;
-            
+
             skus.push({ sku: sku, description: description });
             updateHistoryTable();
         };
@@ -533,17 +535,26 @@
             try {
                 // Fetch products data
                 const productsResponse = await fetch('products.json');
+                if (!productsResponse.ok) {
+                    throw new Error('Failed to load products.json');
+                }
                 products = await productsResponse.json();
                 populateSelect(productCodeSelect, products, 'Product Code');
 
                 // Fetch materials data
                 const materialsResponse = await fetch('materials.json');
+                if (!materialsResponse.ok) {
+                    throw new Error('Failed to load materials.json');
+                }
                 materials = await materialsResponse.json();
-
                 populateSelect(material1TypeSelect, materials, 'Select Type');
                 populateSelect(material2TypeSelect, materials, 'Select Type');
                 
+                // Fetch product details data
                 const productDetailsResponse = await fetch('product_details.json');
+                if (!productDetailsResponse.ok) {
+                    throw new Error('Failed to load product_details.json');
+                }
                 productDetails = await productDetailsResponse.json();
                 
                 populateLegend();
