@@ -1,0 +1,13 @@
+[
+    {
+        "code": "TBL",
+        "name": "Topologic Bowls",
+        "sizes": [
+            { "code": "01", "name": "Ø150" },
+            { "code": "02", "name": "Ø200" },
+            { "code": "03", "name": "Ø260" },
+            { "code": "04", "name": "Ø300" },
+            { "code": "05", "name": "Ø400" }
+        ]
+    }
+]
