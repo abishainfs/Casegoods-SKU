@@ -99,12 +99,12 @@
                 </div>
             </details>
 
-            <!-- SKU Generation Form -->
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <!-- Main form inputs, now with consistent spacing -->
+            <div class="flex flex-col gap-6 mb-6">
                 <!-- Product Category, Code, and Size/Type on one line -->
-                <div class="flex-1">
+                <div>
                     <label class="block text-sm font-medium text-apple-medium mb-1">Product Details</label>
-                    <div class="flex flex-row gap-2">
+                    <div class="grid grid-cols-3 gap-2">
                         <!-- Product Category (X) -->
                         <select id="productCategory" class="p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                             <option value="" disabled selected>Cat</option>
@@ -114,54 +114,54 @@
                             <option value="H">H</option>
                         </select>
                         <!-- Product Code (ABCD) -->
-                        <select id="productCode" class="flex-grow p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <select id="productCode" class="p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                             <option value="" disabled selected>Loading Products...</option>
                         </select>
                         <!-- Size/Type (EF) -->
-                        <input type="text" id="sizeType" value="00" maxlength="2" class="p-3 w-16 border text-center border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                        <input type="text" id="sizeType" value="00" maxlength="2" class="p-3 border text-center border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
                     </div>
                 </div>
-            </div>
 
-            <!-- Dynamic Product Details Section -->
-            <div id="productDetailsSection" class="hidden mb-4 p-4 border border-apple-light-border rounded-lg bg-apple-section text-sm text-apple-medium">
-                <!-- Product specific details will be displayed here -->
-            </div>
+                <!-- Dynamic Product Details Section -->
+                <div id="productDetailsSection" class="hidden p-4 border border-apple-light-border rounded-lg bg-apple-section text-sm text-apple-medium">
+                    <!-- Product specific details will be displayed here -->
+                </div>
 
-            <!-- Customisable Material 1 (GH) -->
-            <div class="mb-4 p-4 border border-apple-light-border rounded-lg bg-apple-section">
-                <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 1 (GH) <span class="text-gray-500 text-sm">(Optional)</span></h3>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="flex-1">
-                        <label for="material1Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (G)</label>
-                        <select id="material1Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Loading Materials...</option>
-                        </select>
-                    </div>
-                    <div class="flex-1">
-                        <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
-                        <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Select Type First</option>
-                        </select>
+                <!-- Customisable Material 1 (GH) -->
+                <div class="p-4 border border-apple-light-border rounded-lg bg-apple-section">
+                    <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 1 (GH) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="material1Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (G)</label>
+                            <select id="material1Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                                <option value="" disabled selected>Loading Materials...</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label for="material1Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (H)</label>
+                            <select id="material1Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                                <option value="" disabled selected>Select Type First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Customisable Material 2 (IJ) -->
-            <div class="mb-6 p-4 border border-apple-light-border rounded-lg bg-apple-section">
-                <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 2 (IJ) <span class="text-gray-500 text-sm">(Optional)</span></h3>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="flex-1">
-                        <label for="material2Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (I)</label>
-                        <select id="material2Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Loading Materials...</option>
-                        </select>
-                    </div>
-                    <div class="flex-1">
-                        <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
-                        <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
-                            <option value="" disabled selected>Select Type First</option>
-                        </select>
+                <!-- Customisable Material 2 (IJ) -->
+                <div class="p-4 border border-apple-light-border rounded-lg bg-apple-section">
+                    <h3 class="text-md font-semibold text-apple-dark mb-3">Customisable Material 2 (IJ) <span class="text-gray-500 text-sm">(Optional)</span></h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="material2Type" class="block text-sm font-medium text-apple-medium mb-1">Material Type (I)</label>
+                            <select id="material2Type" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                                <option value="" disabled selected>Loading Materials...</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label for="material2Finish" class="block text-sm font-medium text-apple-medium mb-1">Material Finish (J)</label>
+                            <select id="material2Finish" class="w-full p-3 border border-apple-light-border rounded-lg focus:ring-apple-blue focus:border-apple-blue transition duration-150 ease-in-out">
+                                <option value="" disabled selected>Select Type First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
