@@ -9,5 +9,188 @@
             { "code": "04", "name": "Ø300" },
             { "code": "05", "name": "Ø400" }
         ]
+    },
+    {
+        "code": "BND",
+        "name": "Buenos Diyas",
+        "sizes": [
+            { "code": "S4", "name": "Small (set of 4)" },
+            { "code": "B2", "name": "Big (set of 2)" }
+        ]
+    },
+    {
+        "code": "DOL",
+        "name": "Dīpā",
+        "sizes": [
+            { "code": "TALL", "name": "Tall" },
+            { "code": "WIDE", "name": "Wide" }
+        ]
+    },
+    {
+        "code": "COD",
+        "name": "Chulha",
+        "sizes": []
+    },
+    {
+        "code": "ALC",
+        "name": "Alcove",
+        "sizes": []
+    },
+    {
+        "code": "BBL",
+        "name": "Building Blocks",
+        "sizes": []
+    },
+    {
+        "code": "7TL",
+        "name": "Seven Tube Light",
+        "sizes": [
+            { "code": "2FT", "name": "2ft" },
+            { "code": "4FT", "name": "4ft" }
+        ]
+    },
+    {
+        "code": "1TL",
+        "name": "One Tube Light",
+        "sizes": []
+    },
+    {
+        "code": "SSL",
+        "name": "Standing Straight Lamp",
+        "sizes": []
+    },
+    {
+        "code": "RRL",
+        "name": "Rolling Round Light",
+        "sizes": [
+            { "code": "125", "name": "Ø125" }
+        ]
+    },
+    {
+        "code": "FFL",
+        "name": "Front Facing Light",
+        "sizes": []
+    },
+    {
+        "code": "DUL",
+        "name": "Dome Uplight",
+        "sizes": []
+    },
+    {
+        "code": "ART",
+        "name": "Art light",
+        "sizes": []
+    },
+    {
+        "code": "FF",
+        "name": "Folding Flat Series",
+        "sizes": []
+    },
+    {
+        "code": "3LT",
+        "name": "Three Legged Table",
+        "sizes": [
+            { "code": "410", "name": "H410" }
+        ]
+    },
+    {
+        "code": "HLS",
+        "name": "Hold Shelf",
+        "sizes": [
+            { "code": "1174", "name": "1174mm" },
+            { "code": "1544", "name": "1544mm" },
+            { "code": "1914", "name": "1914mm" },
+            { "code": "2284", "name": "2284mm" },
+            { "code": "2654", "name": "2654mm" },
+            { "code": "2400", "name": "2400mm" }
+        ]
+    },
+    {
+        "code": "3CT",
+        "name": "3 Cylinder table",
+        "sizes": [
+            { "code": "1200", "name": "Ø1200" },
+            { "code": "1400", "name": "Ø1400" }
+        ]
+    },
+    {
+        "code": "RTT",
+        "name": "Right triangle table",
+        "sizes": [
+            { "code": "1200", "name": "Ø1200" }
+        ]
+    },
+    {
+        "code": "PSC",
+        "name": "Profile Stone Console",
+        "sizes": []
+    },
+    {
+        "code": "TRT",
+        "name": "Trestle Table",
+        "sizes": [
+            { "code": "2000", "name": "2000mm" },
+            { "code": "2600", "name": "2600mm" },
+            { "code": "3200", "name": "3200mm" }
+        ]
+    },
+    {
+        "code": "PTT",
+        "name": "Pinned Trestle Table",
+        "sizes": [
+            { "code": "2000", "name": "2000mm" },
+            { "code": "2600", "name": "2600mm" },
+            { "code": "3200", "name": "3200mm" }
+        ]
+    },
+    {
+        "code": "SST",
+        "name": "Slant Side Table",
+        "sizes": [
+            { "code": "400", "name": "Ø400" },
+            { "code": "500", "name": "Ø500" },
+            { "code": "800", "name": "Ø800" }
+        ]
+    },
+    {
+        "code": "SPT",
+        "name": "Splayed Plank Table",
+        "sizes": [
+            { "code": "2800", "name": "2800mm" },
+            { "code": "3200", "name": "3200mm" },
+            { "code": "3600", "name": "3600mm" },
+            { "code": "4000", "name": "4000mm" },
+            { "code": "1440", "name": "1440mm" },
+            { "code": "1620", "name": "1620mm" },
+            { "code": "1800", "name": "1800mm" }
+        ]
+    },
+    {
+        "code": "FJT",
+        "name": "Fillet Joint Table",
+        "sizes": [
+            { "code": "1080", "name": "1080mm" },
+            { "code": "1200", "name": "1200mm" },
+            { "code": "1440", "name": "1440mm" },
+            { "code": "1560", "name": "1560mm" }
+        ]
+    },
+    {
+        "code": "TKB",
+        "name": "Topologic Knobs",
+        "sizes": [
+            { "code": "30", "name": "Ø30" },
+            { "code": "50", "name": "Ø50" }
+        ]
+    },
+    {
+        "code": "FJD",
+        "name": "Fold Jute Dhurries",
+        "sizes": [
+            { "code": "2X7.5", "name": "2X7.5ft" },
+            { "code": "6X4", "name": "6X4ft" },
+            { "code": "5X7.5", "name": "5X7.5ft" },
+            { "code": "9X6", "name": "9X6ft" }
+        ]
     }
 ]
