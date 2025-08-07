@@ -40,21 +40,71 @@
     ]
   },
   {
+    "code": "O",
+    "name": "Oiled Wood",
+    "finishes": [
+      { "code": "0", "name": "Oiled (Teak/Rosewood/Mahogany)" },
+      { "code": "1", "name": "Sealed" }
+    ]
+  },
+  {
     "code": "B",
     "name": "Brass",
     "finishes": [
-      { "code": "0", "name": "Unfinished" },
+      { "code": "0", "name": "Cast" },
       { "code": "1", "name": "Satin" },
       { "code": "2", "name": "Slightly Aged" },
       { "code": "3", "name": "Blackened" }
     ]
   },
   {
-    "code": "M",
-    "name": "Mahogany",
+    "code": "C",
+    "name": "Copper",
     "finishes": [
-      { "code": "0", "name": "Unfinished" },
-      { "code": "1", "name": "Oiled/Sealed" }
+      { "code": "0", "name": "Unfinished" }
+    ]
+  },
+  {
+    "code": "L",
+    "name": "Cast Lime Block",
+    "finishes": [
+      { "code": "0", "name": "Unfinished" }
+    ]
+  },
+  {
+    "code": "R",
+    "name": "Refractory Brick",
+    "finishes": [
+      { "code": "0", "name": "Unfinished" }
+    ]
+  },
+  {
+    "code": "J",
+    "name": "Jute",
+    "finishes": [
+      { "code": "0", "name": "Unfinished" }
+    ]
+  },
+  {
+    "code": "F",
+    "name": "Fabric",
+    "finishes": [
+      { "code": "0", "name": "Linen" }
+    ]
+  },
+  {
+    "code": "M",
+    "name": "Stone",
+    "finishes": [
+      { "code": "0", "name": "Sandstone" },
+      { "code": "1", "name": "Marble" }
+    ]
+  },
+  {
+    "code": "Z",
+    "name": "Terrazzo",
+    "finishes": [
+      { "code": "0", "name": "Unfinished" }
     ]
   }
 ]
