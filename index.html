@@ -473,14 +473,24 @@
 
             const product = products.find(p => p.code === productCode);
 
-            if (material1Type && material1Finish) {
+            // Check if Primary Material is *not* "None" (code '0')
+            if (material1Type && material1Type !== '0') {
+                if (!material1Finish || material1Finish === '0') {
+                    showCustomAlert('Please select a valid Primary Material Finish.');
+                    return;
+                }
                 sku += `-${material1Type}${material1Finish}`;
                 const m1 = materials.find(m => m.code === material1Type);
                 const f1 = m1?.finishes.find(f => f.code === material1Finish);
 
                 description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
-
-                if (material2Type && material2Finish) {
+                
+                // Check if Secondary Material is *not* "None" (code '0')
+                if (material2Type && material2Type !== '0') {
+                    if (!material2Finish || material2Finish === '0') {
+                        showCustomAlert('Please select a valid Secondary Material Finish.');
+                        return;
+                    }
                     sku += `-${material2Type}${material2Finish}`;
                     const m2 = materials.find(m => m.code === material2Type);
                     const f2 = m2?.finishes.find(f => f.code === material2Finish);
@@ -488,10 +498,12 @@
                         description += ` and a secondary material of ${m2.name} with a ${f2.name} finish`;
                     }
                 }
-            } else if (material2Type || material2Finish) {
-                showCustomAlert('Please select both a Primary Material Type and Finish before selecting a Secondary Material.');
+            } else if (material2Type && material2Type !== '0') {
+                // Prevent selecting a secondary material if primary is "None"
+                showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
                 return;
             } else {
+                // Case where both are "None" or unselected
                 description = `${product.name}`;
             }
 
