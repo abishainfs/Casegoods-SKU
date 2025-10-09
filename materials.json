@@ -1,5 +1,12 @@
 [
   {
+    "code": "0",
+    "name": "None",
+    "finishes": [
+      { "code": "0", "name": "None" }
+    ]
+  },
+  {
     "code": "T",
     "name": "Teakwood",
     "finishes": [
