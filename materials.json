@@ -151,23 +151,23 @@
     },
     {
       "code": "1",
-      "name": "Satin"
+      "name": "Polished"
     },
     {
       "code": "2",
-      "name": "Slightly Aged"
+      "name": "Satin"
     },
     {
       "code": "3",
-      "name": "Blackened"
+      "name": "Slightly Aged"
     },
     {
       "code": "4",
-      "name": "Nickel Plated"
+      "name": "Blackened"
     },
     {
       "code": "5",
-      "name": "Polished"
+      "name": "Nickel Plated"
     }
     ]
   },
@@ -301,11 +301,23 @@
       },
       {
         "code": "1",
-        "name": "Pressed"
+        "name": "Pressed Red/Green"
       },
       {
         "code": "2",
         "name": "Slung"
+      },
+      {
+        "code": "3",
+        "name": "Mustard"
+      },
+      {
+        "code": "4",
+        "name": "Olive"
+      },
+      {
+        "code": "5",
+        "name": "Custom"
       }
     ]
   }
