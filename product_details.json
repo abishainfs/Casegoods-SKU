@@ -547,11 +547,44 @@
     "name": "Tower Bolt",
     "sizes": []
   },
-  {
-    "code": "OFF",
-    "name": "Offset",
-    "sizes": []
-  },
+ {
+  "code": "OFF",
+  "name": "Offset",
+  "sizes": [
+    {
+      "code": "01",
+      "name": "Type 1"
+    },
+    {
+      "code": "02",
+      "name": "Type 2"
+    },
+    {
+      "code": "03",
+      "name": "Type 3"
+    },
+    {
+      "code": "04",
+      "name": "Type 4"
+    },
+    {
+      "code": "05",
+      "name": "Type 5"
+    },
+    {
+      "code": "06",
+      "name": "Type 6"
+    },
+    {
+      "code": "07",
+      "name": "Type 7"
+    },
+    {
+      "code": "08",
+      "name": "Type 8"
+    }
+  ]
+},
   {
     "code": "CYL",
     "name": "Cylinder",
