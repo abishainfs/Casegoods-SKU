@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casegoods: SKU Generator</title>
-    <!-- Font Awesome for the question mark icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,4 +61,577 @@
         h1 {
             font-size: 3rem;
             font-weight: 900;
-            text-align: cente
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #3c3c43;
+            margin-bottom: 0.25rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e5ea;
+            border-radius: 0.5rem;
+            transition: all 150ms ease-in-out;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+        }
+
+        @media (min-width: 640px) {
+            .flex-container {
+                flex-direction: row;
+            }
+        }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 150ms ease-in-out;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #1c1c1e;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a3a3c;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        
+        .alert-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.2s linear;
+        }
+
+        .alert-modal.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .alert-content {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .alert-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .tooltip-icon {
+            color: #9ca3af;
+            cursor: pointer;
+        }
+
+        .tooltip-icon:hover {
+            color: #007aff;
+        }
+
+        .history-table, .legend-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th, .legend-table th {
+            text-align: left;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #3c3c43;
+            border-bottom: 1px solid #e5e5ea;
+        }
+
+        .history-table td, .legend-table td {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #e5e5ea;
+            vertical-align: top;
+        }
+
+        .history-table tr:hover {
+            background-color: #f9f9fb;
+        }
+    </style>
+</head>
+<body class="flex-container">
+    <div class="main-container">
+        <div class="card main-form-card">
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <img src="https://raw.githubusercontent.com/abishainfs/Casegoods-SKU/main/Casegoods_Logo.jpg" alt="Casegoods Logo" style="height: 12rem; width: auto; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);" onerror="this.onerror=null;this.src='https://placehold.co/192x192/CCCCCC/666666?text=LOGO+NOT+FOUND';">
+                <h1 style="font-weight: 600;">Casegoods: SKU Generator</h1>
+            </div>
+
+            <details style="margin-bottom: 1.5rem; padding: 1rem;" class="card-section">
+                <summary style="font-size: 1.125rem; font-weight: 600; cursor: pointer;">Quick Guide: SKU Generation</summary>
+                <div style="margin-top: 1rem; font-size: 0.875rem; line-height: 1.6;">
+                    <p style="margin-bottom: 0.5rem;">This tool helps create unique SKUs (Stock Keeping Units). Our SKUs follow this format: <strong style="color: #1d1d1f;">X-ABCD-EF-GH-IJ</strong></p>
+                    <h4 style="font-weight: 700; color: #1d1d1f; margin-bottom: 0.5rem;">Here's the simple breakdown:</h4>
+                    <ul style="list-style-type: disc; list-style-position: inside; margin-bottom: 0.75rem;">
+                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">X - Product Category:</strong> Pick the product type from the dropdown.</li>
+                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">ABCD - Product Code:</strong> Select the product's unique code.</li>
+                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">EF - Size/Type:</strong> Enter a 2-digit number for the size or specific version (e.g., '01').</li>
+                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">GH & IJ - Materials:</strong> Select Material Type and its Finish. These are optional.</li>
+                    </ul>
+                </div>
+            </details>
+
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Product Details</h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="productCategory">Category</label>
+                        <select id="productCategory">
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="F">F - Furniture</option>
+                            <option value="L">L - Light</option>
+                            <option value="O">O - Objects</option>
+                            <option value="H">H - Hardware</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="productCode">Product Code</label>
+                        <select id="productCode">
+                            <option value="" disabled selected>Select Category First</option> </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="sizeType">Type/Variation</label>
+                        <select id="sizeType">
+                            <option value="" disabled selected>Select Product First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Primary Material <i id="primaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(GH)</span></h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="material1Type">Material Type (G)</label>
+                        <select id="material1Type">
+                            <option value="" disabled selected>Loading Materials...</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="material1Finish">Material Finish (H)</label>
+                        <select id="material1Finish">
+                            <option value="" disabled selected>Select Type First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <h3 style="display: flex; align-items: center;">Secondary Material <i id="secondaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(IJ) (Optional)</span></h3>
+                <div class="flex-container">
+                    <div style="flex: 1;">
+                        <label for="material2Type">Material Type (I)</label>
+                        <select id="material2Type">
+                            <option value="" disabled selected>Loading Materials...</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="material2Finish">Material Finish (J)</label>
+                        <select id="material2Finish">
+                            <option value="" disabled selected>Select Type First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;" class="card-section">
+                <div style="flex: 1;">
+                    <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.25rem;">Generated SKU</p>
+                    <div id="generatedSku" style="font-family: monospace; font-size: 1.125rem; color: #1d1d1f; background-color: #ffffff; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5ea; word-break: break-all; text-align: center;">
+                        SKU-CODE
+                    </div>
+                    <p id="generatedDescription" style="margin-top: 0.5rem; font-size: 0.875rem; color: #3c3c43; text-align: center; font-style: italic;"></p>
+                </div>
+                <div style="display: flex; flex-shrink: 0; gap: 0.5rem; align-items: center;">
+                    <button id="generateSkuBtn" class="btn btn-primary">
+                        Generate SKU
+                    </button>
+                    <button id="copySkuBtn" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-container">
+            <div class="card">
+                <h2>Material & Finish Legend</h2>
+                <div style="overflow-x: auto;">
+                    <table class="legend-table">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Finishes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="legendTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>SKU History</h2>
+                <div style="overflow-x: auto;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 1rem;">Note: This history is temporary and will be cleared when the page is refreshed.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="customAlert" class="alert-modal">
+        <div class="alert-content">
+            <p id="alertMessage"></p>
+            <button id="alertCloseBtn" class="btn btn-primary">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Renamed 'products' to 'allProducts' to store the full list
+        let allProducts = [];
+        let materials = [];
+        let productDetails = [];
+        let skus = [];
+
+        // Element references
+        let productCategorySelect, productCodeSelect, sizeTypeSelect, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
+        let generateSkuBtn, copySkuBtn, primaryMaterialTooltipBtn, secondaryMaterialTooltipBtn;
+        let generatedSkuEl, generatedDescriptionEl;
+        let legendTableBody, historyTableBody;
+        let customAlert, alertMessage, alertCloseBtn;
+
+        const showCustomAlert = (message) => {
+            alertMessage.textContent = message;
+            customAlert.classList.add('visible');
+        };
+
+        const copyToClipboard = (text) => {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showCustomAlert('SKU copied to clipboard!');
+            } catch (err) {
+                showCustomAlert('Failed to copy SKU.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        };
+
+        const populateSelect = (selectElement, items, placeholder) => {
+            selectElement.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.code;
+                option.textContent = `${item.code} - ${item.name}`;
+                selectElement.appendChild(option);
+            });
+        };
+
+        const populateMaterialFinishes = (materialTypeSelect, materialFinishSelect, placeholder) => {
+            const selectedMaterialCode = materialTypeSelect.value;
+            materialFinishSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            if (selectedMaterialCode) {
+                const material = materials.find(m => m.code === selectedMaterialCode);
+                if (material && material.finishes) {
+                    material.finishes.forEach(finish => {
+                        const option = document.createElement('option');
+                        option.value = finish.code;
+                        option.textContent = `${finish.code} - ${finish.name}`;
+                        materialFinishSelect.appendChild(option);
+                    });
+                }
+            }
+        };
+
+        const populateProductSizes = (productCode) => {
+            const details = productDetails.find(p => p.code === productCode);
+            sizeTypeSelect.innerHTML = `<option value="" disabled selected>Select Type</option>`;
+            if (details && details.sizes) {
+                details.sizes.forEach(size => {
+                    const option = document.createElement('option');
+                    option.value = size.code;
+                    option.textContent = `${size.code} - ${size.name}`;
+                    sizeTypeSelect.appendChild(option);
+                });
+            } else {
+                sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default</option>`;
+            }
+        };
+        
+        // --- NEW FUNCTION: Filter Products by Category ---
+        const filterProductsByCategory = (selectedCategory) => {
+            // Clear product and size dropdowns
+            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Product Code</option>';
+            sizeTypeSelect.innerHTML = '<option value="" disabled selected>Select Product First</option>';
+
+            if (selectedCategory) {
+                // Filter products where the product code starts with the category code (X)
+                // Assuming the first letter of the product code *is* the category code
+                const filteredProducts = allProducts.filter(p => p.code.startsWith(selectedCategory));
+                
+                // If you use an external JSON (e.g., 'category_products.json') as you mentioned, 
+                // you would adjust this filtering logic or the data structure.
+                
+                populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
+            } else {
+                productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
+            }
+        };
+        // -------------------------------------------------
+
+        const showPrimaryMaterialTooltip = () => {
+            showCustomAlert("Please choose the material that is mainly used in the product. If there are material options in the parts, please choose constant material as the first one. Ex: SSL Floor Primary material will be Brass, and secondary will be marble (black white etc.)");
+        };
+
+        const showSecondaryMaterialTooltip = () => {
+            showCustomAlert("The secondary material is a constant material used in a smaller part of the product. Ex: SSL Floor Primary material is Brass, and secondary will be marble (black white etc.)");
+        };
+
+        const generateSku = () => {
+            const productCategory = productCategorySelect.value;
+            const productCode = productCodeSelect.value;
+            const sizeType = sizeTypeSelect.value;
+            const material1Type = material1TypeSelect.value;
+            const material1Finish = material1FinishSelect.value;
+            const material2Type = material2TypeSelect.value;
+            const material2Finish = material2FinishSelect.value;
+
+            if (!productCategory || !productCode || !sizeType) {
+                showCustomAlert('Please select a product category, code, and size/type.');
+                return;
+            }
+
+            let sku = `${productCategory}-${productCode}-${sizeType}`;
+            let description = '';
+
+            // Find the product in the full list
+            const product = allProducts.find(p => p.code === productCode);
+
+            // Check if Primary Material is *not* "None" (code '0')
+            if (material1Type && material1Type !== '0') {
+                if (!material1Finish || material1Finish === '0') {
+                    showCustomAlert('Please select a valid Primary Material Finish.');
+                    return;
+                }
+                sku += `-${material1Type}${material1Finish}`;
+                const m1 = materials.find(m => m.code === material1Type);
+                const f1 = m1?.finishes.find(f => f.code === material1Finish);
+
+                description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
+                
+                // Check if Secondary Material is *not* "None" (code '0')
+                if (material2Type && material2Type !== '0') {
+                    if (!material2Finish || material2Finish === '0') {
+                        showCustomAlert('Please select a valid Secondary Material Finish.');
+                        return;
+                    }
+                    sku += `-${material2Type}${material2Finish}`;
+                    const m2 = materials.find(m => m.code === material2Type);
+                    const f2 = m2?.finishes.find(f => f.code === material2Finish);
+                    if (m2 && f2) {
+                        description += ` and a secondary material of ${m2.name} with a ${f2.name} finish`;
+                    }
+                }
+            } else if (material2Type && material2Type !== '0') {
+                // Prevent selecting a secondary material if primary is "None"
+                showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
+                return;
+            } else {
+                // Case where both are "None" or unselected
+                description = `${product.name}`;
+            }
+
+            description += '.';
+
+            generatedSkuEl.textContent = sku;
+            generatedDescriptionEl.textContent = description;
+
+            skus.push({ sku: sku, description: description });
+            updateHistoryTable();
+        };
+
+        const updateHistoryTable = () => {
+            historyTableBody.innerHTML = '';
+            skus.forEach(item => {
+                const row = `
+                    <tr>
+                        <td style="font-weight: 500;">${item.sku}</td>
+                        <td>${item.description}</td>
+                    </tr>
+                `;
+                historyTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        };
+
+        const populateLegend = () => {
+            legendTableBody.innerHTML = '';
+            materials.forEach(material => {
+                const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
+                const row = `
+                    <tr>
+                        <td style="font-weight: 500;">${material.code} - ${material.name}</td>
+                        <td>${finishes}</td>
+                    </tr>
+                `;
+                legendTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        };
+
+        const fetchAndPopulateData = async () => {
+            try {
+                // Fetch products data (now into allProducts)
+                const productsResponse = await fetch('products.json');
+                if (!productsResponse.ok) {
+                    throw new Error('Failed to load products.json');
+                }
+                allProducts = await productsResponse.json();
+                
+                // Do not populate productCodeSelect yet, wait for category selection
+                productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
+
+
+                // Fetch materials data
+                const materialsResponse = await fetch('materials.json');
+                if (!materialsResponse.ok) {
+                    throw new Error('Failed to load materials.json');
+                }
+                materials = await materialsResponse.json();
+                populateSelect(material1TypeSelect, materials, 'Select Type');
+                populateSelect(material2TypeSelect, materials, 'Select Type');
+                
+                // Fetch product details data
+                const productDetailsResponse = await fetch('product_details.json');
+                if (!productDetailsResponse.ok) {
+                    throw new Error('Failed to load product_details.json');
+                }
+                productDetails = await productDetailsResponse.json();
+                
+                populateLegend();
+            } catch (e) {
+                console.error("Error fetching data:", e);
+                showCustomAlert("Error loading product and material data. Please check if the files exist.");
+            }
+        };
+
+        const runApplication = () => {
+            productCategorySelect = document.getElementById('productCategory');
+            productCodeSelect = document.getElementById('productCode');
+            sizeTypeSelect = document.getElementById('sizeType');
+            material1TypeSelect = document.getElementById('material1Type');
+            material1FinishSelect = document.getElementById('material1Finish');
+            material2TypeSelect = document.getElementById('material2Type');
+            material2FinishSelect = document.getElementById('material2Finish');
+            generateSkuBtn = document.getElementById('generateSkuBtn');
+            copySkuBtn = document.getElementById('copySkuBtn');
+            primaryMaterialTooltipBtn = document.getElementById('primaryMaterialTooltipBtn');
+            secondaryMaterialTooltipBtn = document.getElementById('secondaryMaterialTooltipBtn');
+            generatedSkuEl = document.getElementById('generatedSku');
+            generatedDescriptionEl = document.getElementById('generatedDescription');
+            legendTableBody = document.getElementById('legendTableBody');
+            historyTableBody = document.getElementById('historyTableBody');
+            customAlert = document.getElementById('customAlert');
+            alertMessage = document.getElementById('alertMessage');
+            alertCloseBtn = document.getElementById('alertCloseBtn');
+
+            // --- NEW: Category change listener for filtering ---
+            productCategorySelect.addEventListener('change', () => {
+                filterProductsByCategory(productCategorySelect.value);
+            });
+            // --------------------------------------------------
+
+            productCodeSelect.addEventListener('change', () => {
+                populateProductSizes(productCodeSelect.value);
+            });
+            material1TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
+            });
+            material2TypeSelect.addEventListener('change', () => {
+                populateMaterialFinishes(material2TypeSelect, material2FinishSelect, 'Select Finish');
+            });
+            generateSkuBtn.addEventListener('click', generateSku);
+            copySkuBtn.addEventListener('click', () => copyToClipboard(generatedSkuEl.textContent));
+            primaryMaterialTooltipBtn.addEventListener('click', showPrimaryMaterialTooltip);
+            secondaryMaterialTooltipBtn.addEventListener('click', showSecondaryMaterialTooltip);
+            alertCloseBtn.addEventListener('click', () => customAlert.classList.remove('visible'));
+
+            fetchAndPopulateData();
+        };
+
+        window.onload = runApplication;
+    </script>
+</body>
+</html>
