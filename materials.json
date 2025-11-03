@@ -145,12 +145,30 @@
   "code": "B",
   "name": "Brass",
   "finishes": [
-    { "code": "0", "name": "Cast" },
-    { "code": "1", "name": "Satin" },
-    { "code": "2", "name": "Slightly Aged" },
-    { "code": "3", "name": "Blackened" },
-    { "code": "4", "name": "Nickel Plated" },
-    { "code": "5", "name": "Polished" }
+    {
+      "code": "0",
+      "name": "Cast"
+    },
+    {
+      "code": "1",
+      "name": "Satin"
+    },
+    {
+      "code": "2",
+      "name": "Slightly Aged"
+    },
+    {
+      "code": "3",
+      "name": "Blackened"
+    },
+    {
+      "code": "4",
+      "name": "Nickel Plated"
+    },
+    {
+      "code": "5",
+      "name": "Polished"
+    }
   ]
 }
     ]
