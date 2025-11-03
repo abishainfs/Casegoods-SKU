@@ -222,7 +222,7 @@
     ]
   },
   {
-    "code": "MB",
+    "code": "M",
     "name": "Marble",
     "finishes": [
       {
@@ -248,12 +248,8 @@
     "name": "Terrazzo",
     "finishes": [
       {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Polished"
+        "code": "X",
+        "name": "Custom"
       }
     ]
   },

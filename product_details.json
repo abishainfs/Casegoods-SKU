@@ -193,7 +193,15 @@
     "sizes": [
       {
         "code": "01",
-        "name": "Single"
+        "name": "Single Pendant"
+      },
+      {
+        "code": "02",
+        "name": "Single Wall Mount"
+      },
+      {
+        "code": "03",
+        "name": "Triple Pendant"
       }
     ]
   },
@@ -217,7 +225,7 @@
     "sizes": [
       {
         "code": "01",
-        "name": "Standard"
+        "name": "Teak Veneer"
       },
       {
         "code": "02",
@@ -305,19 +313,11 @@
     "sizes": [
       {
         "code": "01",
-        "name": "\u00d81200 Marble"
+        "name": "\u00d81200"
       },
       {
         "code": "02",
-        "name": "\u00d81400 Marble"
-      },
-      {
-        "code": "03",
-        "name": "\u00d81200 Terrazzo"
-      },
-      {
-        "code": "04",
-        "name": "\u00d81400 Terrazzo"
+        "name": "\u00d81400"
       }
     ]
   },

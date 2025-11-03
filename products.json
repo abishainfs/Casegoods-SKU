@@ -1,4 +1,5 @@
 [
+  //Objects
   {
     "code": "ALC",
     "name": "Alcove",
@@ -10,8 +11,18 @@
     "category": "Objects"
   },
   {
+    "code": "BND",
+    "name": "Cotton Wicks - Buenos Diyas",
+    "category": "Objects"
+  },
+  {
     "code": "BBL",
-    "name": "Building Blocks",
+    "name": "Building Blocks - Without Holder",
+    "category": "Objects"
+  },
+  {
+    "code": "BBL",
+    "name": "Building Blocks - With Holder",
     "category": "Objects"
   },
   {
@@ -29,6 +40,8 @@
     "name": "Topologic Bowls",
     "category": "Objects"
   },
+//Here is where presently on-sale Objects end, and deadstock begins
+
   {
     "code": "BSS",
     "name": "Sanitizer Stand",
@@ -49,6 +62,7 @@
     "name": "Pepper Mill",
     "category": "Objects"
   },
+  // Lights
   {
     "code": "7TL",
     "name": "Seven Tube Light",
@@ -84,6 +98,12 @@
     "name": "One Tube Light",
     "category": "Lights"
   },
+  {
+    "code": "PTL",
+    "name": "Pirouette Light",
+    "category": "Lights"
+  },
+  // Furniture
   {
     "code": "FFC",
     "name": "Folding Flat Chair",
@@ -150,6 +170,11 @@
     "category": "Furniture"
   },
   {
+    "code": "SPB",
+    "name": "Splayed Plank Bench",
+    "category": "Furniture"
+  },
+  {
     "code": "PSC",
     "name": "Profile Stone Console",
     "category": "Furniture"
@@ -170,6 +195,17 @@
     "category": "Furniture"
   },
   {
+    "code": "ARS",
+    "name": "Array Shelf",
+    "category": "Furniture"
+  },
+  {
+    "code": "FLT",
+    "name": "Flared Leg Table",
+    "category": "Furniture"
+  },
+  //Hardware
+  {
     "code": "TBK",
     "name": "Topologic Knobs",
     "category": "Hardware"
@@ -186,12 +222,12 @@
   },
   {
     "code": "CYL",
-    "name": "Cylinder",
+    "name": "Cylinder Handle",
     "category": "Hardware"
   },
   {
     "code": "CFH",
-    "name": "Cast and Faced",
+    "name": "Cast and Faced Handle",
     "category": "Hardware"
   },
   {
@@ -201,7 +237,7 @@
   },
   {
     "code": "BBH",
-    "name": "Bamboo Handles",
+    "name": "Bamboo Handle",
     "category": "Hardware"
   },
   {
