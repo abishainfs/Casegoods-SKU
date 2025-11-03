@@ -1,0 +1,322 @@
+[
+  {
+    "code": "0",
+    "name": "None",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "None"
+      }
+    ]
+  },
+  {
+    "code": "T",
+    "name": "Teakwood",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Oiled/Sealed"
+      },
+      {
+        "code": "2",
+        "name": "Black Stained"
+      },
+      {
+        "code": "3",
+        "name": "Dark Stained"
+      }
+    ]
+  },
+  {
+    "code": "M",
+    "name": "Mahogany",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Oiled/Sealed"
+      },
+      {
+        "code": "2",
+        "name": "Black Stained"
+      },
+      {
+        "code": "3",
+        "name": "Dark Stained"
+      }
+    ]
+  },
+  {
+    "code": "R",
+    "name": "Rosewood",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Oiled/Sealed"
+      },
+      {
+        "code": "2",
+        "name": "Black Stained"
+      },
+      {
+        "code": "3",
+        "name": "Dark Stained"
+      }
+    ]
+  },
+  {
+    "code": "A",
+    "name": "Ash",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Oiled/Sealed"
+      },
+      {
+        "code": "2",
+        "name": "Black Stained"
+      },
+      {
+        "code": "3",
+        "name": "Dark Stained"
+      }
+    ]
+  },
+  {
+    "code": "U",
+    "name": "Aluminium",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Neutral Anodised"
+      },
+      {
+        "code": "2",
+        "name": "Black Anodised"
+      },
+      {
+        "code": "3",
+        "name": "Nickel Plated"
+      },
+      {
+        "code": "4",
+        "name": "Raw/Waxed"
+      }
+    ]
+  },
+  {
+    "code": "S",
+    "name": "Stainless Steel",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Brushed"
+      },
+      {
+        "code": "2",
+        "name": "Polished"
+      }
+    ]
+  },
+  {
+    "code": "B",
+    "name": "Brass",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Cast"
+      },
+      {
+        "code": "1",
+        "name": "Satin"
+      },
+      {
+        "code": "2",
+        "name": "Slightly Aged"
+      },
+      {
+        "code": "3",
+        "name": "Blackened"
+      },
+      {
+        "code": "4",
+        "name": "Nickel Plated"
+      }
+    ]
+  },
+  {
+    "code": "C",
+    "name": "Copper",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Polished"
+      }
+    ]
+  },
+  {
+    "code": "SG",
+    "name": "Grey Sandstone",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Honed"
+      },
+      {
+        "code": "2",
+        "name": "Polished"
+      }
+    ]
+  },
+  {
+    "code": "SB",
+    "name": "Beige Sandstone",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Honed"
+      },
+      {
+        "code": "2",
+        "name": "Polished"
+      }
+    ]
+  },
+  {
+    "code": "MB",
+    "name": "Marble",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "White"
+      },
+      {
+        "code": "1",
+        "name": "Black"
+      },
+      {
+        "code": "2",
+        "name": "Grey"
+      },
+      {
+        "code": "3",
+        "name": "Beige"
+      }
+    ]
+  },
+  {
+    "code": "Z",
+    "name": "Terrazzo",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      },
+      {
+        "code": "1",
+        "name": "Polished"
+      }
+    ]
+  },
+  {
+    "code": "RB",
+    "name": "Refractory Brick",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      }
+    ]
+  },
+  {
+    "code": "L",
+    "name": "Cast Lime Block",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Unfinished"
+      }
+    ]
+  },
+  {
+    "code": "J",
+    "name": "Jute",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Natural"
+      },
+      {
+        "code": "1",
+        "name": "Dyed"
+      }
+    ]
+  },
+  {
+    "code": "F",
+    "name": "Fabric",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Linen"
+      },
+      {
+        "code": "1",
+        "name": "Cotton"
+      }
+    ]
+  },
+  {
+    "code": "LT",
+    "name": "Leather",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Natural"
+      },
+      {
+        "code": "1",
+        "name": "Pressed"
+      },
+      {
+        "code": "2",
+        "name": "Slung"
+      }
+    ]
+  }
+]
