@@ -54,8 +54,8 @@
     ]
   },
   {
-    "code": "R",
-    "name": "Rosewood",
+    "code": "X",
+    "name": "Rosewood - Custom",
     "finishes": [
       {
         "code": "0",
@@ -186,12 +186,12 @@
     ]
   },
   {
-    "code": "SG",
-    "name": "Grey Sandstone",
+    "code": "S",
+    "name": "Sandstone (Grey/Beige)",
     "finishes": [
       {
         "code": "0",
-        "name": "Unfinished"
+        "name": "X - Custom"
       },
       {
         "code": "1",
@@ -204,26 +204,8 @@
     ]
   },
   {
-    "code": "SB",
-    "name": "Beige Sandstone",
-    "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Honed"
-      },
-      {
-        "code": "2",
-        "name": "Polished"
-      }
-    ]
-  },
-  {
-    "code": "M",
-    "name": "Marble",
+    "code": "R",
+    "name": "Stone - Marble",
     "finishes": [
       {
         "code": "0",
@@ -302,7 +284,7 @@
     ]
   },
   {
-    "code": "LT",
+    "code": "H",
     "name": "Leather",
     "finishes": [
       {

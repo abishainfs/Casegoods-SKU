@@ -61,7 +61,12 @@
   {
     "code": "ALC",
     "name": "Alcove",
-    "sizes": []
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Standard"
+      }
+    ]
   },
   {
     "code": "BBL",
