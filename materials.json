@@ -32,7 +32,7 @@
     ]
   },
   {
-    "code": "M",
+    "code": "O",
     "name": "Mahogany",
     "finishes": [
       {
@@ -204,7 +204,7 @@
     ]
   },
   {
-    "code": "R",
+    "code": "M",
     "name": "Stone - Marble",
     "finishes": [
       {
@@ -222,6 +222,14 @@
       {
         "code": "3",
         "name": "Beige"
+      },
+      {
+        "code": "4",
+        "name": "Sienna Gold"
+      },
+      {
+        "code": "5",
+        "name": "Custom"
       }
     ]
   },
@@ -236,7 +244,7 @@
     ]
   },
   {
-    "code": "RB",
+    "code": "E",
     "name": "Refractory Brick",
     "finishes": [
       {
