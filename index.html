@@ -245,7 +245,8 @@
                     <div style="flex: 1;">
                         <label for="productCode">Product Code</label>
                         <select id="productCode">
-                            <option value="" disabled selected>Select Category First</option> </select>
+                            <option value="" disabled selected>Select Category First</option>
+                        </select>
                     </div>
                     <div style="flex: 1;">
                         <label for="sizeType">Type/Variation</label>
@@ -358,7 +359,6 @@
     </div>
 
     <script>
-        // Renamed 'products' to 'allProducts' to store the full list
         let allProducts = [];
         let materials = [];
         let productDetails = [];
@@ -370,6 +370,14 @@
         let generatedSkuEl, generatedDescriptionEl;
         let legendTableBody, historyTableBody;
         let customAlert, alertMessage, alertCloseBtn;
+
+        // Map SKU prefix to full category name in products.json
+        const categoryMap = {
+            'F': 'Furniture',
+            'L': 'Light',
+            'O': 'Objects',
+            'H': 'Hardware'
+        };
 
         const showCustomAlert = (message) => {
             alertMessage.textContent = message;
@@ -396,7 +404,9 @@
             items.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.code;
-                option.textContent = `${item.code} - ${item.name}`;
+                // Use item.name if it exists, otherwise just the code
+                const textContent = item.name ? `${item.code} - ${item.name}` : item.code;
+                option.textContent = textContent;
                 selectElement.appendChild(option);
             });
         };
@@ -432,26 +442,27 @@
             }
         };
         
-        // --- NEW FUNCTION: Filter Products by Category ---
-        const filterProductsByCategory = (selectedCategory) => {
+        // --- MODIFIED FUNCTION: Filter Products by Category (using category name from JSON) ---
+        const filterProductsByCategory = (selectedCategoryPrefix) => {
             // Clear product and size dropdowns
             productCodeSelect.innerHTML = '<option value="" disabled selected>Select Product Code</option>';
             sizeTypeSelect.innerHTML = '<option value="" disabled selected>Select Product First</option>';
 
-            if (selectedCategory) {
-                // Filter products where the product code starts with the category code (X)
-                // Assuming the first letter of the product code *is* the category code
-                const filteredProducts = allProducts.filter(p => p.code.startsWith(selectedCategory));
-                
-                // If you use an external JSON (e.g., 'category_products.json') as you mentioned, 
-                // you would adjust this filtering logic or the data structure.
-                
-                populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
+            if (selectedCategoryPrefix) {
+                // Get the full category name from the map (e.g., 'F' -> 'Furniture')
+                const selectedCategoryName = categoryMap[selectedCategoryPrefix];
+
+                if (selectedCategoryName) {
+                    // Filter products where the category field matches the selected category name
+                    const filteredProducts = allProducts.filter(p => p.category === selectedCategoryName);
+                    
+                    populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
+                }
             } else {
                 productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
             }
         };
-        // -------------------------------------------------
+        // ----------------------------------------------------------------------------------------
 
         const showPrimaryMaterialTooltip = () => {
             showCustomAlert("Please choose the material that is mainly used in the product. If there are material options in the parts, please choose constant material as the first one. Ex: SSL Floor Primary material will be Brass, and secondary will be marble (black white etc.)");
@@ -607,11 +618,10 @@
             alertMessage = document.getElementById('alertMessage');
             alertCloseBtn = document.getElementById('alertCloseBtn');
 
-            // --- NEW: Category change listener for filtering ---
+            // Category change listener for filtering
             productCategorySelect.addEventListener('change', () => {
                 filterProductsByCategory(productCategorySelect.value);
             });
-            // --------------------------------------------------
 
             productCodeSelect.addEventListener('change', () => {
                 populateProductSizes(productCodeSelect.value);
