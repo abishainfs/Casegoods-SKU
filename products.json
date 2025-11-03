@@ -1,0 +1,174 @@
+[
+  {
+    "code": "ALC",
+    "name": "Alcove"
+  },
+  {
+    "code": "BND",
+    "name": "Buenos Diyas"
+  },
+  {
+    "code": "BBL",
+    "name": "Building Blocks"
+  },
+  {
+    "code": "DOL",
+    "name": "D\u012bp\u0101 Oil Lamp"
+  },
+  {
+    "code": "COD",
+    "name": "Chulha Oil Diffuser"
+  },
+  {
+    "code": "TBL",
+    "name": "Topologic Bowls"
+  },
+  {
+    "code": "BSS",
+    "name": "Sanitizer Stand"
+  },
+  {
+    "code": "GML",
+    "name": "Gamla"
+  },
+  {
+    "code": "BKN",
+    "name": "Bookends"
+  },
+  {
+    "code": "PPM",
+    "name": "Pepper Mill"
+  },
+  {
+    "code": "7TL",
+    "name": "Seven Tube Light"
+  },
+  {
+    "code": "SSL",
+    "name": "Standing Straight Lamp"
+  },
+  {
+    "code": "RRL",
+    "name": "Rolling Round Light"
+  },
+  {
+    "code": "FFL",
+    "name": "Front Facing Light"
+  },
+  {
+    "code": "ART",
+    "name": "Art Light"
+  },
+  {
+    "code": "DOM",
+    "name": "Dome Uplight"
+  },
+  {
+    "code": "1TL",
+    "name": "One Tube Light"
+  },
+  {
+    "code": "FFC",
+    "name": "Folding Flat Chair"
+  },
+  {
+    "code": "FFTR",
+    "name": "Folding Flat Trestles"
+  },
+  {
+    "code": "FFTB",
+    "name": "Folding Flat Table"
+  },
+  {
+    "code": "FFR",
+    "name": "Folding Flat Chair Towel Rack"
+  },
+  {
+    "code": "CHS",
+    "name": "Hold Shelf"
+  },
+  {
+    "code": "3CT",
+    "name": "Three Cylinder Table"
+  },
+  {
+    "code": "RTT",
+    "name": "Right Triangle Table"
+  },
+  {
+    "code": "3LT",
+    "name": "Three Legged Table"
+  },
+  {
+    "code": "TRT",
+    "name": "Trestle Table"
+  },
+  {
+    "code": "PTT",
+    "name": "Pinned Trestle Table"
+  },
+  {
+    "code": "SWT",
+    "name": "Stone Wood Table"
+  },
+  {
+    "code": "SST",
+    "name": "Slant Side Table"
+  },
+  {
+    "code": "SPT",
+    "name": "Splayed Plank Table"
+  },
+  {
+    "code": "PSC",
+    "name": "Profile Stone Console"
+  },
+  {
+    "code": "TPT",
+    "name": "Truncated Pyramid Table"
+  },
+  {
+    "code": "WBC",
+    "name": "Woven Back Chair"
+  },
+  {
+    "code": "FJT",
+    "name": "Fillet Joint Table"
+  },
+  {
+    "code": "TBK",
+    "name": "Topologic Knobs"
+  },
+  {
+    "code": "TWB",
+    "name": "Tower Bolt"
+  },
+  {
+    "code": "OFF",
+    "name": "Offset"
+  },
+  {
+    "code": "CYL",
+    "name": "Cylinder"
+  },
+  {
+    "code": "CFH",
+    "name": "Cast and Faced"
+  },
+  {
+    "code": "DHK",
+    "name": "Double Hemisphere Knob"
+  },
+  {
+    "code": "BBH",
+    "name": "Bamboo Handles"
+  },
+  {
+    "code": "FDT",
+    "name": "Floor Drain Trap"
+  },
+  {
+    "code": "FJD",
+    "name": "Fold Jute Dhurries"
+  }
+]

@@ -1,0 +1,593 @@
+[
+  {
+    "code": "BND",
+    "name": "Buenos Diyas",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Small (set of 4)"
+      },
+      {
+        "code": "02",
+        "name": "Big (set of 2)"
+      },
+      {
+        "code": "03",
+        "name": "Cotton Wicks"
+      }
+    ]
+  },
+  {
+    "code": "DOL",
+    "name": "D\u012bp\u0101",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Tall"
+      },
+      {
+        "code": "02",
+        "name": "Wide"
+      }
+    ]
+  },
+  {
+    "code": "COD",
+    "name": "Chulha",
+    "sizes": []
+  },
+  {
+    "code": "TBL",
+    "name": "Topologic Bowls",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d8150"
+      },
+      {
+        "code": "02",
+        "name": "\u00d8200"
+      },
+      {
+        "code": "03",
+        "name": "\u00d8260"
+      },
+      {
+        "code": "04",
+        "name": "\u00d8300"
+      },
+      {
+        "code": "05",
+        "name": "\u00d8400"
+      }
+    ]
+  },
+  {
+    "code": "ALC",
+    "name": "Alcove",
+    "sizes": []
+  },
+  {
+    "code": "BBL",
+    "name": "Building Blocks",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "(w/o Holder)"
+      },
+      {
+        "code": "02",
+        "name": "(with Holder)"
+      }
+    ]
+  },
+  {
+    "code": "BSS",
+    "name": "Sanitizer Stand",
+    "sizes": []
+  },
+  {
+    "code": "GML",
+    "name": "Gamla",
+    "sizes": []
+  },
+  {
+    "code": "BKN",
+    "name": "Bookends",
+    "sizes": []
+  },
+  {
+    "code": "PPM",
+    "name": "Pepper Mill",
+    "sizes": []
+  },
+  {
+    "code": "7TL",
+    "name": "Seven Tube Light",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Vertical 2ft"
+      },
+      {
+        "code": "02",
+        "name": "Vertical 4ft"
+      },
+      {
+        "code": "03",
+        "name": "Floor"
+      },
+      {
+        "code": "04",
+        "name": "Horizontal"
+      }
+    ]
+  },
+  {
+    "code": "SSL",
+    "name": "Standing Straight Lamp",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Floor"
+      },
+      {
+        "code": "02",
+        "name": "Desk"
+      }
+    ]
+  },
+  {
+    "code": "RRL",
+    "name": "Rolling Round Light",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d8125"
+      }
+    ]
+  },
+  {
+    "code": "FFL",
+    "name": "Front Facing Light",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Single"
+      },
+      {
+        "code": "02",
+        "name": "Double"
+      }
+    ]
+  },
+  {
+    "code": "ART",
+    "name": "Art Light",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "RCC"
+      },
+      {
+        "code": "02",
+        "name": "False Ceiling"
+      },
+      {
+        "code": "03",
+        "name": "False Ceiling - UNISER"
+      },
+      {
+        "code": "04",
+        "name": "Pendant"
+      },
+      {
+        "code": "05",
+        "name": "Wall"
+      },
+      {
+        "code": "06",
+        "name": "Table"
+      }
+    ]
+  },
+  {
+    "code": "DOM",
+    "name": "Dome Uplight",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Single"
+      }
+    ]
+  },
+  {
+    "code": "1TL",
+    "name": "One Tube Light",
+    "sizes": []
+  },
+  {
+    "code": "FFC",
+    "name": "Folding Flat Chair",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Standard"
+      },
+      {
+        "code": "02",
+        "name": "Pressed Leather"
+      },
+      {
+        "code": "03",
+        "name": "Slung Leather"
+      }
+    ]
+  },
+  {
+    "code": "FFTR",
+    "name": "Folding Flat Trestles",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "(1 pair)"
+      }
+    ]
+  },
+  {
+    "code": "FFTB",
+    "name": "Folding Flat Table",
+    "sizes": []
+  },
+  {
+    "code": "FFR",
+    "name": "Folding Flat Chair Towel Rack",
+    "sizes": []
+  },
+  {
+    "code": "CHS",
+    "name": "Hold Shelf",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "1174mm (2 Bays)"
+      },
+      {
+        "code": "02",
+        "name": "1174mm (Extra Bay)"
+      },
+      {
+        "code": "03",
+        "name": "1544mm (2 Bays)"
+      },
+      {
+        "code": "04",
+        "name": "1544mm (Extra Bay)"
+      },
+      {
+        "code": "05",
+        "name": "1914mm (2 Bays)"
+      },
+      {
+        "code": "06",
+        "name": "1914mm (Extra Bay)"
+      },
+      {
+        "code": "07",
+        "name": "2284mm (2 Bays)"
+      },
+      {
+        "code": "08",
+        "name": "2284mm (Extra Bay)"
+      },
+      {
+        "code": "09",
+        "name": "2654mm (2 Bays)"
+      },
+      {
+        "code": "10",
+        "name": "2654mm (Extra Bay)"
+      },
+      {
+        "code": "11",
+        "name": "2400mm (3 Bays) Rosewood"
+      }
+    ]
+  },
+  {
+    "code": "3CT",
+    "name": "Three Cylinder Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d81200 Marble"
+      },
+      {
+        "code": "02",
+        "name": "\u00d81400 Marble"
+      },
+      {
+        "code": "03",
+        "name": "\u00d81200 Terrazzo"
+      },
+      {
+        "code": "04",
+        "name": "\u00d81400 Terrazzo"
+      }
+    ]
+  },
+  {
+    "code": "RTT",
+    "name": "Right Triangle Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d81200"
+      }
+    ]
+  },
+  {
+    "code": "3LT",
+    "name": "Three Legged Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "H410"
+      },
+      {
+        "code": "02",
+        "name": "\u00d81200"
+      },
+      {
+        "code": "03",
+        "name": "\u00d81400"
+      }
+    ]
+  },
+  {
+    "code": "TRT",
+    "name": "Trestle Table",
+    "sizes": [
+      {
+        "code": "00",
+        "name": "Only Trestles"
+      },
+      {
+        "code": "01",
+        "name": "1800mm"
+      },
+      {
+        "code": "02",
+        "name": "2000mm"
+      },
+      {
+        "code": "03",
+        "name": "2600mm"
+      },
+      {
+        "code": "04",
+        "name": "3200mm"
+      }
+    ]
+  },
+  {
+    "code": "PTT",
+    "name": "Pinned Trestle Table",
+    "sizes": [
+      {
+        "code": "00",
+        "name": "Only Trestles"
+      },
+      {
+        "code": "01",
+        "name": "2000mm"
+      },
+      {
+        "code": "02",
+        "name": "2600mm"
+      },
+      {
+        "code": "03",
+        "name": "3200mm"
+      }
+    ]
+  },
+  {
+    "code": "SWT",
+    "name": "Stone Wood Table",
+    "sizes": []
+  },
+  {
+    "code": "SST",
+    "name": "Slant Side Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d8400"
+      },
+      {
+        "code": "02",
+        "name": "\u00d8500"
+      },
+      {
+        "code": "03",
+        "name": "\u00d8800"
+      }
+    ]
+  },
+  {
+    "code": "SPT",
+    "name": "Splayed Plank",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Table 2800mm"
+      },
+      {
+        "code": "02",
+        "name": "Table 3200mm"
+      },
+      {
+        "code": "03",
+        "name": "Table 3600mm"
+      },
+      {
+        "code": "04",
+        "name": "Table 4000mm"
+      },
+      {
+        "code": "05",
+        "name": "Bench 1440mm"
+      },
+      {
+        "code": "06",
+        "name": "Bench 1620mm"
+      },
+      {
+        "code": "07",
+        "name": "Bench 1800mm"
+      }
+    ]
+  },
+  {
+    "code": "PSC",
+    "name": "Profile Stone Console",
+    "sizes": []
+  },
+  {
+    "code": "TPT",
+    "name": "Truncated Pyramid Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Triangle"
+      },
+      {
+        "code": "02",
+        "name": "Square"
+      }
+    ]
+  },
+  {
+    "code": "WBC",
+    "name": "Woven Back Chair",
+    "sizes": []
+  },
+  {
+    "code": "FJT",
+    "name": "Fillet Joint Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Square 1080mm"
+      },
+      {
+        "code": "02",
+        "name": "Square 1200mm"
+      },
+      {
+        "code": "03",
+        "name": "Square 1440mm"
+      },
+      {
+        "code": "04",
+        "name": "Rectangle 1560mm"
+      },
+      {
+        "code": "05",
+        "name": "Rectangle 1200mm"
+      },
+      {
+        "code": "06",
+        "name": "Hexagon"
+      },
+      {
+        "code": "07",
+        "name": "Square 1200x1200"
+      },
+      {
+        "code": "08",
+        "name": "Square 1400x1400"
+      },
+      {
+        "code": "09",
+        "name": "Rectangle 1200x500"
+      },
+      {
+        "code": "10",
+        "name": "Rectangle 1560x650"
+      }
+    ]
+  },
+  {
+    "code": "TBK",
+    "name": "Topologic Knobs",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "\u00d830"
+      },
+      {
+        "code": "02",
+        "name": "\u00d850"
+      }
+    ]
+  },
+  {
+    "code": "TWB",
+    "name": "Tower Bolt",
+    "sizes": []
+  },
+  {
+    "code": "OFF",
+    "name": "Offset",
+    "sizes": []
+  },
+  {
+    "code": "CYL",
+    "name": "Cylinder",
+    "sizes": []
+  },
+  {
+    "code": "CFH",
+    "name": "Cast and Faced",
+    "sizes": []
+  },
+  {
+    "code": "DHK",
+    "name": "Double Hemisphere Knob",
+    "sizes": []
+  },
+  {
+    "code": "BBH",
+    "name": "Bamboo Handles",
+    "sizes": []
+  },
+  {
+    "code": "FDT",
+    "name": "Floor Drain Trap",
+    "sizes": []
+  },
+  {
+    "code": "FJD",
+    "name": "Fold Jute Dhurries",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Runner 2X7.5"
+      },
+      {
+        "code": "02",
+        "name": "Small 6X4"
+      },
+      {
+        "code": "03",
+        "name": "Medium 5X7.5"
+      },
+      {
+        "code": "04",
+        "name": "Large 9X6"
+      }
+    ]
+  }
+]
