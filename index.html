@@ -440,7 +440,7 @@
                     materialFinishSelect.appendChild(option);
                 });
             } else {
-                // Edge Case: If material has no finishes, treat it as a final selection
+                // Edge Case: If material has no finishes, treat it as a final selection option
                 materialFinishSelect.innerHTML = '<option value="XX" selected>XX - No Finish Required</option>';
             }
         }
@@ -464,7 +464,7 @@
                 sizeTypeSelect.appendChild(option);
             });
         } else {
-            // Edge Case: Default size if no sizes are defined (better than nothing)
+            // Edge Case: Default size if no sizes are defined
             sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default / N/A</option>`;
         }
     };
@@ -515,40 +515,39 @@
             return;
         }
 
-        // --- MODIFIED CODE LENGTH VALIDATION ---
+        // --- CODE LENGTH VALIDATION (Allows 3 or 4 Product Code characters) ---
         productCode = String(productCode).trim();
         sizeType = String(sizeType).trim();
         
-        // CHECK 1: Product Code can be 3 or 4 characters
+        // Product Code Check (3 or 4 characters)
         if (productCode.length < 3 || productCode.length > 4) {
              showCustomAlert(`Error: Product Code (${productCode}) must be 3 or 4 characters.`);
              return;
         }
 
-        // CHECK 2: Size/Type Code must still be 2 characters
+        // Size/Type Code Check (2 characters)
         if (sizeType.length !== 2) {
              showCustomAlert(`Error: Size/Type Code (${sizeType}) must be exactly 2 characters.`);
              return;
         }
         
-        // CHECK 3: Material and Finish codes maximum length
+        // Material and Finish codes maximum length
         if (material1Type.length > 2 || material1Finish.length > 2 || material2Type.length > 2 || material2Finish.length > 2) {
              showCustomAlert('Error: Material and Finish codes cannot exceed 2 characters.');
              return;
         }
-        // --------------------------------------------------
+        // ----------------------------------------------------------------------
 
         let sku = `${productCategory}-${productCode}-${sizeType}`;
         let description = '';
 
-        // Edge Case: Ensure product is found before proceeding to description
         const product = allProducts.find(p => p.code === productCode);
         if (!product) {
              showCustomAlert('Error: Selected Product Code not found in data source.');
              return;
         }
 
-        // Check if Primary Material Type is *not* "None" (code '0')
+        // Primary Material Logic (Allows code '0' for finish if the material type is selected)
         if (material1Type && material1Type !== '0') {
             if (!material1Finish) {
                 showCustomAlert('Please select a valid Primary Material Finish.');
@@ -565,7 +564,7 @@
 
             description = `${product.name}, made in ${m1Name} with a ${f1Name} finish`;
             
-            // Check if Secondary Material Type is *not* "None" (code '0')
+            // Secondary Material Logic
             if (material2Type && material2Type !== '0') {
                 if (!material2Finish) {
                     showCustomAlert('Please select a valid Secondary Material Finish.');
@@ -582,99 +581,7 @@
                 description += ` and a secondary material of ${m2Name} with a ${f2Name} finish`;
             }
         } else if (material2Type && material2Type !== '0') {
-            // Edge Case: Prevents orphaned secondary material selection
-            showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
-            return;
-        } else {
-            // Case where both are "None" or unselected
-            description = `${product.name}`;
-        }
-
-        description += '.';
-
-        generatedSkuEl.textContent = sku;
-        generatedDescriptionEl.textContent = description;
-
-        skus.push({ sku: sku, description: description });
-        updateHistoryTable();
-    };
-        const productCategory = productCategorySelect.value;
-        let productCode = productCodeSelect.value;
-        let sizeType = sizeTypeSelect.value;
-        const material1Type = material1TypeSelect.value;
-        const material1Finish = material1FinishSelect.value;
-        const material2Type = material2TypeSelect.value;
-        const material2Finish = material2FinishSelect.value;
-
-        if (!productCategory || !productCode || !sizeType) {
-            showCustomAlert('Please select a product category, code, and size/type.');
-            return;
-        }
-
-        // --- EXTREME EDGE CASE: CODE LENGTH VALIDATION ---
-        productCode = String(productCode).trim();
-        sizeType = String(sizeType).trim();
-        
-        if (productCode.length !== 4) {
-             showCustomAlert(`Error: Product Code (${productCode}) must be exactly 4 characters.`);
-             return;
-        }
-        if (sizeType.length !== 2) {
-             showCustomAlert(`Error: Size/Type Code (${sizeType}) must be exactly 2 characters.`);
-             return;
-        }
-        if (material1Type.length > 2 || material1Finish.length > 2 || material2Type.length > 2 || material2Finish.length > 2) {
-             showCustomAlert('Error: Material and Finish codes cannot exceed 2 characters.');
-             return;
-        }
-        // --------------------------------------------------
-
-        let sku = `${productCategory}-${productCode}-${sizeType}`;
-        let description = '';
-
-        // Edge Case: Ensure product is found before proceeding to description
-        const product = allProducts.find(p => p.code === productCode);
-        if (!product) {
-             showCustomAlert('Error: Selected Product Code not found in data source.');
-             return;
-        }
-
-        // Check if Primary Material Type is *not* "None" (code '0')
-        if (material1Type && material1Type !== '0') {
-            // No explicit check for '0' here allows 'Unfinished' (code '0') to pass if material is selected
-            if (!material1Finish) {
-                showCustomAlert('Please select a valid Primary Material Finish.');
-                return;
-            }
-            sku += `-${material1Type}${material1Finish}`;
-            
-            // Edge Case: Use safe access and provide fallback description if material/finish object is missing
-            const m1 = materials.find(m => m.code === material1Type);
-            const f1 = m1?.finishes?.find(f => f.code === material1Finish);
-
-            const m1Name = m1?.name || `Material ${material1Type}`;
-            const f1Name = f1?.name || `Finish ${material1Finish}`;
-
-            description = `${product.name}, made in ${m1Name} with a ${f1Name} finish`;
-            
-            // Check if Secondary Material Type is *not* "None" (code '0')
-            if (material2Type && material2Type !== '0') {
-                if (!material2Finish) {
-                    showCustomAlert('Please select a valid Secondary Material Finish.');
-                    return;
-                }
-                sku += `-${material2Type}${material2Finish}`;
-
-                const m2 = materials.find(m => m.code === material2Type);
-                const f2 = m2?.finishes?.find(f => f.code === material2Finish);
-
-                const m2Name = m2?.name || `Material ${material2Type}`;
-                const f2Name = f2?.name || `Finish ${material2Finish}`;
-                
-                description += ` and a secondary material of ${m2Name} with a ${f2Name} finish`;
-            }
-        } else if (material2Type && material2Type !== '0') {
-            // Edge Case: Prevents orphaned secondary material selection
+            // Error: Orphaned secondary material
             showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
             return;
         } else {
@@ -692,11 +599,30 @@
     };
 
     const updateHistoryTable = () => {
-        // ... (function body unchanged)
+        historyTableBody.innerHTML = '';
+        skus.forEach(item => {
+            const row = `
+                <tr>
+                    <td style="font-weight: 500;">${item.sku}</td>
+                    <td>${item.description}</td>
+                </tr>
+            `;
+            historyTableBody.insertAdjacentHTML('beforeend', row);
+        });
     };
 
     const populateLegend = () => {
-        // ... (function body unchanged)
+        legendTableBody.innerHTML = '';
+        materials.forEach(material => {
+            const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
+            const row = `
+                <tr>
+                    <td style="font-weight: 500;">${material.code} - ${material.name}</td>
+                    <td>${finishes}</td>
+                </tr>
+            `;
+            legendTableBody.insertAdjacentHTML('beforeend', row);
+        });
     };
 
     const fetchAndPopulateData = async () => {
@@ -706,7 +632,6 @@
             if (!productsResponse.ok) {
                 throw new Error('Failed to load products.json');
             }
-            // Assign to allProducts for filtering later
             allProducts = await productsResponse.json();
             
             // Do NOT populate productCodeSelect yet, wait for category selection
@@ -757,10 +682,11 @@
         alertMessage = document.getElementById('alertMessage');
         alertCloseBtn = document.getElementById('alertCloseBtn');
 
-        // Added: Category change listener for filtering
+        // --- CRITICAL FIX: Category change listener for filtering ---
         productCategorySelect.addEventListener('change', () => {
             filterProductsByCategory(productCategorySelect.value);
         });
+        // ------------------------------------------------------------
 
         productCodeSelect.addEventListener('change', () => {
             populateProductSizes(productCodeSelect.value);
