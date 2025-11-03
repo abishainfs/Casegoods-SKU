@@ -204,7 +204,16 @@
   {
     "code": "1TL",
     "name": "One Tube Light",
-    "sizes": []
+    "sizes": [
+      {
+        "code": "01",
+        "name": "2ft"
+      },
+      {
+        "code": "02",
+        "name": "4ft"
+      }
+    ]
   },
   {
     "code": "FFC",
