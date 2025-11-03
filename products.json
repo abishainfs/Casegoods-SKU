@@ -1,0 +1,217 @@
+[
+  {
+    "code": "ALC",
+    "name": "Alcove",
+    "category": "Objects"
+  },
+  {
+    "code": "BND",
+    "name": "Buenos Diyas",
+    "category": "Objects"
+  },
+  {
+    "code": "BBL",
+    "name": "Building Blocks",
+    "category": "Objects"
+  },
+  {
+    "code": "DOL",
+    "name": "Dīpā Oil Lamp",
+    "category": "Objects"
+  },
+  {
+    "code": "COD",
+    "name": "Chulha Oil Diffuser",
+    "category": "Objects"
+  },
+  {
+    "code": "TBL",
+    "name": "Topologic Bowls",
+    "category": "Objects"
+  },
+  {
+    "code": "BSS",
+    "name": "Sanitizer Stand",
+    "category": "Objects"
+  },
+  {
+    "code": "GML",
+    "name": "Gamla",
+    "category": "Objects"
+  },
+  {
+    "code": "BKN",
+    "name": "Bookends",
+    "category": "Objects"
+  },
+  {
+    "code": "PPM",
+    "name": "Pepper Mill",
+    "category": "Objects"
+  },
+  {
+    "code": "7TL",
+    "name": "Seven Tube Light",
+    "category": "Lights"
+  },
+  {
+    "code": "SSL",
+    "name": "Standing Straight Lamp",
+    "category": "Lights"
+  },
+  {
+    "code": "RRL",
+    "name": "Rolling Round Light",
+    "category": "Lights"
+  },
+  {
+    "code": "FFL",
+    "name": "Front Facing Light",
+    "category": "Lights"
+  },
+  {
+    "code": "ART",
+    "name": "Art Light",
+    "category": "Lights"
+  },
+  {
+    "code": "DOM",
+    "name": "Dome Uplight",
+    "category": "Lights"
+  },
+  {
+    "code": "1TL",
+    "name": "One Tube Light",
+    "category": "Lights"
+  },
+  {
+    "code": "FFC",
+    "name": "Folding Flat Chair",
+    "category": "Furniture"
+  },
+  {
+    "code": "FFTR",
+    "name": "Folding Flat Trestles",
+    "category": "Furniture"
+  },
+  {
+    "code": "FFTB",
+    "name": "Folding Flat Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "FFR",
+    "name": "Folding Flat Chair Towel Rack",
+    "category": "Furniture"
+  },
+  {
+    "code": "CHS",
+    "name": "Hold Shelf",
+    "category": "Furniture"
+  },
+  {
+    "code": "3CT",
+    "name": "Three Cylinder Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "RTT",
+    "name": "Right Triangle Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "3LT",
+    "name": "Three Legged Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "TRT",
+    "name": "Trestle Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "PTT",
+    "name": "Pinned Trestle Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "SWT",
+    "name": "Stone Wood Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "SST",
+    "name": "Slant Side Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "SPT",
+    "name": "Splayed Plank Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "PSC",
+    "name": "Profile Stone Console",
+    "category": "Furniture"
+  },
+  {
+    "code": "TPT",
+    "name": "Truncated Pyramid Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "WBC",
+    "name": "Woven Back Chair",
+    "category": "Furniture"
+  },
+  {
+    "code": "FJT",
+    "name": "Fillet Joint Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "TBK",
+    "name": "Topologic Knobs",
+    "category": "Hardware"
+  },
+  {
+    "code": "TWB",
+    "name": "Tower Bolt",
+    "category": "Hardware"
+  },
+  {
+    "code": "OFF",
+    "name": "Offset",
+    "category": "Hardware"
+  },
+  {
+    "code": "CYL",
+    "name": "Cylinder",
+    "category": "Hardware"
+  },
+  {
+    "code": "CFH",
+    "name": "Cast and Faced",
+    "category": "Hardware"
+  },
+  {
+    "code": "DHK",
+    "name": "Double Hemisphere Knob",
+    "category": "Hardware"
+  },
+  {
+    "code": "BBH",
+    "name": "Bamboo Handles",
+    "category": "Hardware"
+  },
+  {
+    "code": "FDT",
+    "name": "Floor Drain Trap",
+    "category": "Hardware"
+  },
+  {
+    "code": "FJD",
+    "name": "Fold Jute Dhurries",
+    "category": "Textiles"
+  }
+]
