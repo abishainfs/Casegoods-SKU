@@ -359,289 +359,298 @@
     </div>
 
     <script>
-        let allProducts = [];
-        let materials = [];
-        let productDetails = [];
-        let skus = [];
+    // Renamed 'products' to 'allProducts' to store the full list of products
+    let allProducts = [];
+    let materials = [];
+    let productDetails = [];
+    let skus = [];
 
-        // Element references
-        let productCategorySelect, productCodeSelect, sizeTypeSelect, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
-        let generateSkuBtn, copySkuBtn, primaryMaterialTooltipBtn, secondaryMaterialTooltipBtn;
-        let generatedSkuEl, generatedDescriptionEl;
-        let legendTableBody, historyTableBody;
-        let customAlert, alertMessage, alertCloseBtn;
+    // Element references
+    let productCategorySelect, productCodeSelect, sizeTypeSelect, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
+    let generateSkuBtn, copySkuBtn, primaryMaterialTooltipBtn, secondaryMaterialTooltipBtn;
+    let generatedSkuEl, generatedDescriptionEl;
+    let legendTableBody, historyTableBody;
+    let customAlert, alertMessage, alertCloseBtn;
 
-        // Map SKU prefix to full category name in products.json
-        const categoryMap = {
-            'F': 'Furniture',
-            'L': 'Lights',
-            'O': 'Objects',
-            'H': 'Hardware'
-        };
+    // --- NEW: Category Map (Corrected for 'Lights') ---
+    const categoryMap = {
+        'F': 'Furniture',
+        'L': 'Lights', // Assumes you changed the category name in products.json to 'Lights'
+        'O': 'Objects',
+        'H': 'Hardware'
+    };
+    // ----------------------------------------------------
 
-        const showCustomAlert = (message) => {
-            alertMessage.textContent = message;
-            customAlert.classList.add('visible');
-        };
+    const showCustomAlert = (message) => {
+        alertMessage.textContent = message;
+        customAlert.classList.add('visible');
+    };
 
-        const copyToClipboard = (text) => {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showCustomAlert('SKU copied to clipboard!');
-            } catch (err) {
-                showCustomAlert('Failed to copy SKU.');
-            } finally {
-                document.body.removeChild(textarea);
-            }
-        };
+    const copyToClipboard = (text) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showCustomAlert('SKU copied to clipboard!');
+        } catch (err) {
+            showCustomAlert('Failed to copy SKU.');
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    };
 
-        const populateSelect = (selectElement, items, placeholder) => {
-            selectElement.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
-            items.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.code;
-                // Use item.name if it exists, otherwise just the code
-                const textContent = item.name ? `${item.code} - ${item.name}` : item.code;
-                option.textContent = textContent;
-                selectElement.appendChild(option);
-            });
-        };
+    const populateSelect = (selectElement, items, placeholder) => {
+        selectElement.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.code;
+            // Use item.name if it exists, otherwise just the code
+            const textContent = item.name ? `${item.code} - ${item.name}` : item.code;
+            option.textContent = textContent;
+            selectElement.appendChild(option);
+        });
+    };
 
-        const populateMaterialFinishes = (materialTypeSelect, materialFinishSelect, placeholder) => {
-            const selectedMaterialCode = materialTypeSelect.value;
-            materialFinishSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
-            if (selectedMaterialCode) {
-                const material = materials.find(m => m.code === selectedMaterialCode);
-                if (material && material.finishes) {
-                    material.finishes.forEach(finish => {
-                        const option = document.createElement('option');
-                        option.value = finish.code;
-                        option.textContent = `${finish.code} - ${finish.name}`;
-                        materialFinishSelect.appendChild(option);
-                    });
-                }
-            }
-        };
-
-        const populateProductSizes = (productCode) => {
-            const details = productDetails.find(p => p.code === productCode);
-            sizeTypeSelect.innerHTML = `<option value="" disabled selected>Select Type</option>`;
-            if (details && details.sizes) {
-                details.sizes.forEach(size => {
+    const populateMaterialFinishes = (materialTypeSelect, materialFinishSelect, placeholder) => {
+        const selectedMaterialCode = materialTypeSelect.value;
+        materialFinishSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+        if (selectedMaterialCode) {
+            const material = materials.find(m => m.code === selectedMaterialCode);
+            if (material && material.finishes) {
+                material.finishes.forEach(finish => {
                     const option = document.createElement('option');
-                    option.value = size.code;
-                    option.textContent = `${size.code} - ${size.name}`;
-                    sizeTypeSelect.appendChild(option);
+                    option.value = finish.code;
+                    option.textContent = `${finish.code} - ${finish.name}`;
+                    materialFinishSelect.appendChild(option);
                 });
-            } else {
-                sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default</option>`;
             }
-        };
-        
-        // --- MODIFIED FUNCTION: Filter Products by Category (using category name from JSON) ---
-        const filterProductsByCategory = (selectedCategoryPrefix) => {
-            // Clear product and size dropdowns
-            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Product Code</option>';
-            sizeTypeSelect.innerHTML = '<option value="" disabled selected>Select Product First</option>';
+        }
+    };
 
-            if (selectedCategoryPrefix) {
-                // Get the full category name from the map (e.g., 'F' -> 'Furniture')
-                const selectedCategoryName = categoryMap[selectedCategoryPrefix];
+    const populateProductSizes = (productCode) => {
+        const details = productDetails.find(p => p.code === productCode);
+        sizeTypeSelect.innerHTML = `<option value="" disabled selected>Select Type</option>`;
+        if (details && details.sizes) {
+            details.sizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size.code;
+                option.textContent = `${size.code} - ${size.name}`;
+                sizeTypeSelect.appendChild(option);
+            });
+        } else {
+            sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default</option>`;
+        }
+    };
+    
+    // --- ADDED: Filter Products by Category (Robust Case-Insensitive Match) ---
+    const filterProductsByCategory = (selectedCategoryPrefix) => {
+        // Clear product and size dropdowns
+        productCodeSelect.innerHTML = '<option value="" disabled selected>Select Product Code</option>';
+        sizeTypeSelect.innerHTML = '<option value="" disabled selected>Select Product First</option>';
 
-                if (selectedCategoryName) {
-                    // Filter products where the category field matches the selected category name
-                    const filteredProducts = allProducts.filter(p => p.category === selectedCategoryName);
-                    
-                    populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
-                }
-            } else {
-                productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
+        if (selectedCategoryPrefix) {
+            // Get the full category name from the map (e.g., 'L' -> 'Lights')
+            const selectedCategoryName = categoryMap[selectedCategoryPrefix];
+
+            if (selectedCategoryName) {
+                // Convert the expected name to a standard format (e.g., lowercase)
+                const standardCategoryName = selectedCategoryName.toLowerCase();
+
+                // Filter products, converting the JSON category to lowercase and trimming
+                const filteredProducts = allProducts.filter(p => {
+                    // Ensure p.category exists, convert to lowercase, trim whitespace, and compare
+                    return p.category && p.category.toLowerCase().trim() === standardCategoryName;
+                });
+                
+                populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
             }
-        };
-        // ----------------------------------------------------------------------------------------
+        } else {
+            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
+        }
+    };
+    // -------------------------------------------------------------------------
 
-        const showPrimaryMaterialTooltip = () => {
-            showCustomAlert("Please choose the material that is mainly used in the product. If there are material options in the parts, please choose constant material as the first one. Ex: SSL Floor Primary material will be Brass, and secondary will be marble (black white etc.)");
-        };
+    const showPrimaryMaterialTooltip = () => {
+        showCustomAlert("Please choose the material that is mainly used in the product. If there are material options in the parts, please choose constant material as the first one. Ex: SSL Floor Primary material will be Brass, and secondary will be marble (black white etc.)");
+    };
 
-        const showSecondaryMaterialTooltip = () => {
-            showCustomAlert("The secondary material is a constant material used in a smaller part of the product. Ex: SSL Floor Primary material is Brass, and secondary will be marble (black white etc.)");
-        };
+    const showSecondaryMaterialTooltip = () => {
+        showCustomAlert("The secondary material is a constant material used in a smaller part of the product. Ex: SSL Floor Primary material is Brass, and secondary will be marble (black white etc.)");
+    };
 
-        const generateSku = () => {
-            const productCategory = productCategorySelect.value;
-            const productCode = productCodeSelect.value;
-            const sizeType = sizeTypeSelect.value;
-            const material1Type = material1TypeSelect.value;
-            const material1Finish = material1FinishSelect.value;
-            const material2Type = material2TypeSelect.value;
-            const material2Finish = material2FinishSelect.value;
+    const generateSku = () => {
+        const productCategory = productCategorySelect.value;
+        const productCode = productCodeSelect.value;
+        const sizeType = sizeTypeSelect.value;
+        const material1Type = material1TypeSelect.value;
+        const material1Finish = material1FinishSelect.value;
+        const material2Type = material2TypeSelect.value;
+        const material2Finish = material2FinishSelect.value;
 
-            if (!productCategory || !productCode || !sizeType) {
-                showCustomAlert('Please select a product category, code, and size/type.');
+        if (!productCategory || !productCode || !sizeType) {
+            showCustomAlert('Please select a product category, code, and size/type.');
+            return;
+        }
+
+        let sku = `${productCategory}-${productCode}-${sizeType}`;
+        let description = '';
+
+        // Find the product in the full list
+        const product = allProducts.find(p => p.code === productCode);
+
+        // Check if Primary Material is *not* "None" (code '0')
+        if (material1Type && material1Type !== '0') {
+            if (!material1Finish || material1Finish === '0') {
+                showCustomAlert('Please select a valid Primary Material Finish.');
                 return;
             }
+            sku += `-${material1Type}${material1Finish}`;
+            const m1 = materials.find(m => m.code === material1Type);
+            const f1 = m1?.finishes.find(f => f.code === material1Finish);
 
-            let sku = `${productCategory}-${productCode}-${sizeType}`;
-            let description = '';
-
-            // Find the product in the full list
-            const product = allProducts.find(p => p.code === productCode);
-
-            // Check if Primary Material is *not* "None" (code '0')
-            if (material1Type && material1Type !== '0') {
-                if (!material1Finish || material1Finish === '0') {
-                    showCustomAlert('Please select a valid Primary Material Finish.');
+            description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
+            
+            // Check if Secondary Material is *not* "None" (code '0')
+            if (material2Type && material2Type !== '0') {
+                if (!material2Finish || material2Finish === '0') {
+                    showCustomAlert('Please select a valid Secondary Material Finish.');
                     return;
                 }
-                sku += `-${material1Type}${material1Finish}`;
-                const m1 = materials.find(m => m.code === material1Type);
-                const f1 = m1?.finishes.find(f => f.code === material1Finish);
-
-                description = `${product.name}, made in ${m1.name} with a ${f1.name} finish`;
-                
-                // Check if Secondary Material is *not* "None" (code '0')
-                if (material2Type && material2Type !== '0') {
-                    if (!material2Finish || material2Finish === '0') {
-                        showCustomAlert('Please select a valid Secondary Material Finish.');
-                        return;
-                    }
-                    sku += `-${material2Type}${material2Finish}`;
-                    const m2 = materials.find(m => m.code === material2Type);
-                    const f2 = m2?.finishes.find(f => f.code === material2Finish);
-                    if (m2 && f2) {
-                        description += ` and a secondary material of ${m2.name} with a ${f2.name} finish`;
-                    }
+                sku += `-${material2Type}${material2Finish}`;
+                const m2 = materials.find(m => m.code === material2Type);
+                const f2 = m2?.finishes.find(f => f.code === material2Finish);
+                if (m2 && f2) {
+                    description += ` and a secondary material of ${m2.name} with a ${f2.name} finish`;
                 }
-            } else if (material2Type && material2Type !== '0') {
-                // Prevent selecting a secondary material if primary is "None"
-                showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
-                return;
-            } else {
-                // Case where both are "None" or unselected
-                description = `${product.name}`;
             }
+        } else if (material2Type && material2Type !== '0') {
+            // Prevent selecting a secondary material if primary is "None"
+            showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
+            return;
+        } else {
+            // Case where both are "None" or unselected
+            description = `${product.name}`;
+        }
 
-            description += '.';
+        description += '.';
 
-            generatedSkuEl.textContent = sku;
-            generatedDescriptionEl.textContent = description;
+        generatedSkuEl.textContent = sku;
+        generatedDescriptionEl.textContent = description;
 
-            skus.push({ sku: sku, description: description });
-            updateHistoryTable();
-        };
+        skus.push({ sku: sku, description: description });
+        updateHistoryTable();
+    };
 
-        const updateHistoryTable = () => {
-            historyTableBody.innerHTML = '';
-            skus.forEach(item => {
-                const row = `
-                    <tr>
-                        <td style="font-weight: 500;">${item.sku}</td>
-                        <td>${item.description}</td>
-                    </tr>
-                `;
-                historyTableBody.insertAdjacentHTML('beforeend', row);
-            });
-        };
+    const updateHistoryTable = () => {
+        historyTableBody.innerHTML = '';
+        skus.forEach(item => {
+            const row = `
+                <tr>
+                    <td style="font-weight: 500;">${item.sku}</td>
+                    <td>${item.description}</td>
+                </tr>
+            `;
+            historyTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    };
 
-        const populateLegend = () => {
-            legendTableBody.innerHTML = '';
-            materials.forEach(material => {
-                const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
-                const row = `
-                    <tr>
-                        <td style="font-weight: 500;">${material.code} - ${material.name}</td>
-                        <td>${finishes}</td>
-                    </tr>
-                `;
-                legendTableBody.insertAdjacentHTML('beforeend', row);
-            });
-        };
+    const populateLegend = () => {
+        legendTableBody.innerHTML = '';
+        materials.forEach(material => {
+            const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
+            const row = `
+                <tr>
+                    <td style="font-weight: 500;">${material.code} - ${material.name}</td>
+                    <td>${finishes}</td>
+                </tr>
+            `;
+            legendTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    };
 
-        const fetchAndPopulateData = async () => {
-            try {
-                // Fetch products data (now into allProducts)
-                const productsResponse = await fetch('products.json');
-                if (!productsResponse.ok) {
-                    throw new Error('Failed to load products.json');
-                }
-                allProducts = await productsResponse.json();
-                
-                // Do not populate productCodeSelect yet, wait for category selection
-                productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
-
-
-                // Fetch materials data
-                const materialsResponse = await fetch('materials.json');
-                if (!materialsResponse.ok) {
-                    throw new Error('Failed to load materials.json');
-                }
-                materials = await materialsResponse.json();
-                populateSelect(material1TypeSelect, materials, 'Select Type');
-                populateSelect(material2TypeSelect, materials, 'Select Type');
-                
-                // Fetch product details data
-                const productDetailsResponse = await fetch('product_details.json');
-                if (!productDetailsResponse.ok) {
-                    throw new Error('Failed to load product_details.json');
-                }
-                productDetails = await productDetailsResponse.json();
-                
-                populateLegend();
-            } catch (e) {
-                console.error("Error fetching data:", e);
-                showCustomAlert("Error loading product and material data. Please check if the files exist.");
+    const fetchAndPopulateData = async () => {
+        try {
+            // Fetch products data
+            const productsResponse = await fetch('products.json');
+            if (!productsResponse.ok) {
+                throw new Error('Failed to load products.json');
             }
-        };
+            // Assign to allProducts for filtering later
+            allProducts = await productsResponse.json();
+            
+            // --- MODIFIED: Do NOT populate productCodeSelect yet, wait for category selection ---
+            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
 
-        const runApplication = () => {
-            productCategorySelect = document.getElementById('productCategory');
-            productCodeSelect = document.getElementById('productCode');
-            sizeTypeSelect = document.getElementById('sizeType');
-            material1TypeSelect = document.getElementById('material1Type');
-            material1FinishSelect = document.getElementById('material1Finish');
-            material2TypeSelect = document.getElementById('material2Type');
-            material2FinishSelect = document.getElementById('material2Finish');
-            generateSkuBtn = document.getElementById('generateSkuBtn');
-            copySkuBtn = document.getElementById('copySkuBtn');
-            primaryMaterialTooltipBtn = document.getElementById('primaryMaterialTooltipBtn');
-            secondaryMaterialTooltipBtn = document.getElementById('secondaryMaterialTooltipBtn');
-            generatedSkuEl = document.getElementById('generatedSku');
-            generatedDescriptionEl = document.getElementById('generatedDescription');
-            legendTableBody = document.getElementById('legendTableBody');
-            historyTableBody = document.getElementById('historyTableBody');
-            customAlert = document.getElementById('customAlert');
-            alertMessage = document.getElementById('alertMessage');
-            alertCloseBtn = document.getElementById('alertCloseBtn');
+            // Fetch materials data
+            const materialsResponse = await fetch('materials.json');
+            if (!materialsResponse.ok) {
+                throw new Error('Failed to load materials.json');
+            }
+            materials = await materialsResponse.json();
+            populateSelect(material1TypeSelect, materials, 'Select Type');
+            populateSelect(material2TypeSelect, materials, 'Select Type');
+            
+            // Fetch product details data
+            const productDetailsResponse = await fetch('product_details.json');
+            if (!productDetailsResponse.ok) {
+                throw new Error('Failed to load product_details.json');
+            }
+            productDetails = await productDetailsResponse.json();
+            
+            populateLegend();
+        } catch (e) {
+            console.error("Error fetching data:", e);
+            showCustomAlert("Error loading product and material data. Please check if the files exist.");
+        }
+    };
 
-            // Category change listener for filtering
-            productCategorySelect.addEventListener('change', () => {
-                filterProductsByCategory(productCategorySelect.value);
-            });
+    const runApplication = () => {
+        productCategorySelect = document.getElementById('productCategory');
+        productCodeSelect = document.getElementById('productCode');
+        sizeTypeSelect = document.getElementById('sizeType');
+        material1TypeSelect = document.getElementById('material1Type');
+        material1FinishSelect = document.getElementById('material1Finish');
+        material2TypeSelect = document.getElementById('material2Type');
+        material2FinishSelect = document.getElementById('material2Finish');
+        generateSkuBtn = document.getElementById('generateSkuBtn');
+        copySkuBtn = document.getElementById('copySkuBtn');
+        primaryMaterialTooltipBtn = document.getElementById('primaryMaterialTooltipBtn');
+        secondaryMaterialTooltipBtn = document.getElementById('secondaryMaterialTooltipBtn');
+        generatedSkuEl = document.getElementById('generatedSku');
+        generatedDescriptionEl = document.getElementById('generatedDescription');
+        legendTableBody = document.getElementById('legendTableBody');
+        historyTableBody = document.getElementById('historyTableBody');
+        customAlert = document.getElementById('customAlert');
+        alertMessage = document.getElementById('alertMessage');
+        alertCloseBtn = document.getElementById('alertCloseBtn');
 
-            productCodeSelect.addEventListener('change', () => {
-                populateProductSizes(productCodeSelect.value);
-            });
-            material1TypeSelect.addEventListener('change', () => {
-                populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
-            });
-            material2TypeSelect.addEventListener('change', () => {
-                populateMaterialFinishes(material2TypeSelect, material2FinishSelect, 'Select Finish');
-            });
-            generateSkuBtn.addEventListener('click', generateSku);
-            copySkuBtn.addEventListener('click', () => copyToClipboard(generatedSkuEl.textContent));
-            primaryMaterialTooltipBtn.addEventListener('click', showPrimaryMaterialTooltip);
-            secondaryMaterialTooltipBtn.addEventListener('click', showSecondaryMaterialTooltip);
-            alertCloseBtn.addEventListener('click', () => customAlert.classList.remove('visible'));
+        // --- ADDED: Category change listener for filtering ---
+        productCategorySelect.addEventListener('change', () => {
+            filterProductsByCategory(productCategorySelect.value);
+        });
+        // ----------------------------------------------------
 
-            fetchAndPopulateData();
-        };
+        productCodeSelect.addEventListener('change', () => {
+            populateProductSizes(productCodeSelect.value);
+        });
+        material1TypeSelect.addEventListener('change', () => {
+            populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
+        });
+        material2TypeSelect.addEventListener('change', () => {
+            populateMaterialFinishes(material2TypeSelect, material2FinishSelect, 'Select Finish');
+        });
+        generateSkuBtn.addEventListener('click', generateSku);
+        copySkuBtn.addEventListener('click', () => copyToClipboard(generatedSkuEl.textContent));
+        primaryMaterialTooltipBtn.addEventListener('click', showPrimaryMaterialTooltip);
+        secondaryMaterialTooltipBtn.addEventListener('click', showSecondaryMaterialTooltip);
+        alertCloseBtn.addEventListener('click', () => customAlert.classList.remove('visible'));
 
-        window.onload = runApplication;
-    </script>
+        fetchAndPopulateData();
+    };
+
+    window.onload = runApplication;
+</script>
 </body>
 </html>
