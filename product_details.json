@@ -139,12 +139,34 @@
     ]
   },
   {
+    "code": "OTL",
+    "name": "Outline Lamp",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Table"
+      },
+      {
+        "code": "02",
+        "name": "Floor"
+      },
+      {
+        "code": "03",
+        "name": "Pendant"
+      }
+    ]
+  },
+  {
     "code": "RRL",
     "name": "Rolling Round Light",
     "sizes": [
       {
         "code": "01",
         "name": "\u00d8125"
+      },
+      {
+        "code": "02",
+        "name": "\u00d8200"
       }
     ]
   },
@@ -168,27 +190,27 @@
     "sizes": [
       {
         "code": "01",
-        "name": "RCC"
+        "name": "Ø63 RCC Ceiling"
       },
       {
         "code": "02",
-        "name": "False Ceiling"
+        "name": "Ø63 False Ceiling"
       },
       {
         "code": "03",
-        "name": "False Ceiling - UNISER"
+        "name": "Ø58 False Ceiling - Integrated LED"
       },
       {
         "code": "04",
-        "name": "Pendant"
+        "name": "Ø63 Pendant"
       },
       {
         "code": "05",
-        "name": "Wall"
+        "name": "Ø63 Wall"
       },
       {
         "code": "06",
-        "name": "Table"
+        "name": "Ø63 Table"
       }
     ]
   },
@@ -305,10 +327,6 @@
       {
         "code": "10",
         "name": "2654mm (Extra Bay)"
-      },
-      {
-        "code": "11",
-        "name": "2400mm (3 Bays) Rosewood"
       }
     ]
   },
@@ -327,18 +345,46 @@
     ]
   },
   {
+    "code": "APT",
+    "name": "Aperture Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Ø1500"
+      }
+    ]
+  },
+  {
     "code": "RTT",
     "name": "Right Triangle Table",
     "sizes": [
       {
         "code": "01",
         "name": "\u00d81200"
+      },
+      {
+        "code": "02",
+        "name": "\u00d81500"
+      }
+    ]
+  },
+  {
+    "code": "ARS",
+    "name": "Array Shelf",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "1800mm"
+      },
+      {
+        "code": "02",
+        "name": "2200mm"
       }
     ]
   },
   {
     "code": "3LT",
-    "name": "Three Legged Table",
+    "name": "Three Leg Table",
     "sizes": [
       {
         "code": "01",
@@ -452,16 +498,30 @@
     "name": "Splayed Plank Bench",
     "sizes": [
       {
-        "code": "05",
+        "code": "01",
         "name": "Bench 1440mm"
       },
       {
-        "code": "06",
+        "code": "02",
         "name": "Bench 1620mm"
       },
       {
-        "code": "07",
+        "code": "03",
         "name": "Bench 1800mm"
+      }
+    ]
+  },
+  {
+    "code": "SPN",
+    "name": "Spindle Chair",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Dining Chair - Upholstered Seat"
+      },
+      {
+        "code": "02",
+        "name": "Lounge Chair - Upholstered Seat"
       }
     ]
   },
@@ -485,13 +545,32 @@
     ]
   },
   {
-    "code": "WBC",
-    "name": "Woven Back Chair",
-    "sizes": []
+    "code": "AVC",
+    "name": "Avasara Chair",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Bespoke Upholstered"
+      }
+    ]
   },
   {
-    "code": "FJT",
-    "name": "Fillet Joint Table",
+    "code": "AVB",
+    "name": "Avasara Bench",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Straight Edge 2400m - Upholstered"
+      },
+      {
+        "code": "02",
+        "name": "Live Edge 2400mm"
+      }
+    ]
+  },
+  {
+    "code": "FET",
+    "name": "Fillet Edge Table",
     "sizes": [
       {
         "code": "01",
@@ -536,6 +615,42 @@
     ]
   },
   {
+    "code": "FLT",
+    "name": "Flared Leg Table",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "1800mm"
+      },
+      {
+        "code": "02",
+        "name": "2400mm"
+      }
+    ]
+  },
+  {
+    "code": "DRS",
+    "name": "Drift Chair",
+    "sizes": [
+      {
+        "code": "01",
+        "name": "Dining Chair - Wood Seat"
+      },
+      {
+        "code": "02",
+        "name": "Dining Chair - Upholstered Seat"
+      },
+      {
+        "code": "03",
+        "name": "Lounge Chair - Upholstered Seat"
+      },
+      {
+        "code": "04",
+        "name": "Bar Stool"
+      }
+    ]
+  },
+  {
     "code": "TBK",
     "name": "Topologic Knobs",
     "sizes": [
@@ -552,7 +667,16 @@
   {
     "code": "TWB",
     "name": "Tower Bolt",
-    "sizes": []
+    "sizes": [
+      {
+        "code": "01",
+        "name": "6in"
+      },
+      {
+        "code": "02",
+        "name": "12in"
+      }
+    ]
   },
  {
   "code": "OFF",
@@ -674,11 +798,7 @@
     "sizes": [
       {
       "code": "01",
-      "name": "Ø30"
-    },
-    {
-      "code": "02",
-      "name": "Ø50"
+      "name": "Ø45"
     }
   ]
  },
@@ -723,7 +843,50 @@
   {
     "code": "FDT",
     "name": "Floor Drain Trap",
-    "sizes": []
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Ø62"
+    },
+    {
+      "code": "02",
+      "name": "Ø80"
+    }
+    ]
+  },
+  {
+    "code": "CLH",
+    "name": "Cast Lever Handles",
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Type 1"
+    }
+    ]
+  },
+  {
+    "code": "CNH",
+    "name": "Concealed Handles",
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Standard"
+    }
+    ]
+  },
+  {
+    "code": "PBH",
+    "name": "Pebble Handles",
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Small"
+    },
+    {
+      "code": "02",
+      "name": "Large"
+    }
+    ]
   },
   {
     "code": "FJD",

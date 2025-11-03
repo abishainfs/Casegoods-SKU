@@ -65,6 +65,11 @@
     "category": "Lights"
   },
   {
+    "code": "OTL",
+    "name": "Outline Lamp",
+    "category": "Lights"
+  },
+  {
     "code": "SSL",
     "name": "Standing Straight Lamp",
     "category": "Lights"
@@ -136,7 +141,7 @@
   },
   {
     "code": "3LT",
-    "name": "Three Legged Table",
+    "name": "Three Leg Table",
     "category": "Furniture"
   },
   {
@@ -180,13 +185,23 @@
     "category": "Furniture"
   },
   {
-    "code": "WBC",
-    "name": "Woven Back Chair",
+    "code": "AVC",
+    "name": "Avasara Chair",
     "category": "Furniture"
   },
   {
-    "code": "FJT",
-    "name": "Fillet Joint Table",
+    "code": "AVB",
+    "name": "Avasara Bench",
+    "category": "Furniture"
+  },
+  {
+    "code": "FET",
+    "name": "Fillet Edge Table",
+    "category": "Furniture"
+  },
+  {
+    "code": "APT",
+    "name": "Aperture Table",
     "category": "Furniture"
   },
   {
@@ -195,8 +210,13 @@
     "category": "Furniture"
   },
   {
-    "code": "FLT",
-    "name": "Flared Leg Table",
+    "code": "DRS",
+    "name": "Drift Chair",
+    "category": "Furniture"
+  },
+  {
+    "code": "SPN",
+    "name": "Spindle Chair",
     "category": "Furniture"
   },
   {
@@ -237,6 +257,16 @@
   {
     "code": "FDT",
     "name": "Floor Drain Trap",
+    "category": "Hardware"
+  },
+  {
+    "code": "CLH",
+    "name": "Cast Lever Handles",
+    "category": "Hardware"
+  },
+    {
+    "code": "CNH",
+    "name": "Concealed Handles",
     "category": "Hardware"
   },
   {
