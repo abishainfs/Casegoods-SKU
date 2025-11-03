@@ -422,7 +422,7 @@
   },
   {
     "code": "SPT",
-    "name": "Splayed Plank",
+    "name": "Splayed Plank Table",
     "sizes": [
       {
         "code": "01",
@@ -439,7 +439,13 @@
       {
         "code": "04",
         "name": "Table 4000mm"
-      },
+      }
+    ]
+  },
+   {
+    "code": "SPB",
+    "name": "Splayed Plank Bench",
+    "sizes": [
       {
         "code": "05",
         "name": "Bench 1440mm"
@@ -584,22 +590,130 @@
   {
     "code": "CYL",
     "name": "Cylinder",
-    "sizes": []
-  },
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Type 1"
+    },
+    {
+      "code": "02",
+      "name": "Type 2"
+    },
+    {
+      "code": "03",
+      "name": "Type 3"
+    },
+    {
+      "code": "04",
+      "name": "Type 4"
+    },
+    {
+      "code": "05",
+      "name": "Type 5"
+    },
+    {
+      "code": "06",
+      "name": "Type 6"
+    },
+    {
+      "code": "07",
+      "name": "Type 7"
+    },
+    {
+      "code": "08",
+      "name": "Type 8"
+    }
+  ]
+ },
   {
     "code": "CFH",
     "name": "Cast and Faced",
-    "sizes": []
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Type 1"
+    },
+    {
+      "code": "02",
+      "name": "Type 2"
+    },
+    {
+      "code": "03",
+      "name": "Type 3"
+    },
+    {
+      "code": "04",
+      "name": "Type 4"
+    },
+    {
+      "code": "05",
+      "name": "Type 5"
+    },
+    {
+      "code": "06",
+      "name": "Type 6"
+    },
+    {
+      "code": "07",
+      "name": "Type 7"
+    },
+    {
+      "code": "08",
+      "name": "Type 8"
+    }
+  ]
   },
   {
     "code": "DHK",
     "name": "Double Hemisphere Knob",
-    "sizes": []
-  },
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Ø30"
+    },
+    {
+      "code": "02",
+      "name": "Ø50"
+    }
+  ]
+ },
   {
     "code": "BBH",
     "name": "Bamboo Handles",
-    "sizes": []
+    "sizes": [
+      {
+      "code": "01",
+      "name": "Type 1"
+    },
+    {
+      "code": "02",
+      "name": "Type 2"
+    },
+    {
+      "code": "03",
+      "name": "Type 3"
+    },
+    {
+      "code": "04",
+      "name": "Type 4"
+    },
+    {
+      "code": "05",
+      "name": "Type 5"
+    },
+    {
+      "code": "06",
+      "name": "Type 6"
+    },
+    {
+      "code": "07",
+      "name": "Type 7"
+    },
+    {
+      "code": "08",
+      "name": "Type 8"
+    }
+  ]
   },
   {
     "code": "FDT",
