@@ -1,5 +1,4 @@
 [
-  //Objects
   {
     "code": "ALC",
     "name": "Alcove",
@@ -38,9 +37,7 @@
   {
     "code": "TBL",
     "name": "Topologic Bowls",
-    "category": "Objects"
-  },
-//Here is where presently on-sale Objects end, and deadstock begins
+    "category": "Objects"  },
 
   {
     "code": "BSS",
@@ -62,7 +59,6 @@
     "name": "Pepper Mill",
     "category": "Objects"
   },
-  // Lights
   {
     "code": "7TL",
     "name": "Seven Tube Light",
@@ -102,8 +98,7 @@
     "code": "PTL",
     "name": "Pirouette Light",
     "category": "Lights"
-  },
-  // Furniture
+  },  
   {
     "code": "FFC",
     "name": "Folding Flat Chair",
@@ -202,9 +197,7 @@
   {
     "code": "FLT",
     "name": "Flared Leg Table",
-    "category": "Furniture"
-  },
-  //Hardware
+    "category": "Furniture"  },
   {
     "code": "TBK",
     "name": "Topologic Knobs",
