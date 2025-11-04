@@ -120,7 +120,11 @@
       },
       {
         "code": "04",
-        "name": "Horizontal"
+        "name": "Horizontal 2ft"
+      },
+      {
+        "code": "05",
+        "name": "Horizontal 4ft"
       }
     ]
   },

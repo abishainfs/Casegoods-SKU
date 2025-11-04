@@ -212,12 +212,20 @@
         "name": "White"
       },
       {
+        "code": "2",
+        "name": "Pink"
+      },
+      {
+        "code": "3",
+        "name": "Green"
+      },
+      {
         "code": "1",
         "name": "Black"
       },
       {
         "code": "2",
-        "name": "Grey"
+        "name": "Grey Spotted"
       },
       {
         "code": "3",
@@ -259,7 +267,7 @@
     "finishes": [
       {
         "code": "0",
-        "name": "Unfinished"
+        "name": "Waxed"
       }
     ]
   },
