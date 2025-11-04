@@ -911,7 +911,40 @@
       {
         "code": "04",
         "name": "Large 9X6"
-      }
+      },
+      {
+    "code": "FJD",
+    "sizes": [
+      {"code": "01", "name": "Umbra - 2.5x7ft"},
+      {"code": "02", "name": "Umbra - 4x6ft"},
+      {"code": "03", "name": "Umbra - 5x7.5ft"},
+      {"code": "04", "name": "Umbra - 6x9ft"},
+      {"code": "05", "name": "Delta - 2.5x7ft"},
+      {"code": "06", "name": "Delta - 4x6ft"},
+      {"code": "07", "name": "Delta - 5x7.5ft"},
+      {"code": "08", "name": "Delta - 6x9ft"},
+      {"code": "09", "name": "Aero - 2.5x7ft"},
+      {"code": "10", "name": "Aero - 4x6ft"},
+      {"code": "11", "name": "Aero - 5x7.5ft"},
+      {"code": "12", "name": "Aero - 6x9ft"},
+      {"code": "13", "name": "Valley - 2.5x7ft"},
+      {"code": "14", "name": "Valley - 4x6ft"},
+      {"code": "15", "name": "Valley - 5x7.5ft"},
+      {"code": "16", "name": "Valley - 6x9ft"},
+      {"code": "17", "name": "Bend - 2.5x7ft"},
+      {"code": "18", "name": "Bend - 4x6ft"},
+      {"code": "19", "name": "Bend - 5x7.5ft"},
+      {"code": "20", "name": "Bend - 6x9ft"},
+      {"code": "21", "name": "Dusk - 2.5x7ft"},
+      {"code": "22", "name": "Dusk - 4x6ft"},
+      {"code": "23", "name": "Dusk - 5x7.5ft"},
+      {"code": "24", "name": "Dusk - 6x9ft"},
+      {"code": "25", "name": "Dawn - 2.5x7ft"},
+      {"code": "26", "name": "Dawn - 4x6ft"},
+      {"code": "27", "name": "Dawn - 5x7.5ft"},
+      {"code": "28", "name": "Dawn - 6x9ft"}
+    ]
+  }
     ]
   }
 ]

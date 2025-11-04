@@ -338,7 +338,25 @@
       {
         "code": "5",
         "name": "Custom"
+      },
+      {
+    "code": "JU",
+    "name": "Jute",
+    "finishes": [
+      {
+        "code": "YB",
+        "name": "Yellow/Blue"
+      },
+      {
+        "code": "RO",
+        "name": "Red/Orange"
+      },
+      {
+        "code": "RB",
+        "name": "Red/Blue"
       }
+    ]
+}
     ]
   }
 ]
