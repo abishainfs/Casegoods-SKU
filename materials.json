@@ -203,7 +203,7 @@
     "finishes": [
       {
         "code": "0",
-        "name": "X - Custom"
+        "name": "Sealed"
       },
       {
         "code": "1",
@@ -211,7 +211,7 @@
       },
       {
         "code": "2",
-        "name": "Polished"
+        "name": "X - Custom"
       }
     ]
   },
