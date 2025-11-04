@@ -120,6 +120,14 @@
       {
         "code": "4",
         "name": "Raw/Waxed"
+      },
+      {
+        "code": "5",
+        "name": "Polished"
+      },
+      {
+        "code": "6",
+        "name": "Satin"
       }
     ]
   },
@@ -138,6 +146,10 @@
       {
         "code": "2",
         "name": "Polished"
+      },
+      {
+        "code": "3",
+        "name": "Satin"
       }
     ]
   },
