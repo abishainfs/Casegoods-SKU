@@ -896,25 +896,6 @@
     "code": "FJD",
     "name": "Fold Jute Dhurries",
     "sizes": [
-      {
-        "code": "01",
-        "name": "Runner 2X7.5"
-      },
-      {
-        "code": "02",
-        "name": "Small 6X4"
-      },
-      {
-        "code": "03",
-        "name": "Medium 5X7.5"
-      },
-      {
-        "code": "04",
-        "name": "Large 9X6"
-      },
-      {
-    "code": "FJD",
-    "sizes": [
       {"code": "01", "name": "Umbra - 2.5x7ft"},
       {"code": "02", "name": "Umbra - 4x6ft"},
       {"code": "03", "name": "Umbra - 5x7.5ft"},
@@ -943,8 +924,6 @@
       {"code": "26", "name": "Dawn - 4x6ft"},
       {"code": "27", "name": "Dawn - 5x7.5ft"},
       {"code": "28", "name": "Dawn - 6x9ft"}
-    ]
-  }
     ]
   }
 ]

@@ -344,15 +344,15 @@
     "name": "Jute",
     "finishes": [
       {
-        "code": "YB",
+        "code": "0",
         "name": "Yellow/Blue"
       },
       {
-        "code": "RO",
+        "code": "1",
         "name": "Red/Orange"
       },
       {
-        "code": "RB",
+        "code": "2",
         "name": "Red/Blue"
       }
     ]
