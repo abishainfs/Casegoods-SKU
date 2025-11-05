@@ -60,6 +60,11 @@
     "category": "Objects"
   },
   {
+    "code": "CFT",
+    "name": "Chamfer Trays",
+    "category": "Objects"
+  },
+  {
     "code": "7TL",
     "name": "Seven Tube Light",
     "category": "Lights"
