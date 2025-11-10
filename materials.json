@@ -284,20 +284,6 @@
     ]
   },
   {
-    "code": "J",
-    "name": "Jute",
-    "finishes": [
-      {
-        "code": "0",
-        "name": "Natural"
-      },
-      {
-        "code": "1",
-        "name": "Dyed"
-      }
-    ]
-  },
-  {
     "code": "F",
     "name": "Fabric",
     "finishes": [
