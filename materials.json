@@ -325,7 +325,9 @@
         "code": "5",
         "name": "Custom"
       },
-      {
+    ]
+  },
+  {
     "code": "J",
     "name": "Jute",
     "finishes": [
@@ -343,6 +345,4 @@
       }
     ]
 }
-    ]
-  }
 ]
