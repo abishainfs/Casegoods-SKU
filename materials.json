@@ -154,33 +154,33 @@
     ]
   },
   {
-  "code": "B",
-  "name": "Brass",
-  "finishes": [
-    {
-      "code": "0",
-      "name": "Cast"
-    },
-    {
-      "code": "1",
-      "name": "Polished"
-    },
-    {
+    "code": "B",
+    "name": "Brass",
+    "finishes": [
+      {
+        "code": "0",
+        "name": "Cast"
+      },
+            {
+        "code": "1",
+        "name": "Polished"
+      },
+{
       "code": "2",
       "name": "Satin"
     },
-    {
-      "code": "3",
-      "name": "Slightly Aged"
-    },
-    {
-      "code": "4",
-      "name": "Blackened"
-    },
-    {
-      "code": "5",
-      "name": "Nickel Plated"
-    }
+      {
+        "code": "3",
+        "name": "Slightly Aged"
+      },
+      {
+        "code": "4",
+        "name": "Blackened"
+      },
+      {
+        "code": "5",
+        "name": "Nickel Plated"
+      }
     ]
   },
   {
@@ -193,8 +193,8 @@
       },
       {
         "code": "1",
-        "name": "Polished"
-      }
+                "name": "Polished"
+            }
     ]
   },
   {
@@ -260,7 +260,7 @@
       {
         "code": "X",
         "name": "Custom"
-      }
+            }
     ]
   },
   {
@@ -344,5 +344,5 @@
         "name": "Red/Blue"
       }
     ]
-}
+    }
 ]
