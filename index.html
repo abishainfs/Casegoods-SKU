@@ -16,14 +16,20 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1rem;
             color: #1d1d1f;
+        }
+
+        @media (min-width: 640px) {
+            body {
+                padding: 2rem;
+            }
         }
 
         .main-container {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
             width: 100%;
             max-width: 1600px;
         }
@@ -31,6 +37,7 @@
         @media (min-width: 1024px) {
             .main-container {
                 flex-direction: row;
+                gap: 2rem;
             }
             .main-form-card {
                 flex: 2;
@@ -45,17 +52,28 @@
 
         .card {
             background-color: #ffffff;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border: 1px solid #e5e5ea;
         }
 
+        @media (min-width: 640px) {
+            .card {
+                padding: 2rem;
+            }
+        }
+
         .card-section {
             background-color: #f9f9fb;
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 0.5rem;
             border: 1px solid #e5e5ea;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-section:last-of-type {
+            margin-bottom: 0;
         }
 
         h1 {
@@ -100,13 +118,14 @@
 
         .flex-container {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             flex-direction: column;
         }
 
         @media (min-width: 640px) {
             .flex-container {
                 flex-direction: row;
+                gap: 1.5rem;
             }
         }
 
@@ -205,6 +224,24 @@
         .history-table tr:hover {
             background-color: #f9f9fb;
         }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            margin-bottom: 0;
+        }
+
+        .details-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .details-section:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body class="flex-container">
@@ -215,7 +252,7 @@
                 <h1 style="font-weight: 600;">Casegoods: SKU Generator</h1>
             </div>
 
-            <details style="margin-bottom: 1.5rem; padding: 1rem;" class="card-section">
+            <details style="margin-bottom: 2rem; padding: 1.5rem;" class="card-section details-section">
                 <summary style="font-size: 1.125rem; font-weight: 600; cursor: pointer;">Quick Guide: SKU Generation</summary>
                 <div style="margin-top: 1rem; font-size: 0.875rem; line-height: 1.6;">
                     <p style="margin-bottom: 0.5rem;">This tool helps create unique SKUs (Stock Keeping Units). Our SKUs follow this format: <strong style="color: #1d1d1f;">X-ABCD-EF-GH-IJ</strong></p>
@@ -229,72 +266,86 @@
                 </div>
             </details>
 
-            <div class="card-section">
+            <div class="card-section details-section">
                 <h3 style="display: flex; align-items: center;">Product Details</h3>
                 <div class="flex-container">
                     <div style="flex: 1;">
-                        <label for="productCategory">Category</label>
-                        <select id="productCategory">
-                            <option value="" disabled selected>Select Category</option>
-                            <option value="F">F - Furniture</option>
-                            <option value="L">L - Lights</option>
-                            <option value="O">O - Objects</option>
-                            <option value="H">H - Hardware</option>
-                            <option value="T">T - Textiles</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="productCategory">Category</label>
+                            <select id="productCategory">
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="F">F - Furniture</option>
+                                <option value="L">L - Lights</option>
+                                <option value="O">O - Objects</option>
+                                <option value="H">H - Hardware</option>
+                                <option value="T">T - Textiles</option>
+                            </select>
+                        </div>
                     </div>
                     <div style="flex: 1;">
-                        <label for="productCode">Product Code</label>
-                        <select id="productCode">
-                            <option value="" disabled selected>Select Category First</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="productCode">Product Code</label>
+                            <select id="productCode">
+                                <option value="" disabled selected>Select Category First</option>
+                            </select>
+                        </div>
                     </div>
                     <div style="flex: 1;">
-                        <label for="sizeType">Type/Variation</label>
-                        <select id="sizeType">
-                            <option value="" disabled selected>Select Product First</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="sizeType">Type/Variation</label>
+                            <select id="sizeType">
+                                <option value="" disabled selected>Select Product First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card-section">
+            <div class="card-section details-section">
                 <h3 style="display: flex; align-items: center;">Primary Material <i id="primaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(GH)</span></h3>
                 <div class="flex-container">
                     <div style="flex: 1;">
-                        <label for="material1Type">Material Type (G)</label>
-                        <select id="material1Type">
-                            <option value="" disabled selected>Loading Materials...</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="material1Type">Material Type (G)</label>
+                            <select id="material1Type">
+                                <option value="" disabled selected>Loading Materials...</option>
+                            </select>
+                        </div>
                     </div>
                     <div style="flex: 1;">
-                        <label for="material1Finish">Material Finish (H)</label>
-                        <select id="material1Finish">
-                            <option value="" disabled selected>Select Type First</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="material1Finish">Material Finish (H)</label>
+                            <select id="material1Finish">
+                                <option value="" disabled selected>Select Type First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card-section">
+            <div class="card-section details-section">
                 <h3 style="display: flex; align-items: center;">Secondary Material <i id="secondaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(IJ) (Optional)</span></h3>
                 <div class="flex-container">
                     <div style="flex: 1;">
-                        <label for="material2Type">Material Type (I)</label>
-                        <select id="material2Type">
-                            <option value="" disabled selected>Loading Materials...</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="material2Type">Material Type (I)</label>
+                            <select id="material2Type">
+                                <option value="" disabled selected>Loading Materials...</option>
+                            </select>
+                        </div>
                     </div>
                     <div style="flex: 1;">
-                        <label for="material2Finish">Material Finish (J)</label>
-                        <select id="material2Finish">
-                            <option value="" disabled selected>Select Type First</option>
-                        </select>
+                        <div class="input-group">
+                            <label for="material2Finish">Material Finish (J)</label>
+                            <select id="material2Finish">
+                                <option value="" disabled selected>Select Type First</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;" class="card-section">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;" class="card-section details-section">
                 <div style="flex: 1;">
                     <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.25rem;">Generated SKU</p>
                     <div id="generatedSku" style="font-family: monospace; font-size: 1.125rem; color: #1d1d1f; background-color: #ffffff; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5ea; word-break: break-all; text-align: center;">
