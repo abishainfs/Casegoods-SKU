@@ -481,19 +481,35 @@
     "sizes": [
       {
         "code": "01",
-        "name": "Table 2800mm"
+        "name": "Table 2800 Straight Edge"
       },
       {
         "code": "02",
-        "name": "Table 3200mm"
+        "name": "Table 2800 Chamfered Edge"
       },
       {
         "code": "03",
-        "name": "Table 3600mm"
+        "name": "Table 3200 Straight Edge"
       },
       {
         "code": "04",
-        "name": "Table 4000mm"
+        "name": "Table 3200 Chamfered Edge"
+      },
+      {
+        "code": "05",
+        "name": "Table 3600 Straight Edge"
+      },
+      {
+        "code": "06",
+        "name": "Table 3600 Chamfered Edge"
+      },
+      {
+        "code": "07",
+        "name": "Table 4000 Straight Edge"
+      },
+      {
+        "code": "08",
+        "name": "Table 4000 Chamfered Edge"
       }
     ]
   },
@@ -503,15 +519,27 @@
     "sizes": [
       {
         "code": "01",
-        "name": "Bench 1440mm"
+        "name": "Bench 1440 Straight Edge"
       },
       {
         "code": "02",
-        "name": "Bench 1620mm"
+        "name": "Bench 1440 Chamfered Edge"
       },
       {
         "code": "03",
-        "name": "Bench 1800mm"
+        "name": "Bench 1620 Straight Edge"
+      },
+      {
+        "code": "04",
+        "name": "Bench 1620 Chamfered Edge"
+      },
+      {
+        "code": "05",
+        "name": "Bench 1800 Straight Edge"
+      },
+      {
+        "code": "06",
+        "name": "Bench 1800 Chamfered Edge"
       }
     ]
   },
