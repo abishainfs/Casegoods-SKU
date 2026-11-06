@@ -189,8 +189,13 @@ function writeIfChanged(file, content, stampRe) {
     else {
       if (match.product.retired) issues.retiredOnSale.push(`[${sp.title}](${url}) — catalogue code ${match.product.code} is retired`);
       // One picture/link per catalogue product; prefer pages whose address isn't a "-copy".
-      const cur = store.products[match.product.code];
-      if (!cur || (/copy/.test(cur.url) && !/copy/.test(url))) store.products[match.product.code] = { title: sp.title, url, image, thumb: image ? image.replace(/(\.\w+)(\?|$)/, '_400x$1$2') : '' };
+      const code = match.product.code;
+      const cur = store.products[code];
+      const withSku = sp.variants.filter((v) => (v.sku || '').trim()).length;
+      // Counts are added up over every shop page for this product (some products have several pages).
+      const counts = { pages: (cur ? cur.pages : 0) + 1, variants: (cur ? cur.variants : 0) + sp.variants.length, withSku: (cur ? cur.withSku : 0) + withSku };
+      if (!cur || (/copy/.test(cur.url) && !/copy/.test(url))) store.products[code] = Object.assign({ title: sp.title, url, image, thumb: image ? image.replace(/(\.\w+)(\?|$)/, '_400x$1$2') : '' }, counts);
+      else Object.assign(cur, counts);
     }
     sp.variants.forEach((v) => {
       const current = (v.sku || '').trim();

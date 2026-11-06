@@ -448,7 +448,7 @@
     // Is it on the online shop? Is the shop using the same thing with the materials the other way round?
     const onShop = shopMatch(r.sku);
     if (onShop) {
-      live.append(h('span', { class: 'ok' }, '● '), onShop.exact ? 'Live on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop),
+      live.append(h('span', { class: 'ok' }, '● '), onShop.exact ? 'This SKU is on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop),
         onShop.exact ? '' : h('span', { class: 'muted' }, ' · add the materials to match one exactly'));
     } else if (sel.mat1 && sel.mat2) {
       const swapped = r.sku.split('-'); [swapped[3], swapped[4]] = [swapped[4], swapped[3]];
@@ -576,7 +576,7 @@
       r.errors.map((e) => h('div', { class: 'why' }, e)),
       r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
       r.history.length ? h('details', { class: 'older' }, h('summary', {}, `Older SKU? ${r.history.length === 1 ? 'One code' : 'Some codes'} here used to mean something else`), h('ul', {}, r.history.map((t) => h('li', {}, t)))) : null,
-      onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), onShop.exact ? 'Live on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop)) : null,
+      onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), onShop.exact ? 'This SKU is on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop)) : null,
       h('div', { class: 'btn-row', style: 'margin-top:14px' },
         r.ok ? h('button', { class: 'btn btn-small', onclick: () => copyText(r.sku) }, 'Copy') : null,
         r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open in SKU generator') : null,

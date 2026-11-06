@@ -42,7 +42,7 @@ It's a form, like filling in an online order. You never see any code.
    - **Retired**: no longer made. It's hidden from the generator, but its code stays reserved so nobody reuses it. Only use **Delete** for something added by mistake that never had a SKU.
 5. **Materials & finishes** tab: works the same way for materials and finishes.
 6. Problems show up in a **red box** at the top, for example "Product code SPT is used by two products". The Publish button stays disabled until they're fixed.
-7. A **yellow box** means a change affects SKUs that may already exist, such as a renumbered size or a deleted product. Green "● live" counts show how many SKUs on casegoods.in use each product, size or finish. Think twice before changing anything that's live.
+7. A **yellow box** means a change affects SKUs that may already exist, such as a renumbered size or a deleted product. Green notes show what's on casegoods.in: each product says whether it's on the shop and how many of its shop variants have a SKU filled in ("2 of 2 variants have a SKU"), and sizes and finishes say how many shop SKUs use them. Think twice before changing a code the shop already uses.
 8. Click **Publish** and read the summary. The live site updates within a minute or two.
 9. Every **(?)** explains the field next to it. Hover over it, or tap it on a phone.
 

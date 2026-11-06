@@ -1,156 +1,231 @@
 {
- "checkedAt": "2026-11-06T20:51:52.077Z",
+ "checkedAt": "2026-11-06T22:15:37.870Z",
  "shop": "https://casegoods.in",
  "products": {
   "SPB": {
    "title": "Splayed Plank Bench",
    "url": "https://casegoods.in/products/splayed-plank-bench",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankBench_1_7c54ab03-5306-406b-9b27-bd50a20bd9f2.jpg?v=1777886182",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankBench_1_7c54ab03-5306-406b-9b27-bd50a20bd9f2_400x.jpg?v=1777886182"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankBench_1_7c54ab03-5306-406b-9b27-bd50a20bd9f2_400x.jpg?v=1777886182",
+   "pages": 1,
+   "variants": 18,
+   "withSku": 0
   },
   "RTT": {
    "title": "Right Triangle Table",
    "url": "https://casegoods.in/products/right-triangle-table-1",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RightTriangleTable_2.jpg?v=1771996561",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RightTriangleTable_2_400x.jpg?v=1771996561"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RightTriangleTable_2_400x.jpg?v=1771996561",
+   "pages": 2,
+   "variants": 17,
+   "withSku": 16
   },
   "FFC": {
    "title": "Folding Flat Chair",
    "url": "https://casegoods.in/products/folding-flat-chair",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatChair_8.jpg?v=1763822796",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatChair_8_400x.jpg?v=1763822796"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatChair_8_400x.jpg?v=1763822796",
+   "pages": 2,
+   "variants": 14,
+   "withSku": 2
   },
   "CHS": {
    "title": "Hold Shelf",
    "url": "https://casegoods.in/products/hold-shelf",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_HoldShelf_2.jpg?v=1763824231",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_HoldShelf_2_400x.jpg?v=1763824231"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_HoldShelf_2_400x.jpg?v=1763824231",
+   "pages": 1,
+   "variants": 20,
+   "withSku": 0
   },
   "SST": {
    "title": "Slant Side Table",
    "url": "https://casegoods.in/products/slant-side-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SlantSideTable_6.jpg?v=1763823784",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SlantSideTable_6_400x.jpg?v=1763823784"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SlantSideTable_6_400x.jpg?v=1763823784",
+   "pages": 1,
+   "variants": 15,
+   "withSku": 2
   },
   "3CT": {
    "title": "Three Cylinder Table",
    "url": "https://casegoods.in/products/three-cylinder-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeCylinderTable_3.jpg?v=1763823051",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeCylinderTable_3_400x.jpg?v=1763823051"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeCylinderTable_3_400x.jpg?v=1763823051",
+   "pages": 1,
+   "variants": 10,
+   "withSku": 0
   },
   "FFTB": {
    "title": "Folding Flat Table",
    "url": "https://casegoods.in/products/folding-flat-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldinfFlatTable_2.jpg?v=1763822367",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldinfFlatTable_2_400x.jpg?v=1763822367"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldinfFlatTable_2_400x.jpg?v=1763822367",
+   "pages": 1,
+   "variants": 3,
+   "withSku": 0
   },
   "FFTR": {
    "title": "Folding Flat Trestles",
    "url": "https://casegoods.in/products/folding-flat-trestles",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatTrestles_2.jpg?v=1763822280",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatTrestles_2_400x.jpg?v=1763822280"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldingFlatTrestles_2_400x.jpg?v=1763822280",
+   "pages": 1,
+   "variants": 2,
+   "withSku": 0
   },
   "3LT": {
    "title": "Three Leg Table",
    "url": "https://casegoods.in/products/three-leg-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeLegTable_6.jpg?v=1763821812",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeLegTable_6_400x.jpg?v=1763821812"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ThreeLegTable_6_400x.jpg?v=1763821812",
+   "pages": 1,
+   "variants": 15,
+   "withSku": 0
   },
   "SPT": {
    "title": "Splayed Plank Table",
    "url": "https://casegoods.in/products/splayed-plank-copy",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankTable_1.jpg?v=1777886133",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankTable_1_400x.jpg?v=1777886133"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SplayedPlankTable_1_400x.jpg?v=1777886133",
+   "pages": 1,
+   "variants": 24,
+   "withSku": 0
   },
   "DOM": {
    "title": "Dome Up-Light",
    "url": "https://casegoods.in/products/dome-up-light",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSCF7454.jpg?v=1763815613",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSCF7454_400x.jpg?v=1763815613"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSCF7454_400x.jpg?v=1763815613",
+   "pages": 2,
+   "variants": 12,
+   "withSku": 0
   },
   "7TL": {
    "title": "Seven Tube Light",
    "url": "https://casegoods.in/products/seven-tube-light-h",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SevenTubeLight_02_1.png?v=1763453708",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SevenTubeLight_02_1_400x.png?v=1763453708"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SevenTubeLight_02_1_400x.png?v=1763453708",
+   "pages": 3,
+   "variants": 24,
+   "withSku": 0
   },
   "SSL": {
    "title": "Standing Straight Lamp Floor",
    "url": "https://casegoods.in/products/standing-straight-lamp-f",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SSL_02_5.jpg?v=1763469263",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SSL_02_5_400x.jpg?v=1763469263"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_SSL_02_5_400x.jpg?v=1763469263",
+   "pages": 2,
+   "variants": 8,
+   "withSku": 0
   },
   "1TL": {
    "title": "One Tube Light",
    "url": "https://casegoods.in/products/one-tube-light",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_OneTubeLight_01_1.jpg?v=1763453661",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_OneTubeLight_01_1_400x.jpg?v=1763453661"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_OneTubeLight_01_1_400x.jpg?v=1763453661",
+   "pages": 1,
+   "variants": 2,
+   "withSku": 0
   },
   "FET": {
    "title": "Fillet Joint Table",
    "url": "https://casegoods.in/products/fillet-joint-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FilletJointTable_1.jpg?v=1763453048",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FilletJointTable_1_400x.jpg?v=1763453048"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FilletJointTable_1_400x.jpg?v=1763453048",
+   "pages": 1,
+   "variants": 12,
+   "withSku": 0
   },
   "PSC": {
    "title": "Profile Stone Console",
    "url": "https://casegoods.in/products/profile-stone-console",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ProfileStoneConsole_1_5375f0ea-25ca-41ef-9267-b7bbdefe01a1.jpg?v=1763453468",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ProfileStoneConsole_1_5375f0ea-25ca-41ef-9267-b7bbdefe01a1_400x.jpg?v=1763453468"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_ProfileStoneConsole_1_5375f0ea-25ca-41ef-9267-b7bbdefe01a1_400x.jpg?v=1763453468",
+   "pages": 1,
+   "variants": 2,
+   "withSku": 0
   },
   "TRT": {
    "title": "Trestle Table",
    "url": "https://casegoods.in/products/trestle-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TrestleTable_6_32bbbc57-f3a9-4e2a-bc7a-6d3f1f6c58c2.jpg?v=1763469654",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TrestleTable_6_32bbbc57-f3a9-4e2a-bc7a-6d3f1f6c58c2_400x.jpg?v=1763469654"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TrestleTable_6_32bbbc57-f3a9-4e2a-bc7a-6d3f1f6c58c2_400x.jpg?v=1763469654",
+   "pages": 1,
+   "variants": 4,
+   "withSku": 0
   },
   "PTT": {
    "title": "Pinned Trestle Table",
    "url": "https://casegoods.in/products/pinned-trestle-table",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_PinnedTrestleTable_1.jpg?v=1763453418",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_PinnedTrestleTable_1_400x.jpg?v=1763453418"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_PinnedTrestleTable_1_400x.jpg?v=1763453418",
+   "pages": 1,
+   "variants": 4,
+   "withSku": 0
   },
   "FJD": {
    "title": "Fold Jute Dhurries",
    "url": "https://casegoods.in/products/fold-jute-dhurries",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldJuteDhurries_1.jpg?v=1763453834",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldJuteDhurries_1_400x.jpg?v=1763453834"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FoldJuteDhurries_1_400x.jpg?v=1763453834",
+   "pages": 1,
+   "variants": 84,
+   "withSku": 6
   },
   "FFL": {
    "title": "Front Facing Light",
    "url": "https://casegoods.in/products/front-facing-light",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FrontFacingLight_01_1.jpg?v=1763453983",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FrontFacingLight_01_1_400x.jpg?v=1763453983"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_FrontFacingLight_01_1_400x.jpg?v=1763453983",
+   "pages": 1,
+   "variants": 6,
+   "withSku": 0
   },
   "RRL": {
    "title": "Rolling Round Light",
    "url": "https://casegoods.in/products/rolling-round-light",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RollingRoundLight_01_1.jpg?v=1763453993",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RollingRoundLight_01_1_400x.jpg?v=1763453993"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_RollingRoundLight_01_1_400x.jpg?v=1763453993",
+   "pages": 1,
+   "variants": 3,
+   "withSku": 0
   },
   "BBL": {
    "title": "Building Blocks",
    "url": "https://casegoods.in/products/building-blocks",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_Building_Blocks_02_1.jpg?v=1770217552",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_Building_Blocks_02_1_400x.jpg?v=1770217552"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_Building_Blocks_02_1_400x.jpg?v=1770217552",
+   "pages": 1,
+   "variants": 3,
+   "withSku": 0
   },
   "TBL": {
    "title": "Topologic Bowls",
    "url": "https://casegoods.in/products/topologic-bowls",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TBL_WEB_5.jpg?v=1762331336",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TBL_WEB_5_400x.jpg?v=1762331336"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_TBL_WEB_5_400x.jpg?v=1762331336",
+   "pages": 1,
+   "variants": 9,
+   "withSku": 8
   },
   "BND": {
    "title": "Buenos Diyas",
    "url": "https://casegoods.in/products/buenos-diyas",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_BND_WEB_3.jpg?v=1762331097",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_BND_WEB_3_400x.jpg?v=1762331097"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/CG_BND_WEB_3_400x.jpg?v=1762331097",
+   "pages": 1,
+   "variants": 2,
+   "withSku": 2
   },
   "ALC": {
    "title": "Alcove",
    "url": "https://casegoods.in/products/alcove",
    "image": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSC_8290-pichi.jpg?v=1753430368",
-   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSC_8290-pichi_400x.jpg?v=1753430368"
+   "thumb": "https://cdn.shopify.com/s/files/1/0926/2524/0339/files/DSC_8290-pichi_400x.jpg?v=1753430368",
+   "pages": 1,
+   "variants": 1,
+   "withSku": 1
   }
  },
  "skus": {
