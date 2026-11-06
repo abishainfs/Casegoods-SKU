@@ -77,6 +77,7 @@
     @media (min-width: 760px) { .book-item .vals { grid-column: auto; } }
     .book-item .vals span { display: inline-block; margin: 0 14px 4px 0; }
     .book-item .vals b { font-family: var(--mono); font-weight: 500; color: var(--text); margin-right: 4px; }
+    .stage-tag { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--ink); padding: 1px 6px; margin-right: 8px; }
     .retired-tag { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--faint); color: var(--muted); padding: 1px 6px; margin-left: 8px; }
   </style>
 </head>
@@ -188,6 +189,7 @@
         <input type="search" id="bookSearch" placeholder="e.g. chair, SPT, brass — or F-RTT-01-T1-M0" autocomplete="off">
       </div>
       <button class="btn" id="bulkToggle" aria-expanded="false">Check a list of SKUs</button>
+      <button class="btn" id="exportBtn" title="Every product and size, with category, status, notes and links — for price lists, exhibition sheets or stock takes.">Download as spreadsheet</button>
     </div>
     <div id="skuResult"></div>
 
@@ -307,13 +309,16 @@
     s.innerHTML = '';
     s.append(h('option', { value: '' }, q ? 'Matching products…' : 'Choose a product'));
     let count = 0, only = null;
-    catalog.categories.forEach((c) => {
-      const items = catalog.products.filter((p) => !p.retired && p.category.trim().toLowerCase() === c.name.toLowerCase())
-        .filter((p) => !q || `${p.code} ${p.name} ${(p.sizes || []).map((z) => z.name).join(' ')}`.toLowerCase().includes(q));
+    const matches = (p) => !q || `${p.code} ${p.name} ${p.notes || ''} ${(p.sizes || []).map((z) => z.name).join(' ')}`.toLowerCase().includes(q);
+    const group = (label, items) => {
       if (!items.length) return;
-      s.append(h('optgroup', { label: `${c.code} — ${c.name}` }, items.map((p) => h('option', { value: p.code }, `${p.code}  ${p.name}`))));
+      s.append(h('optgroup', { label }, items.map((p) => h('option', { value: p.code }, `${p.code}  ${p.name}`))));
       count += items.length; only = items[0];
-    });
+    };
+    catalog.categories.forEach((c) => group(`${c.code} — ${c.name}`,
+      catalog.products.filter((p) => !p.retired && !p.bespoke && p.category.trim().toLowerCase() === c.name.toLowerCase() && matches(p))));
+    // Bespoke pieces, one-offs and prototypes: listed separately so nobody mistakes them for catalogue products.
+    group('Bespoke & one-offs', catalog.products.filter((p) => p.bespoke && !p.retired && matches(p)));
     if (!count) s.options[0].textContent = 'No match — try another word';
     if (count === 1 && q) { s.value = only.code; if (sel.product !== only.code) pickProduct(only.code); }
     else s.value = catalog.products.some((p) => p.code === sel.product && !p.retired) ? sel.product : '';
@@ -335,10 +340,16 @@
     // Picture + link from the online shop
     const peek = $('peek'); peek.innerHTML = '';
     const sp = p && store.products[p.code];
-    if (sp) {
+    if (p && (sp || p.notes || p.link || p.bespoke)) {
       peek.append(h('div', { class: 'product-peek' },
-        sp.thumb || sp.image ? h('img', { src: sp.thumb || sp.image, alt: '', loading: 'lazy', onerror: function () { if (sp.image && this.src !== sp.image) this.src = sp.image; else this.remove(); } }) : null,
-        h('div', {}, h('div', {}, sp.title), h('a', { href: sp.url, target: '_blank', rel: 'noopener' }, 'View on casegoods.in ↗'))));
+        sp && (sp.thumb || sp.image) ? h('img', { src: sp.thumb || sp.image, alt: '', loading: 'lazy', onerror: function () { if (sp.image && this.src !== sp.image) this.src = sp.image; else this.remove(); } }) : null,
+        h('div', {},
+          h('div', {}, p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : null, sp ? sp.title : p.name),
+          p.notes ? h('div', { class: 'serif', style: 'font-size:16px;color:var(--muted)' }, p.notes) : null,
+          h('div', { style: 'font-size:14px' },
+            sp ? h('a', { href: sp.url, target: '_blank', rel: 'noopener' }, 'View on casegoods.in ↗') : null,
+            sp && p.link ? ' · ' : null,
+            p.link ? h('a', { href: p.link, target: '_blank', rel: 'noopener' }, 'Drawings & files ↗') : null))));
     }
     $('step2').classList.toggle('disabled', !p);
     update();
@@ -511,7 +522,9 @@
     const count = (c) => catalog.products.filter((p) => !p.retired && p.category.trim().toLowerCase() === c.name.toLowerCase()).length;
     const chip = (value, label, n) => h('button', { class: 'fchip', 'aria-pressed': String(filter === value), onclick: () => { filter = value; renderBook(); } },
       label, n != null ? h('span', { class: 'n' }, n) : null);
-    box.append(chip('', 'All'), ...catalog.categories.map((c) => chip(c.code, c.name, count(c))), chip('materials', 'Materials & finishes', materials.length));
+    const bespokeCount = catalog.products.filter((p) => p.bespoke && !p.retired).length;
+    box.append(chip('', 'All'), ...catalog.categories.map((c) => chip(c.code, c.name, count(c))),
+      ...(bespokeCount ? [chip('bespoke', 'Bespoke & one-offs', bespokeCount)] : []), chip('materials', 'Materials & finishes', materials.length));
   };
 
   const renderSkuCard = (raw) => {
@@ -547,17 +560,21 @@
     const box = $('book'); box.innerHTML = '';
     const match = (...xs) => !q || xs.join(' ').toLowerCase().includes(q);
     if (filter !== 'materials') catalog.categories.forEach((c) => {
-      if (filter && filter !== c.code) return;
+      if (filter && filter !== c.code && filter !== 'bespoke') return;
       const items = catalog.products.filter((p) => p.category.trim().toLowerCase() === c.name.toLowerCase() && (showRetired || !p.retired)
+        && (filter !== 'bespoke' || p.bespoke)
         && (!onlyCode || p.code === onlyCode) && match(p.code, p.name, c.name, (p.sizes || []).map((s) => s.name).join(' ')));
       if (!items.length) return;
       box.append(h('div', { class: 'book-cat' }, h('h2', {}, h('span', { class: 'mono' }, c.code), c.name, h('span', { class: 'muted', style: 'font-size:13px;margin-left:auto' }, `${items.length}`)),
         items.map((p) => h('div', { class: 'book-item' },
           h('div', { class: 'code' }, p.code),
           h('div', {}, p.name, p.retired ? h('span', { class: 'retired-tag', title: 'Not for new SKUs. The code stays reserved so it is never reused.' }, 'Retired') : null,
+            p.bespoke ? h('span', { class: 'retired-tag', style: 'border-color:var(--ink);color:var(--ink)', title: 'Bespoke / one-off / prototype — not in the regular catalogue yet.' }, 'Bespoke') : null,
+            p.notes ? h('div', { class: 'muted', style: 'font-size:13px' }, p.notes) : null,
             h('div', { style: 'font-size:13px' },
               h('a', { href: '#' + SkuCore.categoryCodeFor(catalog, p) + '-' + p.code + '-' + SkuCore.sizesFor(p)[0].code, class: 'muted' }, 'Make'), ' · ',
               store.products[p.code] ? [h('a', { href: store.products[p.code].url, target: '_blank', rel: 'noopener', class: 'muted' }, 'casegoods.in ↗'), ' · '] : null,
+              p.link ? [h('a', { href: p.link, target: '_blank', rel: 'noopener', class: 'muted' }, 'Files ↗'), ' · '] : null,
               h('a', { href: 'editor.html#' + p.code, class: 'muted' }, 'Edit'))),
           h('div', { class: 'vals' }, SkuCore.sizesFor(p).map((s) => h('span', {}, h('b', {}, s.code), s.name)))))));
     });
@@ -579,6 +596,18 @@
     if (willOpen) $('checkInput').focus();
   };
   $('bulkToggle').onclick = () => toggleBulk();
+  $('exportBtn').onclick = () => {
+    const rows = [['Category', 'Product code', 'Product', 'Size code', 'Size / type', 'SKU start', 'Status', 'On casegoods.in', 'Notes', 'Files link']];
+    catalog.products.forEach((p) => {
+      const cat = SkuCore.categoryFor(catalog, p);
+      SkuCore.sizesFor(p).forEach((sz) => rows.push([cat ? cat.name : p.category, p.code, p.name, sz.code, sz.name,
+        `${cat ? cat.code : '?'}-${p.code}-${sz.code}`, p.retired ? 'Retired' : p.bespoke ? 'Bespoke' : 'Catalogue',
+        store.products[p.code] ? store.products[p.code].url : '', p.notes || '', p.link || '']));
+    });
+    rows.push([]); rows.push(['Material code', 'Material', 'Finish code', 'Finish', 'Code in SKU']);
+    materials.forEach((m) => m.finishes.forEach((f) => rows.push([m.code, m.name, f.code, f.name, m.code + f.code])));
+    downloadCsv(`casegoods-sku-list-${today()}.csv`, rows);
+  };
   $('bookSearch').addEventListener('input', renderBook);
   $('bookRetired').addEventListener('change', renderBook);
 

@@ -63,6 +63,7 @@
     .hint { font-size: 12px; color: var(--muted); margin: 5px 0 0; }
     .problems { max-height: 16rem; overflow: auto; }
     .live-count { color: var(--ok); }
+    .stage-tag { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--ink); color: var(--ink); padding: 1px 6px; margin-right: 8px; }
     .history li { padding: 10px 0; border-bottom: 1px solid var(--line); list-style: none; }
     .history ul { padding: 0; margin: 0; }
     .history .when { font-size: 12px; color: var(--muted); }
@@ -144,7 +145,7 @@
       <label for="token">Access key <button type="button" class="tip" data-tip="A GitHub 'fine-grained token' that can only change this one project. Whoever manages GitHub creates it. It starts with github_pat_.">?</button></label>
       <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
       <label for="who" style="margin-top:16px">Your name <button type="button" class="tip" data-tip="Added to every change you publish, so the History tab shows who made it. (GitHub itself records changes under the owner of the access key.)">?</button></label>
-      <input type="text" id="who" placeholder="e.g. Priya" autocomplete="name" style="max-width:320px">
+      <input type="text" id="who" placeholder="e.g. Priyanka" autocomplete="name" style="max-width:320px">
       <details style="margin-top:16px"><summary class="muted">Advanced</summary>
         <div class="fields parts" style="margin-top:12px">
           <div><label for="repo">Repository</label><input type="text" id="repo"></div>
@@ -376,7 +377,8 @@
       const isOpen = openItems.has('p:' + catalog.products.indexOf(p));
       if (!isOpen) {
         if (p.retired && !showRetired) return;
-        if (cat && p.category !== cat) return;
+        if (cat === '__bespoke' ? !p.bespoke : false) return;
+        if (cat && cat !== '__bespoke' && p.category !== cat) return;
         if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
       }
       shown++;
@@ -399,7 +401,7 @@
       nameEl.textContent = p.name || '(new product)';
       const live = liveForProduct(p.code).length;
       metaEl.innerHTML = '';
-      metaEl.append(`${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
+      metaEl.append(p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : '', `${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
         live ? h('span', { class: 'live-count' }, ` · ● ${live} live`) : '');
     };
     updateSummary();
@@ -419,9 +421,16 @@
     const catSel = h('select', { id: 'cat-' + key, onchange: (e) => { p.category = e.target.value; updateSummary(); changed(); } },
       catalog.categories.map((c) => h('option', { value: c.name, selected: c.name === p.category }, `${c.code} – ${c.name}`)));
     const part = (k, ph) => h('input', { type: 'text', value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value; else delete p[k]; changed(); } });
-    const retired = h('input', { type: 'checkbox', checked: !!p.retired, onchange: (e) => {
-      if (e.target.checked) p.retired = true; else delete p.retired;
-      det.classList.toggle('retired', !!p.retired); updateSummary(); changed(); } });
+    const stage = h('select', { id: 'stage-' + key, style: 'width:auto;min-width:230px', onchange: (e) => {
+      delete p.retired; delete p.bespoke;
+      if (e.target.value === 'bespoke') p.bespoke = true;
+      if (e.target.value === 'retired') p.retired = true;
+      det.classList.toggle('retired', !!p.retired); updateSummary(); changed(); } },
+      h('option', { value: '' }, 'In catalogue'),
+      h('option', { value: 'bespoke', selected: !!p.bespoke }, 'Bespoke / one-off / prototype'),
+      h('option', { value: 'retired', selected: !!p.retired }, 'Retired'));
+    const extra = (k, ph, type = 'text') => h('input', { type, value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value.trim(); else delete p[k]; changed(); } });
+    const detailsSummary = () => [p.primaryPart && `parts: ${p.primaryPart}${p.secondaryPart ? ' / ' + p.secondaryPart : ''}`, p.notes && 'notes', p.link && 'files link'].filter(Boolean).join(' · ');
 
     det.append(h('div', { class: 'item-body' },
       h('div', { class: 'fields f3' },
@@ -431,13 +440,15 @@
       h('label', {}, 'Sizes / types', tip('Each version of the product gets a 2-digit code (01, 02…). Add new versions at the end. Never renumber existing ones: their codes are already in use.', 'tip-right')),
       noSizesHint,
       subList(p.sizes, 2, 'Size', SkuCore.RULES.sizeCode.re, { live: (sc) => liveForSize(p.code, sc), onChange: updateSummary }),
-      h('details', { style: 'margin-top:16px' }, h('summary', { class: 'muted', style: 'font-size:14px' }, `Part names (optional)${p.primaryPart ? `: ${p.primaryPart}${p.secondaryPart ? ' / ' + p.secondaryPart : ''}` : ''}`),
-        h('p', { class: 'hint', style: 'margin:8px 0 0' }, 'Name the parts the two materials are for, e.g. Frame / Seat or Base / Top. The SKU generator then asks "Primary material — Frame", which stops people entering the materials in the wrong order.'),
+      h('details', { style: 'margin-top:16px' }, h('summary', { class: 'muted', style: 'font-size:14px' }, `More details (optional)${detailsSummary() ? ': ' + detailsSummary() : ''}`),
         h('div', { class: 'fields parts' },
-          h('div', {}, h('label', {}, 'Primary material is for…'), part('primaryPart', 'e.g. Frame')),
-          h('div', {}, h('label', {}, 'Secondary material is for…'), part('secondaryPart', 'e.g. Seat')))),
+          h('div', {}, h('label', {}, 'Primary material is for…', tip('Name the parts the two materials are for, e.g. Frame / Seat or Base / Top. The generator then asks "Primary material — Frame", so nobody enters the materials in the wrong order.', 'tip-right')), part('primaryPart', 'e.g. Frame')),
+          h('div', {}, h('label', {}, 'Secondary material is for…'), part('secondaryPart', 'e.g. Seat'))),
+        h('div', { class: 'fields parts', style: 'margin-top:0' },
+          h('div', {}, h('label', {}, 'Notes', tip('One line the team should see when making a SKU: e.g. "Made for the Salone 2026 stand", "Client: Studio X", "Extra bays are separate SKUs".', 'tip-right')), extra('notes', 'e.g. Made for the Salone 2026 stand')),
+          h('div', {}, h('label', {}, 'Files link', tip('A link to drawings, photos or spec sheets, e.g. a Dropbox or Google Drive folder. Shown next to the product in the SKU generator and SKU list. Files themselves stay in Dropbox/Drive.', 'tip-left')), extra('link', 'https://www.dropbox.com/…', 'url')))),
       h('div', { class: 'item-actions' },
-        h('label', { class: 'check' }, retired, 'Retired', tip('Hides the product from the SKU generator but keeps its code reserved, so it can never be reused for something else. Use this instead of deleting.', 'tip-right')),
+        h('label', { class: 'check', for: 'stage-' + key, style: 'gap:10px' }, 'Status', stage, tip('In catalogue: normal. Bespoke / one-off / prototype: made for a client, an exhibition or a trial; it gets a real code now, so if it joins the catalogue later its SKUs stay exactly the same. Retired: hidden from the generator, code reserved forever. Use Retired instead of deleting.', 'tip-right')),
         h('div', { class: 'btn-row' },
           h('a', { class: 'btn btn-small btn-link', href: `index.html#${SkuCore.categoryCodeFor(catalog, p)}-${p.code}-${SkuCore.sizesFor(p)[0].code}`, target: '_blank' }, 'Try in generator ↗'),
           h('button', { class: 'btn btn-danger btn-small', onclick: () => {
@@ -448,8 +459,10 @@
   };
 
   $('addProduct').onclick = () => {
-    const category = $('catFilter').value || (catalog.categories[0] && catalog.categories[0].name);
+    const f = $('catFilter').value;
+    const category = (f && f !== '__bespoke' ? f : '') || (catalog.categories[0] && catalog.categories[0].name);
     const p = { code: '', name: '', category, sizes: [] };
+    if (f === '__bespoke') p.bespoke = true;
     let at = catalog.products.length;  // after the last active product in the same category, so the file stays tidy
     for (let i = catalog.products.length - 1; i >= 0; i--) if (catalog.products[i].category === category && !catalog.products[i].retired) { at = i + 1; break; }
     catalog.products.splice(at, 0, p);
@@ -536,7 +549,7 @@
   $('addCategory').onclick = () => { catalog.categories.push({ code: '', name: '' }); renderCategories(); changed(); };
   const fillCatFilter = () => {
     const sel = $('catFilter'); const v = sel.value; sel.innerHTML = '';
-    sel.append(h('option', { value: '' }, 'All categories'), catalog.categories.map((c) => h('option', { value: c.name }, c.name)));
+    sel.append(h('option', { value: '' }, 'All categories'), ...catalog.categories.map((c) => h('option', { value: c.name }, c.name)), h('option', { value: '__bespoke' }, 'Bespoke / one-offs only'));
     sel.value = v;
   };
 

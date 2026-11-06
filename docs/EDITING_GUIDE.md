@@ -36,7 +36,10 @@ It's a form, like filling in an online order. You never see any code.
 1. Open the **catalogue editor**: *Edit catalogue* at the top right of the SKU site, or *Edit* next to any product in the SKU list.
 2. **To add a product:** click **+ Add product**. Type the code (3–4 letters, e.g. `RVT`) and the name, then pick the category. Click **+ Add size** for each size or type. The editor numbers sizes automatically: 01, 02, 03…
 3. **To change something:** click a product to open it, then edit any box.
-4. **To stop selling a product:** tick **Retired**. It disappears from the SKU generator, but its code stays reserved so nobody reuses it by accident. Only use **Delete** for something added by mistake that never had a SKU.
+4. **Status** (bottom of each product):
+   - **In catalogue**: normal.
+   - **Bespoke / one-off / prototype**: made for a client, an exhibition or a trial. It gets a real code now, so if it joins the catalogue later you just change the status and **its SKUs stay the same**.
+   - **Retired**: no longer made. It's hidden from the generator, but its code stays reserved so nobody reuses it. Only use **Delete** for something added by mistake that never had a SKU.
 5. **Materials & finishes** tab: works the same way for materials and finishes.
 6. Problems show up in a **red box** at the top, for example "Product code SPT is used by two products". The Publish button stays disabled until they're fixed.
 7. A **yellow box** means a change affects SKUs that may already exist, such as a renumbered size or a deleted product. Green "● live" counts show how many SKUs on casegoods.in use each product, size or finish. Think twice before changing anything that's live.
@@ -45,7 +48,12 @@ It's a form, like filling in an online order. You never see any code.
 
 Good to know:
 - **History & shop check** tab: recent changes, and the weekly report comparing casegoods.in with the catalogue (wrong or missing SKUs, plus a suggested SKU for every shop variant).
-- **Part names (optional)**, under each product: name what the two materials are for (e.g. *Frame* / *Seat*). The generator then labels the material steps, so nobody enters them in the wrong order.
+- **More details (optional)**, under each product:
+  - **Part names**: what the two materials are for (e.g. *Frame* / *Seat*), so nobody enters them in the wrong order.
+  - **Notes**: one line shown when someone picks the product (e.g. "Made for the Salone 2026 stand").
+  - **Files link**: a Dropbox or Drive folder with drawings and photos.
+- **Your name** (Publishing setup) is added to each change, so History shows who made it.
+- More on bespoke pieces and exhibitions: [NEXT_STEPS.md](NEXT_STEPS.md).
 - If you close the page before publishing, the editor remembers your unpublished changes and offers them back next time.
 - **Undo all changes** throws away everything you haven't published yet.
 - No key on this computer? Use **Download files**, then follow steps 3–5 of Option 2 to upload the two downloaded files.
@@ -89,6 +97,8 @@ Rules you must follow:
 - New sizes get the next unused number (01, 02, 03...). Never renumber existing sizes:
   their codes are already printed on SKUs.
 - To discontinue a product, add "retired": true instead of deleting it.
+- A bespoke / one-off / prototype product has "bespoke": true. Never both "retired" and "bespoke".
+- Optional "notes" (one line of text) and "link" (a full https:// address) may be present. Keep them.
 - A product may optionally have "primaryPart" and "secondaryPart" (e.g. "Frame", "Seat"):
   what the two materials in its SKU are for. Keep them if present.
 - materials.json: each material has a 1-character "code" (unique), a "name", and

@@ -10,6 +10,7 @@ Make, check and look up Casegoods SKUs, and edit the product catalogue without t
 
 - **Editing the catalogue?** Read **[docs/EDITING_GUIDE.md](docs/EDITING_GUIDE.md)**, written for non-technical people.
 - **Why it works this way and what it protects against:** **[docs/SYSTEM_REVIEW.md](docs/SYSTEM_REVIEW.md)**
+- **Bespoke pieces, integrations, a team questionnaire:** **[docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)**
 - **Online shop vs catalogue:** **[reports/store-check.md](reports/store-check.md)**, updated every Monday.
 
 ## SKU format
@@ -30,7 +31,7 @@ Make, check and look up Casegoods SKUs, and edit the product catalogue without t
 
 | File | What it holds |
 |---|---|
-| `products.json` | Categories and every product with its sizes. Optional: `"retired": true`, and `"primaryPart"` / `"secondaryPart"` (e.g. "Frame" / "Seat"). |
+| `products.json` | Categories and every product with its sizes. Optional per product: `"retired": true` or `"bespoke": true`, `"primaryPart"` / `"secondaryPart"` (e.g. "Frame" / "Seat"), `"notes"`, `"link"` (Dropbox/Drive folder). |
 | `materials.json` | Materials and their finishes. |
 | `store.json` | Written by the shop check: SKUs live on casegoods.in, plus product links and pictures. |
 | `sku-core.js` | All the rules: checks, change detection, building and reading SKUs, descriptions. Used by every page and script. |

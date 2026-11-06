@@ -112,6 +112,10 @@
       else if (!p.retired) usedCategories.add(cat.toLowerCase());
 
       if (p.retired !== undefined && typeof p.retired !== 'boolean') err(`${label}: "retired" must be true or false.`);
+      if (p.bespoke !== undefined && typeof p.bespoke !== 'boolean') err(`${label}: "bespoke" must be true or false.`);
+      if (p.retired && p.bespoke) err(`${label} is marked both retired and bespoke — choose one.`);
+      if (p.notes !== undefined && typeof p.notes !== 'string') err(`${label}: "notes" must be text.`);
+      if (p.link !== undefined && !/^https?:\/\/\S+$/i.test(str(p.link))) err(`${label}: the files link must be a full web address starting with https://`);
       ['primaryPart', 'secondaryPart'].forEach((k) => {
         if (p[k] !== undefined && typeof p[k] !== 'string') err(`${label}: "${k}" must be text.`);
       });
@@ -236,6 +240,8 @@
       const b = catCode(newProducts, q);
       if (a !== b) danger(`${code} moved from ${p.category} to ${q.category}: its SKUs change from ${a}-${code}-… to ${b}-${code}-….`);
       if (!p.retired && q.retired) notice(`${code} (${q.name}) retired — hidden from the generator, code kept reserved.`);
+      if (p.bespoke && !q.bespoke && !q.retired) notice(`${code} (${q.name}) joined the catalogue (was bespoke) — its SKUs stay the same.`);
+      if (!p.bespoke && q.bespoke) notice(`${code} (${q.name}) marked as bespoke / one-off.`);
       if (p.retired && !q.retired) notice(`${code} (${q.name}) brought back from retirement.`);
       const os = byCode(p.sizes);
       const ns = byCode(q.sizes);
@@ -250,7 +256,7 @@
       if (os.size === 0 && ns.size > 0) danger(`${code} had no sizes (SKUs used 00) and now has sizes. Existing ${code}-00 SKUs will no longer be recognised — consider adding a size "00".`);
       ns.forEach((s, sc) => { if (!os.has(sc) && ![...os.values()].some((x) => norm(x.name) === norm(s.name))) notice(`${code}: new size ${sc} (${s.name}).`); });
     });
-    np.forEach((p, code) => { if (!op.has(code) && ![...op.values()].some((x) => norm(x.name) === norm(p.name))) notice(`New product ${code} (${p.name}).`); });
+    np.forEach((p, code) => { if (!op.has(code) && ![...op.values()].some((x) => norm(x.name) === norm(p.name))) notice(`New ${p.bespoke ? 'bespoke ' : ''}product ${code} (${p.name}).`); });
 
     // Materials and finishes
     const om = byCode(oldMaterials);
@@ -364,6 +370,7 @@
 
     const notes = [];
     if (product.retired) notes.push('This product is retired. Only use this SKU for an existing item.');
+    if (product.bespoke) notes.push('Bespoke / one-off: not in the regular catalogue. If it joins the catalogue later, this SKU stays the same.');
     [p1, p2].forEach((p) => {
       if (!p.none && isCustom(p.f)) notes.push(`"${materialLabel(p.m, p.f)}" is a single code for every custom ${p.m.name.toLowerCase()} finish. Record the actual finish separately (e.g. in the order notes).`);
     });
@@ -410,6 +417,7 @@
     }
     seg(code, 'Product', product ? product.name : 'unknown', !!(product && product.code === code));
     if (product && product.retired) res.warnings.push(`${product.code} (${product.name}) is retired.`);
+    if (product && product.bespoke) res.warnings.push(`${product.code} (${product.name}) is a bespoke / one-off product, not in the regular catalogue.`);
     if (product && cat) {
       const pc = categoryFor(productsFile, product);
       if (pc && pc.code !== cat.code) res.errors.push(`${product.name} is in ${pc.name} (${pc.code}), not ${cat.name} — the SKU should start with ${pc.code}-.`);
@@ -468,8 +476,11 @@
           `      "category": ${q(str(p.category).trim())}`,
         ];
         if (p.retired) lines.push(`      "retired": true`);
+        if (p.bespoke) lines.push(`      "bespoke": true`);
         if (str(p.primaryPart).trim()) lines.push(`      "primaryPart": ${q(str(p.primaryPart).trim())}`);
         if (str(p.secondaryPart).trim()) lines.push(`      "secondaryPart": ${q(str(p.secondaryPart).trim())}`);
+        if (str(p.notes).trim()) lines.push(`      "notes": ${q(str(p.notes).trim())}`);
+        if (str(p.link).trim()) lines.push(`      "link": ${q(str(p.link).trim())}`);
         lines.push(`      "sizes": ${list(p.sizes || [], '      ')}`);
         return `    {\n${lines.join(',\n')}\n    }`;
       })

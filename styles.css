@@ -43,16 +43,16 @@ img { max-width: 100%; }
 /* ---------- header / navigation (shared by both pages; laid out like casegoods.in) ---------- */
 .site-header { background: var(--paper); position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--line); }
 .site-header .inner { padding: 22px 48px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
-.brand { display: block; flex: none; line-height: 0; }
+.brand { display: block; flex: none; line-height: 0; order: 2; margin-left: auto; opacity: .85; }   /* logo takes a back seat, on the right */
 .brand img { width: 90px; height: auto; display: block; }
-.nav { display: flex; align-items: center; gap: 6px 28px; flex-wrap: wrap; margin-left: auto; }
+.nav { display: flex; align-items: center; gap: 6px 28px; flex-wrap: wrap; order: 1; }
 .nav a, .nav button {
   font: inherit; font-size: 15px; background: none; border: 0; cursor: pointer; color: var(--ink); opacity: .5;
   padding: 6px 0; text-decoration: none; border-bottom: 1px solid transparent; transition: opacity .2s;
 }
 .nav a:hover, .nav button:hover { opacity: 1; }
 .nav .active { opacity: 1; border-bottom-color: var(--ink); }
-.nav .nav-cta { opacity: 1; background: var(--ink); color: var(--paper); padding: 10px 18px; margin-left: 8px; border: 1px solid var(--ink); }
+.nav .nav-cta { opacity: 1; background: var(--ink); color: var(--paper); padding: 10px 18px; margin-left: 4px; border: 1px solid var(--ink); }
 .nav .nav-cta:hover { background: #333; }
 .nav .nav-cta.active { background: var(--paper); color: var(--ink); }
 

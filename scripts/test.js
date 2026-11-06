@@ -87,6 +87,20 @@ let nm = clone(M);
 nm.find((m) => m.code === 'T').finishes[1].name = 'Walnut Stain';
 assert.strictEqual(level(core.compare(P, M, P, nm), /T1 renamed/).level, 'danger');
 
+// ---- Bespoke lifecycle ----
+n = clone(P);
+n.products.push({ code: 'XPT', name: 'Expo Table', category: 'Furniture', bespoke: true, notes: 'Made for the 2026 stand', link: 'https://www.dropbox.com/x', sizes: [{ code: '01', name: 'Prototype' }] });
+assert.deepStrictEqual(core.validate(n, M).errors, []);
+assert.ok(core.buildSku(n, M, { productCode: 'XPT', sizeCode: '01', mat1: 'T', fin1: '1', mat2: '', fin2: '' }).notes.some((x) => /Bespoke/.test(x)));
+assert.strictEqual(level(core.compare(P, M, n, M), /New bespoke product XPT/).level, 'notice');
+const graduated = clone(n); delete graduated.products.find((p) => p.code === 'XPT').bespoke;
+assert.strictEqual(level(core.compare(n, M, graduated, M), /joined the catalogue/).level, 'notice');
+assert.deepStrictEqual(JSON.parse(core.formatProducts(n)), n);
+n.products.find((p) => p.code === 'XPT').retired = true;
+assert.ok(core.validate(n, M).errors.some((e) => /both retired and bespoke/.test(e)));
+n.products.find((p) => p.code === 'XPT').retired = false; n.products.find((p) => p.code === 'XPT').link = 'dropbox folder';
+assert.ok(core.validate(n, M).errors.some((e) => /files link/.test(e)));
+
 // ---- Formatting round-trips ----
 assert.deepStrictEqual(JSON.parse(core.formatProducts(P)), P);
 assert.deepStrictEqual(JSON.parse(core.formatMaterials(M)), M);
