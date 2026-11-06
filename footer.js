@@ -81,7 +81,7 @@ My change:
 
       <section>
         <h3>Shopify</h3>
-        <p>The site already reads <strong>casegoods.in</strong> every Monday. That's where the "live on casegoods.in" marks, product photos and links come from. It never changes the shop.</p>
+        <p>The site already reads <strong>casegoods.in</strong> every Monday. That's where the "on shop" counts and the links to each product come from. It never changes the shop.</p>
         <details>
           <summary>How do we get these SKUs onto Shopify?</summary>
           <h4>One product at a time</h4>

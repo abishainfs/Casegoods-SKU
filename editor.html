@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casegoods SKUs: Edit catalogue</title>
+  <title>Casegoods SKUs: Edit info</title>
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,6 +53,7 @@
     .sub { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
     .sub td { padding: 3px 6px 3px 0; vertical-align: middle; }
     .sub td:first-child { width: 5.6rem; }
+    #catTable td:first-child { width: 4rem; }
     .sub td.aka-col { width: 30%; }
     .sub .aka-input { color: var(--muted); font-size: 13px; }
     @media (max-width: 700px) { .sub td.aka-col { display: none; } }
@@ -77,13 +78,13 @@
     <nav class="nav" aria-label="Main">
       <a href="index.html">SKU generator</a>
       <a href="index.html#list">SKU list</a>
-      <a class="nav-cta active" href="editor.html" aria-current="page">Edit catalogue</a>
+      <a class="nav-cta active" href="editor.html" aria-current="page">Edit info</a>
     </nav>
   </div>
 </header>
 
 <main class="page">
-  <h1>Edit catalogue</h1>
+  <h1>Edit info</h1>
   <p class="lede">Add, change or retire products, sizes and materials. Nothing goes live until you press <em>Publish</em>, and mistakes are caught before they can.</p>
 
   <div id="loadBanner"></div>
@@ -102,7 +103,7 @@
     <div class="toolbar">
       <input type="search" id="search" placeholder="Search by name, code or size…">
       <select id="catFilter"></select>
-      <label class="check"><input type="checkbox" id="showRetired"> Show retired</label>
+      <label class="check"><input type="checkbox" id="showRetired" checked> Show retired</label>
       <button class="btn btn-primary btn-small" id="addProduct">+ Add product</button>
     </div>
     <div id="productList"></div>
@@ -302,7 +303,7 @@
     toast(`Old name "${was}" kept under Old & other names, so searches for it still work.`, 5000);
     changed();
   };
-  const akaTip = 'Old names, nicknames during development (e.g. Drift Chair was "Capsule Chair"), or the name used on casegoods.in if it differs. Separate with commas. Search finds these, and the weekly shop check uses them to match the website. Renaming something saves its old name here automatically.';
+  const akaTip = 'Any other name this has gone by: a working title, an earlier name, or how it is listed on casegoods.in. Separate them with commas. Searching for any of them finds it, and the shop check uses them to match the website. When you rename something, the old name is added here for you.';
 
   const changes = () => SkuCore.compare(JSON.parse(original.products), JSON.parse(original.materials), catalog, materials);
   const commitMessage = (list) => {
@@ -430,8 +431,8 @@
       const shop = store.products && store.products[p.code];
       metaEl.innerHTML = '';
       metaEl.append(p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : '', `${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
-        shop ? h('span', { class: 'live-count', title: 'From the weekly shop check of casegoods.in (Shopify).' },
-          ` · on casegoods.in, ${shop.variants ? `${shop.withSku} of ${shop.variants} variants have a SKU` : 'SKUs not counted yet'}`) : '');
+        shop ? h('span', { class: 'live-count', title: shop.variants ? `On casegoods.in. ${shop.withSku} of its ${shop.variants} shop variants have a SKU filled in (weekly shop check).` : 'On casegoods.in (weekly shop check).' },
+          ` · on shop${shop.variants ? `, ${shop.withSku}/${shop.variants} SKUs` : ''}`) : '');
     };
     updateSummary();
     const det = h('details', { class: 'item' + (p.retired ? ' retired' : ''), open: openItems.has(key), id: 'p-' + p.code,
@@ -447,7 +448,7 @@
     code.addEventListener('focus', () => { codeHint.textContent = `3–4 letters/digits, unique forever. Taken: ${usedCodes().length} codes incl. retired.`; });
     const codeHint = h('p', { class: 'hint' }, '3–4 letters/digits');
     const pubP = published().products.get(p.code);   // as published, before any edits now
-    const akaInput = h('input', { type: 'text', id: 'aka-' + key, value: p.aka || '', placeholder: 'e.g. Capsule Chair, or the name used on the website',
+    const akaInput = h('input', { type: 'text', id: 'aka-' + key, value: p.aka || '', placeholder: 'e.g. Three Legged Table, Fillet Joint Table',
       oninput: (e) => { if (e.target.value.trim()) p.aka = e.target.value.trim(); else delete p.aka; changed(); } });
     const name = h('input', { type: 'text', value: p.name, id: 'name-' + key, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); },
       onchange: () => pubP && rememberOldName(p, pubP.name, akaInput) });
@@ -576,7 +577,7 @@
     catalog.categories.forEach((c, i) => {
       const count = catalog.products.filter((p) => p.category === c.name).length;
       t.append(h('tr', {},
-        h('td', {}, h('input', { type: 'text', class: 'code-input', value: c.code, maxLength: 1, 'aria-label': 'Category code', oninput: (e) => { e.target.value = upper(e.target.value); c.code = e.target.value; changed(); } })),
+        h('td', {}, h('input', { type: 'text', class: 'code-input', style: 'width:3.2rem;text-align:center', value: c.code, maxLength: 1, 'aria-label': 'Category code', oninput: (e) => { e.target.value = upper(e.target.value); c.code = e.target.value; changed(); } })),
         h('td', {}, h('input', { type: 'text', value: c.name, 'aria-label': 'Category name', onchange: (e) => {
           const old = c.name; c.name = e.target.value.trim();
           catalog.products.forEach((p) => { if (p.category === old) p.category = c.name; });

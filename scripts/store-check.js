@@ -6,7 +6,7 @@
  *   node scripts/store-check.js --input file.json    use a saved copy of the shop's products instead
  *
  * Writes:
- *   store.json                          live SKUs + product pictures/links (used by the SKU generator and editor)
+ *   store.json                          SKUs on casegoods.in + product links and counts (used by the SKU generator and editor)
  *   reports/store-check.md              readable report: problems, mismatches, naming differences
  *   reports/store-sku-suggestions.csv   every shop variant with its current SKU and a suggested SKU
  *
@@ -184,17 +184,16 @@ function writeIfChanged(file, content, stampRe) {
   shop.forEach((sp) => {
     const match = matchProduct(sp.title);
     const url = `${SHOP}/products/${sp.handle}`;
-    const image = sp.images && sp.images[0] ? sp.images[0].src : '';
     if (!match.product) issues.unmatchedProducts.push(`[${sp.title}](${url})`);
     else {
       if (match.product.retired) issues.retiredOnSale.push(`[${sp.title}](${url}) — catalogue code ${match.product.code} is retired`);
-      // One picture/link per catalogue product; prefer pages whose address isn't a "-copy".
+      // One link per catalogue product; prefer pages whose address isn't a "-copy".
       const code = match.product.code;
       const cur = store.products[code];
       const withSku = sp.variants.filter((v) => (v.sku || '').trim()).length;
       // Counts are added up over every shop page for this product (some products have several pages).
       const counts = { pages: (cur ? cur.pages : 0) + 1, variants: (cur ? cur.variants : 0) + sp.variants.length, withSku: (cur ? cur.withSku : 0) + withSku };
-      if (!cur || (/copy/.test(cur.url) && !/copy/.test(url))) store.products[code] = Object.assign({ title: sp.title, url, image, thumb: image ? image.replace(/(\.\w+)(\?|$)/, '_400x$1$2') : '' }, counts);
+      if (!cur || (/copy/.test(cur.url) && !/copy/.test(url))) store.products[code] = Object.assign({ title: sp.title, url }, counts);
       else Object.assign(cur, counts);
     }
     sp.variants.forEach((v) => {
