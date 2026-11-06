@@ -10,7 +10,7 @@ A first-principles look at the Casegoods SKU system: what it needs to do, what c
 |---|---|
 | **One item, one SKU.** The same product, size and materials must always give the same SKU. | SKUs are *built* from codes, not handed out from a counter. Two people choosing the same things get the same SKU. |
 | **One SKU, one item.** A SKU must never mean two different things. | Duplicate codes are blocked. Retired codes stay reserved. Any change that would alter what an existing SKU means is flagged before publishing and after every change. |
-| **Readable by people.** Anyone should be able to tell what `F-FFC-03-T1-E0` is. | A **Check SKUs** page explains any SKU part by part. The **Code book** lists every code. The generator labels each segment. |
+| **Readable by people.** Anyone should be able to tell what `F-FFC-03-T1-E0` is. | The **SKU list** lists every code, and pasting a SKU into its search explains it part by part. The generator labels each segment. |
 | **Hard to get wrong.** Typos, lookalike characters, wrong order. | The checker fixes lower case, spaces and odd dashes, spots `0`/`O` mix-ups and wrong category letters, and suggests the corrected SKU. |
 | **A single source of truth for the codes.** | `products.json` and `materials.json`, with every change recorded. |
 | **Agreement with where SKUs are used.** | A weekly **shop check** compares casegoods.in with the catalogue. |
@@ -24,7 +24,7 @@ A first-principles look at the Casegoods SKU system: what it needs to do, what c
 - **The code book already behaves like a database.** It lives in GitHub: every change is recorded with who, when and what, any change can be undone, it's free, and the website is served straight from it.
 - **The register of SKUs actually in use already exists. It's Shopify.** Rather than keeping a second list that could drift, the weekly shop check reads Shopify and compares it with the code book.
 
-**When you *would* want one:** if you need to track SKUs that are never on the shop (bespoke pieces, project orders, B2B quotes) along with prices, stock or production status. At that point it's an inventory or order system (Zoho Inventory, a Google Sheet "SKU register", Airtable…), and it should **use** these SKUs rather than replace the code book. The **Check SKUs** page can audit any list exported from such a system.
+**When you *would* want one:** if you need to track SKUs that are never on the shop (bespoke pieces, project orders, B2B quotes) along with prices, stock or production status. At that point it's an inventory or order system (Zoho Inventory, a Google Sheet "SKU register", Airtable…), and it should **use** these SKUs rather than replace the code book. *Check a list of SKUs* (on the SKU list page) can audit any list exported from such a system.
 
 **Hosting:** keep it on GitHub Pages. It's free, has no server to maintain, and keeps history. Nothing here needs a server.
 
@@ -51,7 +51,7 @@ A first-principles look at the Casegoods SKU system: what it needs to do, what c
 | Materials entered in the wrong order (`T1-M0` vs `M0-T1` for the same table) | Products can name their parts ("Primary material — Base"). If the shop already uses the reverse order, the generator says so and offers to switch. |
 | Custom finishes: every custom marble is `M6`, so the SKU can't say which | A note appears whenever a "Custom" finish is chosen, asking for the details to be recorded separately |
 | Retired product used for a new SKU | Retired products are hidden from the generator; the checker flags them |
-| Typos when copying SKUs by hand | Copy buttons, plus the **Check SKUs** page with "Did you mean…?" |
+| Typos when copying SKUs by hand | Copy buttons, plus SKU checking with "Did you mean…?" on the SKU list page |
 | Spreadsheet mangling | Copy and download outputs are plain text and keep leading zeros (`01`) |
 
 ## 4. What the shop check found on casegoods.in
@@ -83,11 +83,11 @@ The full list is in `reports/store-check.md`, with every variant in `reports/sto
 - **Sizes and finishes as buttons** when there are up to about a dozen (all options visible at once), and a dropdown when there are more (e.g. 28 dhurrie sizes).
 - **Pictures.** Small product photos from the shop are shown next to the chosen product, purely to confirm "yes, that one". They come from the weekly shop check, so nobody has to maintain them, and products not on the shop simply show no picture.
 - **The description is written the way the website writes it:** "Folding Flat Chair, Slung Leather — Frame: Teak, Natural · Seat: Leather, Natural Buffalo". It avoids repetition ("Jute Rope", not "Rope, Jute Rope") and merges two colours of the same material ("Woven Jute, Red & Blue").
-- **One site, four places:** Make, Check, Code book and Edit share a header. Every product in the code book links to *Make* and *Edit*, and the editor links back with *Try in generator*.
+- **One site, three places:** Make a SKU, SKU list (which includes checking) and Edit catalogue share a header. Every product in the SKU list links to *Make* and *Edit*, and the editor links back with *Try in generator*.
 
 ## 6. Decisions for you
 
 1. Fillet Joint Table: un-retire `FJT`, or is it the same product as `FET`?
 2. The six naming differences in section 4: which wording is right?
 3. Material order convention: should the *structural* part (frame/base) always be primary? Part names are set for RTT (Base/Top) and FFC (Frame/Seat). Adding them to other two-material products is a 10-second edit each.
-4. Do you want a register for non-shop SKUs (bespoke/projects)? If so, a Google Sheet that the Check page can audit is the lightest option.
+4. Do you want a register for non-shop SKUs (bespoke/projects)? If so, a Google Sheet that *Check a list of SKUs* can audit is the lightest option.

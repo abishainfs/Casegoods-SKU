@@ -12,7 +12,7 @@
   <style>
     /* ----- Make a SKU ----- */
     .make { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
-    @media (min-width: 960px) { .make { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: 40px; align-items: start; } .result-col { position: sticky; top: 90px; } }
+    @media (min-width: 960px) { .make { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: 40px; align-items: start; } .result-col { position: sticky; top: 110px; } }
     .step { border-top: 1px solid var(--ink); padding: 18px 0 26px; }
     .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
     .step-num { font-family: var(--mono); font-size: 13px; color: var(--muted); }
@@ -53,6 +53,20 @@
     .check-table .why.w { color: var(--warn); }
 
     /* ----- Code book ----- */
+    .list-top { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 18px; }
+    .list-search { flex: 1; min-width: 260px; max-width: 560px; }
+    #bulk { margin-bottom: 24px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+    .fchip { font: inherit; font-size: 14px; padding: 7px 13px; min-height: 38px; border: 1px solid #8c8c8c; background: var(--paper); cursor: pointer; }
+    .fchip:hover { border-color: var(--ink); }
+    .fchip[aria-pressed=true] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .fchip .n { color: var(--faint); margin-left: 6px; font-size: 12px; }
+    .fchip[aria-pressed=true] .n { color: #bbb; }
+    .sku-card { border: 1px solid var(--ink); padding: 18px 20px; margin-bottom: 24px; }
+    .sku-card.bad { border-color: var(--danger); background: var(--paper) !important; }
+    .sku-card .sku-segs { margin: 4px 0 12px; }
+    .sku-card .why { font-size: 14px; color: var(--danger); margin-top: 4px; }
+    .sku-card .why.w { color: var(--warn); }
     .book-cat { margin-top: 30px; }
     .book-cat h2 { display: flex; gap: 10px; align-items: baseline; border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
     .book-cat h2 .mono { color: var(--muted); font-size: 15px; }
@@ -69,12 +83,11 @@
 <body>
 <header class="site-header">
   <div class="inner">
-    <a class="brand" href="index.html"><img src="Casegoods_Logo.png" alt="Casegoods"><span>SKUs</span></a>
+    <a class="brand" href="index.html" aria-label="Casegoods SKUs — home"><img src="logo.svg" alt="Casegoods" onerror="this.onerror=null;this.src='Casegoods_Logo.png'"></a>
     <nav class="nav" aria-label="Main">
       <button data-view="make" class="active">Make a SKU</button>
-      <button data-view="check">Check SKUs</button>
-      <button data-view="book">Code book</button>
-      <a class="right" href="editor.html">Edit catalogue →</a>
+      <button data-view="list">SKU list</button>
+      <a class="nav-cta" href="editor.html">Edit catalogue</a>
     </nav>
   </div>
 </header>
@@ -164,39 +177,46 @@
     </div>
   </section>
 
-  <!-- =========================================================== CHECK -->
-  <section id="view-check" class="hidden">
-    <h1>Check SKUs</h1>
-    <p class="lede">Paste SKUs from anywhere — an invoice, a spreadsheet column, an email. Each one is checked against the catalogue and explained.</p>
-    <div class="check-grid">
-      <div>
-        <label for="checkInput">SKUs, one per line
-          <button type="button" class="tip tip-right" data-tip="Lower case, spaces and odd dashes are fine — they're tidied up automatically. Codes with a zero instead of the letter O (and similar) are spotted and corrected.">?</button></label>
-        <textarea id="checkInput" placeholder="F-RTT-01-T1-M0&#10;o-tbl-02-h1&#10;L-0TL-01"></textarea>
-        <div class="btn-row" style="margin-top:12px">
-          <button class="btn btn-primary" id="checkBtn">Check</button>
-          <button class="btn" id="checkDownload" disabled>Download results</button>
-          <button class="btn btn-link" id="checkClear">Clear</button>
-        </div>
+  <!-- =========================================================== SKU LIST (+ check) -->
+  <section id="view-list" class="hidden">
+    <h1>SKU list</h1>
+    <p class="lede">Every product, size, material and finish code. Paste a SKU into the search to see what it means.</p>
+    <div class="list-top">
+      <div class="list-search">
+        <label for="bookSearch">Search, or paste a SKU to check it
+          <button type="button" class="tip tip-right" data-tip="Type a name or code to filter the list. Paste a whole SKU (e.g. F-RTT-01-T1-M0) to have it explained and checked. Lower case, spaces and odd dashes are fine.">?</button></label>
+        <input type="search" id="bookSearch" placeholder="e.g. chair, SPT, brass — or F-RTT-01-T1-M0" autocomplete="off">
       </div>
-      <div>
-        <div class="summary" id="checkSummary"></div>
-        <div style="overflow-x:auto">
-          <table class="table check-table hidden" id="checkTable">
-            <thead><tr><th></th><th>SKU</th><th>Meaning</th><th class="nowrap">On casegoods.in <button type="button" class="tip tip-left" data-tip="Whether this exact SKU is filled in on a variant in the online shop (updated every Monday).">?</button></th><th></th></tr></thead>
-            <tbody id="checkBody"></tbody>
-          </table>
+      <button class="btn" id="bulkToggle" aria-expanded="false">Check a list of SKUs</button>
+    </div>
+    <div id="skuResult"></div>
+
+    <div id="bulk" class="panel soft hidden">
+      <div class="check-grid">
+        <div>
+          <label for="checkInput">SKUs, one per line
+            <button type="button" class="tip tip-right" data-tip="Paste from anywhere: an invoice, a spreadsheet column, an email. Lower case, spaces and odd dashes are tidied up. A zero typed instead of the letter O (and similar) is spotted.">?</button></label>
+          <textarea id="checkInput" placeholder="F-RTT-01-T1-M0&#10;o-tbl-02-h1&#10;L-0TL-01"></textarea>
+          <div class="btn-row" style="margin-top:12px">
+            <button class="btn btn-primary" id="checkBtn">Check</button>
+            <button class="btn" id="checkDownload" disabled>Download results</button>
+            <button class="btn btn-link" id="checkClear">Clear</button>
+          </div>
+        </div>
+        <div>
+          <div class="summary" id="checkSummary"><span class="muted">Results appear here.</span></div>
+          <div style="overflow-x:auto">
+            <table class="table check-table hidden" id="checkTable">
+              <thead><tr><th></th><th>SKU</th><th>Meaning</th><th class="nowrap">On casegoods.in <button type="button" class="tip tip-left tip-down" data-tip="Whether this exact SKU is filled in on a variant in the online shop (updated every Monday).">?</button></th><th></th></tr></thead>
+              <tbody id="checkBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- =========================================================== CODE BOOK -->
-  <section id="view-book" class="hidden">
-    <h1>Code book</h1>
-    <p class="lede">Every code in use. Codes never change meaning, and retired codes are never reused.</p>
-    <div style="max-width:420px"><label for="bookSearch">Search</label><input type="search" id="bookSearch" placeholder="Name or code"></div>
-    <label style="margin-top:12px;font-weight:400"><input type="checkbox" id="bookRetired"> Show retired products</label>
+    <div class="filters" id="filters" role="group" aria-label="Show"></div>
+    <label style="margin-top:4px;font-weight:400"><input type="checkbox" id="bookRetired"> Show retired products</label>
     <div id="book"></div>
   </section>
 </main>
@@ -254,9 +274,8 @@
   // ---------------------------------------------------------------- views
   const show = (view) => {
     document.querySelectorAll('.nav [data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
-    ['make', 'check', 'book'].forEach((v) => $('view-' + v).classList.toggle('hidden', v !== view));
-    if (view === 'book') renderBook();
-    if (view === 'check') $('checkInput').focus();
+    ['make', 'list'].forEach((v) => $('view-' + v).classList.toggle('hidden', v !== view));
+    if (view === 'list') renderBook();
   };
   document.querySelectorAll('.nav [data-view]').forEach((b) => (b.onclick = () => show(b.dataset.view)));
 
@@ -338,11 +357,12 @@
 
   // ---------------------------------------------------------------- MAKE: result
   const SEG_LABELS = ['Category', 'Product', 'Size / type', 'Primary material', 'Secondary material'];
-  const renderSegs = (codes, labels) => {
-    const box = $('skuSegs'); box.innerHTML = '';
+  const renderSegs = (codes, labels, box = $('skuSegs'), short = false) => {
+    box.innerHTML = '';
     const placeholders = ['X', 'ABCD', 'EF', 'GH', 'IJ'];
     for (let i = 0; i < 5; i++) {
       if (i === 4 && !codes[4] && !codes[3]) break; // keep it short when materials aren't used
+      if (short && i >= 3 && !codes[i]) break;
       if (i > 0) box.append(h('span', { class: 'sku-dash' }, '-'));
       box.append(h('div', { class: 'sku-seg' + (codes[i] ? '' : ' empty'), title: labels[i] || SEG_LABELS[i] },
         h('span', { class: 'c' }, codes[i] || placeholders[i]), h('span', { class: 'l' }, labels[i] || SEG_LABELS[i])));
@@ -472,7 +492,7 @@
     $('checkSummary').innerHTML = '';
     if (checkRows.length) $('checkSummary').append(
       h('span', {}, `${checkRows.length} checked`), h('span', { class: 'ok' }, `${ok} valid`),
-      checkRows.length - ok ? h('span', { class: 'err' }, `${checkRows.length - ok} with problems`) : null);
+      checkRows.length - ok ? h('span', { class: 'err' }, `${checkRows.length - ok} with problems`) : '');
     $('checkDownload').disabled = !checkRows.length;
   };
   let checkTimer;
@@ -482,17 +502,56 @@
   $('checkDownload').onclick = () => downloadCsv(`casegoods-sku-check-${today()}.csv`, [['As typed', 'SKU', 'Valid', 'Meaning', 'Problems', 'On casegoods.in']]
     .concat(checkRows.map((r) => [r.input, r.sku, r.ok ? 'yes' : 'no', r.description, r.errors.concat(r.warnings.filter((w) => !/^Read as/.test(w)), r.suggestions.map((s) => `Did you mean ${s}?`)).join(' '), r.ok && store.skus[r.sku] ? 'yes' : ''])));
 
-  // ---------------------------------------------------------------- CODE BOOK
+  // ---------------------------------------------------------------- SKU LIST (search, filters, single + bulk check)
+  let filter = '';   // '' = everything, a category code, or 'materials'
+  const looksLikeSku = (q) => /^[a-z]\s*[-–—_.\s]\s*[a-z0-9]{3,4}([-–—_.\s]|$)/i.test(q.trim());
+
+  const renderFilters = () => {
+    const box = $('filters'); box.innerHTML = '';
+    const count = (c) => catalog.products.filter((p) => !p.retired && p.category.trim().toLowerCase() === c.name.toLowerCase()).length;
+    const chip = (value, label, n) => h('button', { class: 'fchip', 'aria-pressed': String(filter === value), onclick: () => { filter = value; renderBook(); } },
+      label, n != null ? h('span', { class: 'n' }, n) : null);
+    box.append(chip('', 'All'), ...catalog.categories.map((c) => chip(c.code, c.name, count(c))), chip('materials', 'Materials & finishes', materials.length));
+  };
+
+  const renderSkuCard = (raw) => {
+    const box = $('skuResult'); box.innerHTML = '';
+    if (!looksLikeSku(raw)) return null;
+    const r = SkuCore.parseSku(catalog, materials, raw);
+    const card = h('div', { class: 'sku-card' + (r.ok ? '' : ' bad') });
+    const segs = h('div', { class: 'sku-segs' });
+    renderSegs(r.segments.map((x) => x.code), r.segments.map((x) => (x.ok ? x.meaning : '✕ ' + x.meaning)), segs, true);
+    const onShop = r.ok && store.skus[r.sku];
+    card.append(...[
+      h('p', { class: 'eyebrow' }, r.ok ? '✓ Valid SKU' : '✕ Not a valid SKU'), segs,
+      r.ok ? h('p', { class: 'desc', style: 'margin-bottom:8px' }, r.description) : null,
+      r.errors.map((e) => h('div', { class: 'why' }, e)),
+      r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
+      onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), 'Live on casegoods.in — ', h('a', { href: onShop.url, target: '_blank', rel: 'noopener' }, `${onShop.product}, ${onShop.variant}`)) : null,
+      h('div', { class: 'btn-row', style: 'margin-top:14px' },
+        r.ok ? h('button', { class: 'btn btn-small', onclick: () => copyText(r.sku) }, 'Copy') : null,
+        r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open in Make a SKU') : null,
+        r.suggestions.map((sug) => h('button', { class: 'btn btn-small btn-primary', onclick: () => { $('bookSearch').value = sug; renderBook(); } }, `Did you mean ${sug}?`)))].flat().filter(Boolean));
+    box.append(card);
+    return r;
+  };
+
   const renderBook = () => {
-    const q = $('bookSearch').value.trim().toLowerCase();
-    const showRetired = $('bookRetired').checked;
+    renderFilters();
+    const raw = $('bookSearch').value;
+    const parsed = renderSkuCard(raw);
+    // A pasted SKU narrows the list to its product; otherwise filter by the words typed.
+    const q = parsed ? '' : raw.trim().toLowerCase();
+    const onlyCode = parsed ? (parsed.segments[1] && parsed.segments[1].code) : '';
+    const showRetired = $('bookRetired').checked || !!parsed;
     const box = $('book'); box.innerHTML = '';
     const match = (...xs) => !q || xs.join(' ').toLowerCase().includes(q);
-    catalog.categories.forEach((c) => {
+    if (filter !== 'materials') catalog.categories.forEach((c) => {
+      if (filter && filter !== c.code) return;
       const items = catalog.products.filter((p) => p.category.trim().toLowerCase() === c.name.toLowerCase() && (showRetired || !p.retired)
-        && match(p.code, p.name, c.name, (p.sizes || []).map((s) => s.name).join(' ')));
+        && (!onlyCode || p.code === onlyCode) && match(p.code, p.name, c.name, (p.sizes || []).map((s) => s.name).join(' ')));
       if (!items.length) return;
-      box.append(h('div', { class: 'book-cat' }, h('h2', {}, h('span', { class: 'mono' }, c.code), c.name),
+      box.append(h('div', { class: 'book-cat' }, h('h2', {}, h('span', { class: 'mono' }, c.code), c.name, h('span', { class: 'muted', style: 'font-size:13px;margin-left:auto' }, `${items.length}`)),
         items.map((p) => h('div', { class: 'book-item' },
           h('div', { class: 'code' }, p.code),
           h('div', {}, p.name, p.retired ? h('span', { class: 'retired-tag', title: 'Not for new SKUs. The code stays reserved so it is never reused.' }, 'Retired') : null,
@@ -502,12 +561,24 @@
               h('a', { href: 'editor.html#' + p.code, class: 'muted' }, 'Edit'))),
           h('div', { class: 'vals' }, SkuCore.sizesFor(p).map((s) => h('span', {}, h('b', {}, s.code), s.name)))))));
     });
-    const mats = materials.filter((m) => match(m.code, m.name, m.finishes.map((f) => f.name).join(' ')));
-    if (mats.length) box.append(h('div', { class: 'book-cat' }, h('h2', {}, 'Materials & finishes'),
-      mats.map((m) => h('div', { class: 'book-item' }, h('div', { class: 'code' }, m.code), h('div', {}, m.name),
-        h('div', { class: 'vals' }, m.finishes.map((f) => h('span', {}, h('b', {}, m.code + f.code), f.name)))))));
+    if (!filter || filter === 'materials') {
+      const usedMats = parsed ? parsed.segments.slice(3).map((x) => x.code[0]) : null;
+      const mats = materials.filter((m) => (!usedMats || usedMats.includes(m.code)) && match(m.code, m.name, m.finishes.map((f) => f.name).join(' ')));
+      if (mats.length) box.append(h('div', { class: 'book-cat' }, h('h2', {}, 'Materials & finishes'),
+        mats.map((m) => h('div', { class: 'book-item' }, h('div', { class: 'code' }, m.code), h('div', {}, m.name),
+          h('div', { class: 'vals' }, m.finishes.map((f) => h('span', {}, h('b', {}, m.code + f.code), f.name)))))));
+    }
     if (!box.children.length) box.append(h('p', { class: 'muted', style: 'margin-top:24px' }, 'Nothing matches that search.'));
   };
+  const toggleBulk = (open) => {
+    const box = $('bulk');
+    const willOpen = open === undefined ? box.classList.contains('hidden') : open;
+    box.classList.toggle('hidden', !willOpen);
+    $('bulkToggle').setAttribute('aria-expanded', String(willOpen));
+    $('bulkToggle').textContent = willOpen ? 'Close list check' : 'Check a list of SKUs';
+    if (willOpen) $('checkInput').focus();
+  };
+  $('bulkToggle').onclick = () => toggleBulk();
   $('bookSearch').addEventListener('input', renderBook);
   $('bookRetired').addEventListener('change', renderBook);
 
@@ -549,7 +620,8 @@
     fillProducts(); pickProduct(''); pickMaterial(1, ''); pickMaterial(2, '');
     const fromAddress = () => {
       const sku = decodeURIComponent(location.hash.slice(1));
-      if (sku === 'check' || sku === 'book') return show(sku);
+      if (sku === 'list' || sku === 'book') return show('list');
+      if (sku === 'check') { show('list'); return toggleBulk(true); }
       if (sku && (!current || current.sku !== sku)) setFromSku(sku);
     };
     fromAddress();

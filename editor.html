@@ -11,10 +11,27 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     .page { max-width: 1040px; }
-    .statusbar { position: sticky; top: 71px; z-index: 10; background: var(--paper); border: 1px solid var(--ink);
-      padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    @media (max-width: 640px) { .statusbar { top: 0; position: relative; } }
-    .statusbar .msg { flex: 1; min-width: 220px; font-size: 14px; }
+    .page { max-width: 1320px; }
+    .ed-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    @media (min-width: 1000px) { .ed-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; } .ed-side { position: sticky; top: 110px; } }
+    @media (max-width: 999px) { .ed-side { order: -1; } }
+    .side-box { border: 1px solid var(--ink); background: var(--paper); }
+    .side-head { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+    .side-head h2 { margin: 0; font-size: 17px; }
+    .side-head .msg { font-size: 14px; margin-top: 2px; }
+    .side-scroll { max-height: calc(100vh - 360px); min-height: 60px; overflow: auto; padding: 4px 16px 10px; }
+    @media (max-width: 999px) { .side-scroll { max-height: 40vh; } }
+    .side-sec { margin: 12px 0 0; }
+    .side-sec h3 { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 6px; }
+    .side-sec ul { margin: 0; padding-left: 16px; font-size: 13px; line-height: 1.45; }
+    .side-sec li + li { margin-top: 5px; }
+    .side-sec .note { font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+    .side-sec.err h3, .side-sec.err li { color: var(--danger); }
+    .side-sec.danger { background: var(--warn-bg); margin: 12px -16px 0; padding: 10px 16px; border-left: 3px solid #d9a400; }
+    .side-sec.danger h3 { color: #4d3400; }
+    .side-actions { padding: 14px 16px 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .side-actions #publishBtn { grid-column: 1 / -1; }
+    .side-empty { font-size: 14px; color: var(--ok); margin: 12px 0 6px; }
     .tabs { display: flex; gap: 0; margin: 8px 0 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
     .tab { font: inherit; font-size: 15px; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; cursor: pointer; color: var(--muted); margin-bottom: -1px; }
     .tab:hover { color: var(--ink); }
@@ -54,12 +71,11 @@
 <body>
 <header class="site-header">
   <div class="inner">
-    <a class="brand" href="index.html"><img src="Casegoods_Logo.png" alt="Casegoods"><span>SKUs</span></a>
+    <a class="brand" href="index.html" aria-label="Casegoods SKUs — home"><img src="logo.svg" alt="Casegoods" onerror="this.onerror=null;this.src='Casegoods_Logo.png'"></a>
     <nav class="nav" aria-label="Main">
       <a href="index.html">Make a SKU</a>
-      <a href="index.html#check" data-goto="check">Check SKUs</a>
-      <a href="index.html#book" data-goto="book">Code book</a>
-      <a class="right active" href="editor.html">Edit catalogue</a>
+      <a href="index.html#list">SKU list</a>
+      <a class="nav-cta active" href="editor.html" aria-current="page">Edit catalogue</a>
     </nav>
   </div>
 </header>
@@ -70,15 +86,8 @@
 
   <div id="loadBanner"></div>
 
-  <div class="statusbar" id="statusbar">
-    <div class="msg" id="statusMsg">Loading…</div>
-    <button class="btn btn-small" id="discardBtn" title="Throw away everything you haven't published yet.">Undo all changes</button>
-    <button class="btn btn-small" id="downloadBtn" title="Save the two catalogue files to this computer — for uploading to GitHub by hand if publishing isn't set up.">Download files</button>
-    <button class="btn btn-primary" id="publishBtn">Publish</button>
-  </div>
-  <div id="impact"></div>
-  <div id="problems"></div>
-
+  <div class="ed-layout" id="layout">
+  <div class="ed-main">
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="products">Products</button>
     <button class="tab" data-tab="materials">Materials &amp; finishes</button>
@@ -134,6 +143,8 @@
         No key? Use <strong>Download files</strong> instead (see <em>docs/EDITING_GUIDE.md</em>).</p>
       <label for="token">Access key <button type="button" class="tip" data-tip="A GitHub 'fine-grained token' that can only change this one project. Whoever manages GitHub creates it. It starts with github_pat_.">?</button></label>
       <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
+      <label for="who" style="margin-top:16px">Your name <button type="button" class="tip" data-tip="Added to every change you publish, so the History tab shows who made it. (GitHub itself records changes under the owner of the access key.)">?</button></label>
+      <input type="text" id="who" placeholder="e.g. Priya" autocomplete="name" style="max-width:320px">
       <details style="margin-top:16px"><summary class="muted">Advanced</summary>
         <div class="fields parts" style="margin-top:12px">
           <div><label for="repo">Repository</label><input type="text" id="repo"></div>
@@ -147,6 +158,20 @@
       <div id="settingsMsg" style="margin-top:16px"></div>
     </div>
   </section>
+  </div>
+
+  <aside class="ed-side" id="statusbar" aria-label="Unpublished changes">
+    <div class="side-box">
+      <div class="side-head"><h2>Changes</h2><div class="msg" id="statusMsg">Loading…</div></div>
+      <div class="side-scroll" id="changeList"></div>
+      <div class="side-actions">
+        <button class="btn btn-primary" id="publishBtn">Publish</button>
+        <button class="btn btn-small" id="downloadBtn" title="Save the two catalogue files to this computer — for uploading to GitHub by hand if publishing isn't set up.">Download files</button>
+        <button class="btn btn-small" id="discardBtn" title="Throw away everything you haven't published yet.">Undo all</button>
+      </div>
+    </div>
+  </aside>
+  </div>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -158,7 +183,7 @@
   const $ = (id) => document.getElementById(id);
   const DRAFT_KEY = 'casegoods-editor-draft';
   const SETTINGS_KEY = 'casegoods-editor-settings';
-  const DEFAULT_SETTINGS = { token: '', repo: 'abishainfs/Casegoods-SKU', branch: 'main' };
+  const DEFAULT_SETTINGS = { token: '', repo: 'abishainfs/Casegoods-SKU', branch: 'main', who: '' };
 
   let catalog, materials;                           // what you're editing
   let original = { products: '', materials: '' };   // as last loaded / published
@@ -259,7 +284,8 @@
   const changes = () => SkuCore.compare(JSON.parse(original.products), JSON.parse(original.materials), catalog, materials);
   const commitMessage = (list) => {
     const lines = list.map((c) => c.text.split('. ')[0].replace(/\.$/, ''));
-    return `Catalogue editor: ${lines.slice(0, 4).join('; ')}${lines.length > 4 ? `; +${lines.length - 4} more` : ''}`.slice(0, 250)
+    const who = (settings().who || '').trim();
+    return `Catalogue editor: ${lines.slice(0, 4).join('; ')}${lines.length > 4 ? `; +${lines.length - 4} more` : ''}`.slice(0, 230) + (who ? ` (by ${who})` : '')
       + (lines.length ? '\n\n' + lines.map((l) => '- ' + l).join('\n') : '');
   };
 
@@ -274,23 +300,25 @@
     const list = dirty ? changes() : [];
     const danger = list.filter((c) => c.level === 'danger');
     const { errors, warnings } = lastResult;
+    const notices = list.filter((c) => c.level !== 'danger');
     const msg = $('statusMsg'); msg.innerHTML = '';
-    if (errors.length) msg.append(h('strong', { class: 'err', style: 'color:var(--danger)' }, `${plural(errors.length, 'problem')} to fix`), ' before you can publish (listed below).');
-    else if (dirty) msg.append(h('strong', {}, 'Unpublished changes: '), h('span', { class: 'muted' }, list.slice(0, 2).map((c) => c.text.split('. ')[0]).join('; ') + (list.length > 2 ? ` … +${list.length - 2} more` : '') || 'formatting only'));
-    else msg.append(h('span', { style: 'color:var(--ok)' }, '✓ Everything is published.'));
+    if (errors.length) msg.append(h('span', { style: 'color:var(--danger)' }, `${plural(errors.length, 'problem')} to fix before publishing`));
+    else if (dirty) msg.append(h('span', {}, list.length ? `${plural(list.length, 'unpublished change')}` : 'Unpublished formatting changes'));
+    else msg.append(h('span', { style: 'color:var(--ok)' }, '✓ Everything is published'));
     $('publishBtn').disabled = !dirty || errors.length > 0;
     $('discardBtn').disabled = !dirty;
     $('downloadBtn').disabled = errors.length > 0;
 
-    const imp = $('impact'); imp.innerHTML = '';
-    if (danger.length) imp.append(h('div', { class: 'banner banner-warn problems' },
-      h('strong', {}, 'These changes affect SKUs that may already be in use'), ' ', tip('A SKU is made from codes. If a code is removed, renumbered or now means something different, SKUs already printed on labels, invoices or the shop will be wrong. Adding new codes is always safe.'),
-      h('ul', {}, danger.map((c) => h('li', {}, c.text)))));
-
-    const box = $('problems'); box.innerHTML = '';
-    if (errors.length || warnings.length) box.append(h('div', { class: `banner ${errors.length ? 'banner-error' : 'banner-info'} problems` },
-      h('strong', {}, errors.length ? 'Please fix before publishing:' : 'Worth a look (won\'t stop you publishing):'),
-      h('ul', {}, errors.map((e) => h('li', {}, e)), warnings.map((w) => h('li', { class: 'muted' }, w)))));
+    // Everything goes in the side panel: problems first, then risky changes, then the rest.
+    const box = $('changeList'); box.innerHTML = '';
+    const sec = (cls, title, note, items) => h('div', { class: 'side-sec ' + cls }, h('h3', {}, title), note ? h('p', { class: 'note' }, note) : null,
+      h('ul', {}, items.map((x) => h('li', {}, x))));
+    if (errors.length) box.append(sec('err', 'Fix before publishing', null, errors));
+    if (danger.length) box.append(sec('danger', '⚠ Affects existing SKUs', 'A code was removed, renumbered or changed meaning. SKUs already on labels, invoices or the shop may now be wrong. Adding new codes is always safe.', danger.map((c) => c.text)));
+    if (notices.length) box.append(sec('', danger.length ? 'Other changes' : 'Changes', null, notices.map((c) => c.text)));
+    if (!errors.length && !list.length) box.append(h('p', { class: 'side-empty' }, dirty ? 'Only tidy-ups (spacing, order).' : 'No unpublished changes. Edit anything on the left and it will be listed here.'));
+    if (warnings.length) box.append(h('details', { class: 'side-sec' }, h('summary', { class: 'muted', style: 'font-size:13px' }, `${plural(warnings.length, 'thing')} worth a look`),
+      h('ul', { style: 'margin-top:6px' }, warnings.map((w) => h('li', { class: 'muted' }, w)))));
 
     document.querySelectorAll('.item').forEach((n) => {
       const code = n.dataset.code;
@@ -531,9 +559,13 @@
       const commits = await gh(`commits?per_page=25&sha=${encodeURIComponent(s.branch)}`, {}, false);
       const relevant = commits.filter((c) => !/^Shop check/.test(c.commit.message)).slice(0, 15);
       box.innerHTML = '';
-      box.append(h('ul', {}, relevant.map((c) => h('li', {},
-        h('div', {}, h('a', { href: c.html_url, target: '_blank', rel: 'noopener' }, c.commit.message.split('\n')[0])),
-        h('div', { class: 'when' }, `${new Date(c.commit.author.date).toLocaleString()} · ${c.commit.author.name}`)))),
+      box.append(h('ul', {}, relevant.map((c) => {
+        const first = c.commit.message.split('\n')[0];
+        const by = (first.match(/\(by ([^)]+)\)$/) || [])[1];
+        return h('li', {},
+          h('div', {}, h('a', { href: c.html_url, target: '_blank', rel: 'noopener' }, first.replace(/ \(by [^)]+\)$/, '').replace(/^Catalogue editor: /, ''))),
+          h('div', { class: 'when' }, `${new Date(c.commit.author.date).toLocaleString()} · ${by || c.commit.author.name}${by ? '' : ' (no name set)'}`));
+      })),
         h('p', { style: 'margin:14px 0 0' }, h('a', { href: `${web}/commits/${s.branch}/products.json`, target: '_blank', rel: 'noopener' }, 'Full history of products.json ↗'), ' · ',
           h('a', { href: `${web}/commits/${s.branch}/materials.json`, target: '_blank', rel: 'noopener' }, 'materials.json ↗')));
       historyLoaded = true;
@@ -615,9 +647,10 @@
   };
 
   // settings
-  const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; };
+  const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; $('who').value = s.who || ''; };
+  $('who').addEventListener('change', () => { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(Object.assign(settings(), { who: $('who').value.trim() }))); } catch (e) {} });
   $('saveSettings').onclick = async () => {
-    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main' };
+    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main', who: $('who').value.trim() };
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
     const msg = $('settingsMsg'); msg.innerHTML = '';
     if (!s.token) return msg.append(h('div', { class: 'banner banner-error' }, 'Paste the access key first.'));

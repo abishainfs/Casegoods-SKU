@@ -33,7 +33,7 @@ It's a form, like filling in an online order. You never see any code.
 
 ### Everyday use
 
-1. Open the **catalogue editor**: *Edit catalogue* at the top right of the SKU site, or *Edit* next to any product in the Code book.
+1. Open the **catalogue editor**: *Edit catalogue* at the top right of the SKU site, or *Edit* next to any product in the SKU list.
 2. **To add a product:** click **+ Add product**. Type the code (3–4 letters, e.g. `RVT`) and the name, then pick the category. Click **+ Add size** for each size or type. The editor numbers sizes automatically: 01, 02, 03…
 3. **To change something:** click a product to open it, then edit any box.
 4. **To stop selling a product:** tick **Retired**. It disappears from the SKU generator, but its code stays reserved so nobody reuses it by accident. Only use **Delete** for something added by mistake that never had a SKU.
