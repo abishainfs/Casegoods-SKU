@@ -31,18 +31,22 @@ const sameSet = (a, b) => a.size === b.size && [...a].every((x) => b.has(x));
 const subset = (a, b) => [...a].every((x) => b.has(x));
 
 // ---------------------------------------------------------------- matching
+const namesOf = (p) => [p.name].concat(String(p.aka || '').split(',').map((a) => a.trim()).filter(Boolean));
 function matchProduct(title) {
-  const exact = P.products.filter((p) => squash(p.name) === squash(title));
+  // Exact name or "other name" (aka) — active products first, so a renamed product beats its retired old code.
+  const exact = P.products.filter((p) => namesOf(p).some((n) => squash(n) === squash(title)))
+    .sort((a, b) => (a.retired ? 1 : 0) - (b.retired ? 1 : 0));
   if (exact.length) return { product: exact[0], how: 'exact' };
   const tw = words(title);
-  const partial = P.products.filter((p) => subset(words(p.name), tw)).sort((a, b) => words(b.name).size - words(a.name).size);
+  const partial = P.products.filter((p) => !p.retired && subset(words(p.name), tw)).sort((a, b) => words(b.name).size - words(a.name).size);
   if (partial.length && (partial.length === 1 || words(partial[0].name).size > words(partial[1].name).size)) return { product: partial[0], how: 'partial' };
   return { product: null, how: partial.length ? 'ambiguous' : 'none' };
 }
 
 function matchFinish(material, text) {
   const t = squash(text);
-  const exact = material.finishes.filter((f) => squash(f.name) === t);
+  // Exact match on the finish's name or any of its old / other names (e.g. "Olive Green").
+  const exact = material.finishes.filter((f) => namesOf(f).some((n) => squash(n) === t));
   if (exact.length === 1) return { f: exact[0], sure: true };
   const contains = material.finishes.filter((f) => squash(f.name).includes(t) || t.includes(squash(f.name)));
   if (contains.length === 1) return { f: contains[0], sure: false };
@@ -57,18 +61,20 @@ function parseMaterialValue(value) {
   const [left, ...rest] = value.split('/');
   const right = rest.join('/').trim();
   if (!right) return null;
-  const mat = M.find((m) => squash(m.name) === squash(left) || squash(m.name).includes(squash(left)) || squash(left).includes(squash(m.name)));
+  const mat = M.find((m) => namesOf(m).some((n) => squash(n) === squash(left)))
+    || M.find((m) => squash(m.name).includes(squash(left)) || squash(left).includes(squash(m.name)));
   if (mat) {
     const r = matchFinish(mat, right);
     return [{ m: mat, f: r.f, sure: r.sure, problem: r.f ? null : `"${value.trim()}": ${mat.name} finish "${right}" ${r.options && r.options.length ? `could be ${r.options.join(' or ')}` : 'is not in the catalogue'}` }];
   }
   // A colour pair like "Red/Blue": find the one material that has both finishes.
-  const both = M.filter((m) => m.finishes.some((f) => squash(f.name) === squash(left)) && m.finishes.some((f) => squash(f.name) === squash(right)));
+  const fin = (m, t) => m.finishes.find((f) => namesOf(f).some((n) => squash(n) === squash(t)));
+  const both = M.filter((m) => fin(m, left) && fin(m, right));
   if (both.length === 1) {
     const m = both[0];
     return [
-      { m, f: m.finishes.find((f) => squash(f.name) === squash(left)), sure: false },
-      { m, f: m.finishes.find((f) => squash(f.name) === squash(right)), sure: false },
+      { m, f: fin(m, left), sure: false },
+      { m, f: fin(m, right), sure: false },
     ];
   }
   return null;
@@ -81,13 +87,15 @@ function matchSize(product, descriptors, pool) {
   let text = descriptors.join(' ');
   if (!text.trim()) {
     // e.g. "Standing Straight Lamp Floor": the size is in the shop's product title.
-    const extra = [...words(pool.title)].filter((w) => !squash(product.name).includes(w));
+    const extra = [...words(pool.title)].filter((w) => !namesOf(product).some((n) => squash(n).includes(w)));
     if (extra.length) text = extra.join(' ');
   }
   if (!text.trim()) {
     if (sizes.length === 1) return { size: sizes[0], sure: true };
     return { size: null, problem: `no size shown on the shop; catalogue has ${sizes.length} sizes` };
   }
+  const byName = sizes.filter((s) => namesOf(s).slice(1).some((n) => squash(n) === squash(text)));
+  if (byName.length === 1) return { size: byName[0], sure: true };
   const dn = numbers(text);
   const dw = words(text);
   const strict = sizes.filter((s) => sameSet(numbers(s.name), dn) && subset(words(s.name), new Set([...dw, ...pool])));

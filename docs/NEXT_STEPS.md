@@ -58,7 +58,7 @@ Each product now has two optional fields under **More details**:
 | **Spreadsheet export** | Price lists, exhibition sheets, stock takes | Built | ✅ the *Download it as a spreadsheet* link at the bottom of the SKU list |
 | **Dropbox / Drive links** | One click from a product to its drawings | Built (Files link) | ✅ Fill in as you go |
 | **QR codes on labels / tags** | Scan a tag → this site explains the SKU (`…/index.html#F-RTT-01-T1-M0` already works as a link) | Small | 👍 Good next step for exhibitions and the workshop |
-| **Shopify (write)**: push SKUs into Shopify automatically | Saves pasting the 190 suggested SKUs | Medium; needs a Shopify admin key and care | ⏸ Do the first pass by hand from the CSV; automate only if variants change often |
+| **Shopify (write)**: push SKUs into Shopify automatically | Saves pasting the 178 suggested SKUs | Medium; needs a Shopify admin key and care | ⏸ Do the first pass by hand from the CSV; automate only if variants change often |
 | **Accounting / inventory** (Tally, Zoho) | Same SKUs across invoices and stock | Depends on the system | ⏸ Export the SKU list into it; don't build a sync |
 | **Notifications** (email when the catalogue changes) | Team knows when codes are added | Tiny: GitHub → *Watch* the repository | 👍 Anyone who wants it can turn it on themselves |
 | **A database** | Only needed to store things this tool deliberately doesn't (prices, stock, orders) | Large | ❌ Not needed for SKUs (see SYSTEM_REVIEW.md) |

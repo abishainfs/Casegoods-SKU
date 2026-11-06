@@ -12,7 +12,8 @@ The people asking you for changes are usually **not technical**. Reply in plain 
 2. **Retire, don't delete.** To discontinue a product, set `"retired": true`.
 3. **New things get new codes:** the next unused size number, a new unused product code (3–4 capitals/digits, unique including retired ones), or the next free material letter.
 4. Bespoke / one-off / prototype products are normal products with `"bespoke": true`, in their real category. To move one into the catalogue, remove `"bespoke"` and keep its code.
-5. Optional product fields: `primaryPart`, `secondaryPart`, `notes` (one line), `link` (full https:// URL).
+5. Optional product fields: `primaryPart`, `secondaryPart`, `aka` (old / other names, comma-separated), `notes` (one line), `link` (full https:// URL). Sizes, materials and finishes can have `aka` too.
+6. **Renaming is fine; recoding is not.** When renaming anything, keep its code and add the old name to its `aka`. If a code ever has to change meaning, add a line to `code-history.json` (code, what it meant, from, until).
 
 ## How to make a change
 1. Edit `products.json` / `materials.json`.

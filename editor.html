@@ -53,6 +53,9 @@
     .sub { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
     .sub td { padding: 3px 6px 3px 0; vertical-align: middle; }
     .sub td:first-child { width: 5.6rem; }
+    .sub td.aka-col { width: 30%; }
+    .sub .aka-input { color: var(--muted); font-size: 13px; }
+    @media (max-width: 700px) { .sub td.aka-col { display: none; } }
     .sub td.use { width: 1%; white-space: nowrap; font-size: 12px; color: var(--ok); padding-right: 10px; }
     .sub td:last-child { width: 1%; white-space: nowrap; }
     .sub input { min-height: 38px; padding: 6px 10px; font-size: 14px; }
@@ -281,6 +284,24 @@
   };
 
   // ---------------------------------------------------------------- what changed
+  // The published version, to remember old names when something is renamed.
+  const published = () => {
+    const p = JSON.parse(original.products || '{"products":[]}'), m = JSON.parse(original.materials || '[]');
+    return { products: new Map((p.products || []).map((x) => [x.code, x])), materials: new Map(m.map((x) => [x.code, x])) };
+  };
+  /** When something is renamed, keep its published name under "Old & other names" so search still finds it. */
+  const rememberOldName = (item, oldName, akaInput) => {
+    const was = String(oldName || '').trim();
+    if (!was || was.toLowerCase() === String(item.name || '').trim().toLowerCase()) return;
+    const names = SkuCore.namesOf(item).map((n) => n.toLowerCase());
+    if (names.includes(was.toLowerCase())) return;
+    item.aka = [String(item.aka || '').trim(), was].filter(Boolean).join(', ');
+    if (akaInput) akaInput.value = item.aka;
+    toast(`Old name "${was}" kept under Old & other names, so searches for it still work.`, 5000);
+    changed();
+  };
+  const akaTip = 'Old names, nicknames during development (e.g. Drift Chair was "Capsule Chair"), or the name used on casegoods.in if it differs. Separate with commas. Search finds these, and the weekly shop check uses them to match the website. Renaming something saves its old name here automatically.';
+
   const changes = () => SkuCore.compare(JSON.parse(original.products), JSON.parse(original.materials), catalog, materials);
   const commitMessage = (list) => {
     const lines = list.map((c) => c.text.split('. ')[0].replace(/\.$/, ''));
@@ -335,18 +356,21 @@
     const table = h('table', { class: 'sub' });
     const draw = () => {
       table.innerHTML = '';
-      table.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, nameLabel)), h('td', { class: 'use' }), h('td')));
+      table.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, nameLabel)), h('td', { class: 'aka-col' }, h('span', { class: 'hint' }, 'Old & other names (optional)')), h('td', { class: 'use' }), h('td')));
       items.forEach((it, i) => {
         const dupe = () => items.filter((x) => x.code === it.code).length > 1;
         const code = h('input', { type: 'text', class: 'code-input', value: it.code, maxLength: width, 'aria-label': `${nameLabel} code`,
           oninput: (e) => { e.target.value = upper(e.target.value); it.code = e.target.value; e.target.classList.toggle('bad', !codeRule.test(it.code) || dupe()); changed(); } });
         if (!codeRule.test(it.code)) code.classList.add('bad');
+        const aka = h('input', { type: 'text', class: 'aka-input', value: it.aka || '', placeholder: 'e.g. shop name', 'aria-label': nameLabel + ' old or other names', title: akaTip,
+          oninput: (e) => { if (e.target.value.trim()) it.aka = e.target.value.trim(); else delete it.aka; changed(); } });
         const name = h('input', { type: 'text', value: it.name, placeholder: nameLabel + ' name', 'aria-label': nameLabel + ' name',
-          oninput: (e) => { it.name = e.target.value; e.target.classList.toggle('bad', !it.name.trim()); changed(); } });
+          oninput: (e) => { it.name = e.target.value; e.target.classList.toggle('bad', !it.name.trim()); changed(); },
+          onchange: () => opts.origName && rememberOldName(it, opts.origName(it.code), aka) });
         if (!it.name.trim()) name.classList.add('bad');
         const live = opts.live(it.code);
         table.append(h('tr', {},
-          h('td', {}, code), h('td', {}, name),
+          h('td', {}, code), h('td', {}, name), h('td', { class: 'aka-col' }, aka),
           h('td', { class: 'use', title: live.length ? `Live on casegoods.in: ${live.join(', ')}` : '' }, live.length ? `● ${live.length} live` : ''),
           h('td', {},
             h('button', { class: 'btn btn-small', title: 'Move up', 'aria-label': 'Move up', disabled: i === 0,
@@ -381,7 +405,7 @@
         if (p.retired && !showRetired) return;
         if (cat === '__bespoke' ? !p.bespoke : false) return;
         if (cat && cat !== '__bespoke' && p.category !== cat) return;
-        if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
+        if (q && !(`${p.code} ${p.name} ${p.aka || ''}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
       }
       shown++;
       list.append(productItem(p));
@@ -400,7 +424,7 @@
     const updateSummary = () => {
       noSizesHint.classList.toggle('hidden', p.sizes.length > 0);
       codeEl.textContent = p.code || '???';
-      nameEl.textContent = p.name || '(new product)';
+      nameEl.textContent = (p.name || '(new product)') + (p.aka ? `  ·  also ${p.aka}` : '');
       const live = liveForProduct(p.code).length;
       metaEl.innerHTML = '';
       metaEl.append(p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : '', `${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
@@ -419,7 +443,11 @@
     const usedCodes = () => catalog.products.map((x) => x.code).filter(Boolean);
     code.addEventListener('focus', () => { codeHint.textContent = `3–4 letters/digits, unique forever. Taken: ${usedCodes().length} codes incl. retired.`; });
     const codeHint = h('p', { class: 'hint' }, '3–4 letters/digits');
-    const name = h('input', { type: 'text', value: p.name, id: 'name-' + key, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); } });
+    const pubP = published().products.get(p.code);   // as published, before any edits now
+    const akaInput = h('input', { type: 'text', id: 'aka-' + key, value: p.aka || '', placeholder: 'e.g. Capsule Chair, or the name used on the website',
+      oninput: (e) => { if (e.target.value.trim()) p.aka = e.target.value.trim(); else delete p.aka; changed(); } });
+    const name = h('input', { type: 'text', value: p.name, id: 'name-' + key, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); },
+      onchange: () => pubP && rememberOldName(p, pubP.name, akaInput) });
     const catSel = h('select', { id: 'cat-' + key, onchange: (e) => { p.category = e.target.value; updateSummary(); changed(); } },
       catalog.categories.map((c) => h('option', { value: c.name, selected: c.name === p.category }, `${c.code} – ${c.name}`)));
     const part = (k, ph) => h('input', { type: 'text', value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value; else delete p[k]; changed(); } });
@@ -439,9 +467,11 @@
         h('div', {}, h('label', { for: 'code-' + key }, 'Code', tip('Becomes part of every SKU for this product (the ABCD in X-ABCD-EF). Once SKUs exist, never change it.', 'tip-right')), code, codeHint),
         h('div', {}, h('label', { for: 'name-' + key }, 'Name'), name),
         h('div', {}, h('label', { for: 'cat-' + key }, 'Category', tip('Sets the first letter of the SKU. Moving a product to another category changes all its SKUs.', 'tip-left')), catSel)),
+      h('div', { style: 'margin:-4px 0 18px' }, h('label', { for: 'aka-' + key }, 'Old & other names', tip(akaTip, 'tip-right')), akaInput),
       h('label', {}, 'Sizes / types', tip('Each version of the product gets a 2-digit code (01, 02…). Add new versions at the end. Never renumber existing ones: their codes are already in use.', 'tip-right')),
       noSizesHint,
-      subList(p.sizes, 2, 'Size', SkuCore.RULES.sizeCode.re, { live: (sc) => liveForSize(p.code, sc), onChange: updateSummary }),
+      subList(p.sizes, 2, 'Size', SkuCore.RULES.sizeCode.re, { live: (sc) => liveForSize(p.code, sc), onChange: updateSummary,
+        origName: (sc) => { const o = pubP && (pubP.sizes || []).find((z) => z.code === sc); return o && o.name; } }),
       h('details', { style: 'margin-top:16px' }, h('summary', { class: 'muted', style: 'font-size:14px' }, `More details (optional)${detailsSummary() ? ': ' + detailsSummary() : ''}`),
         h('div', { class: 'fields parts' },
           h('div', {}, h('label', {}, 'Primary material is for…', tip('Name the parts the two materials are for, e.g. Frame / Seat or Base / Top. The generator then asks "Primary material — Frame", so nobody enters the materials in the wrong order.', 'tip-right')), part('primaryPart', 'e.g. Frame')),
@@ -485,7 +515,7 @@
     materials.forEach((m, idx) => {
       m.finishes = m.finishes || [];
       const key = 'm:' + idx;
-      if (!openItems.has(key) && q && !`${m.code} ${m.name} ${m.finishes.map((f) => f.name).join(' ')}`.toLowerCase().includes(q)) return;
+      if (!openItems.has(key) && q && !`${m.code} ${m.name} ${m.aka || ''} ${m.finishes.map((f) => `${f.name} ${f.aka || ''}`).join(' ')}`.toLowerCase().includes(q)) return;
       const codeEl = h('span', { class: 'code' });
       const nameEl = h('span');
       const metaEl = h('span', { class: 'meta' });
@@ -507,9 +537,14 @@
       det.append(h('div', { class: 'item-body' },
         h('div', { class: 'fields f2' },
           h('div', {}, h('label', { for: 'mcode-' + idx }, 'Code', tip('One letter: the G (or I) in the SKU. Never change it once SKUs exist.', 'tip-right')), code, h('p', { class: 'hint' }, `Free letters: ${free || 'none'}`)),
-          h('div', {}, h('label', { for: 'mname-' + idx }, 'Name'), h('input', { type: 'text', id: 'mname-' + idx, value: m.name, oninput: (e) => { m.name = e.target.value; updateSummary(); changed(); } }))),
+          h('div', {}, h('label', { for: 'mname-' + idx }, 'Name'), h('input', { type: 'text', id: 'mname-' + idx, value: m.name,
+            oninput: (e) => { m.name = e.target.value; updateSummary(); changed(); },
+            onchange: () => { const o = published().materials.get(m.code); if (o) rememberOldName(m, o.name, $('maka-' + idx)); } }))),
+        h('div', { style: 'margin:-4px 0 18px' }, h('label', { for: 'maka-' + idx }, 'Old & other names', tip(akaTip, 'tip-right')),
+          h('input', { type: 'text', id: 'maka-' + idx, value: m.aka || '', placeholder: 'e.g. Teakwood', oninput: (e) => { if (e.target.value.trim()) m.aka = e.target.value.trim(); else delete m.aka; changed(); } })),
         h('label', {}, 'Finishes', tip('Each finish gets one character (0–9 or a letter): the H (or J) in the SKU. "Custom" covers every custom finish of this material — the SKU can\'t tell custom finishes apart.', 'tip-right')),
-        subList(m.finishes, 1, 'Finish', SkuCore.RULES.finishCode.re, { live: (fc) => liveForFinish(m.code, fc), onChange: updateSummary }),
+        subList(m.finishes, 1, 'Finish', SkuCore.RULES.finishCode.re, { live: (fc) => liveForFinish(m.code, fc), onChange: updateSummary,
+          origName: (fc) => { const o = published().materials.get(m.code); const f = o && (o.finishes || []).find((z) => z.code === fc); return f && f.name; } }),
         h('div', { class: 'item-actions' }, h('span'),
           h('button', { class: 'btn btn-danger btn-small', onclick: () => {
             if (!confirm(`Delete material "${m.name}" (${m.code})?${liveWarning(liveForMaterial(m.code))}\n\nSKUs that use this code will no longer be explained.`)) return;

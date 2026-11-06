@@ -101,6 +101,42 @@ assert.ok(core.validate(n, M).errors.some((e) => /both retired and bespoke/.test
 n.products.find((p) => p.code === 'XPT').retired = false; n.products.find((p) => p.code === 'XPT').link = 'dropbox folder';
 assert.ok(core.validate(n, M).errors.some((e) => /files link/.test(e)));
 
+// ---- Other names (aka) ----
+assert.strictEqual(P.products.find((p) => p.code === 'FET').aka, 'Fillet Joint Table');
+n = clone(P); n.products.find((p) => p.code === 'GML').aka = 'Bookends';
+assert.ok(core.validate(n, M).warnings.some((w) => /other name "Bookends"/.test(w)));
+
+// ---- Search: old names, sizes, typos ----
+const H = JSON.parse(fs.readFileSync(path.join(root, 'code-history.json'), 'utf8'));
+const find = (q) => core.searchProducts(P, q);
+assert.strictEqual(find('capsule chair').results[0].product.code, 'DRS');
+assert.strictEqual(find('capsule chair').results[0].via, 'other name');
+assert.strictEqual(find('fillet joint').results[0].product.code, 'FET');
+assert.strictEqual(find('SPT').results[0].via, 'code');
+assert.ok(find('dipa').results.some((r) => r.product.code === 'DOL'));            // accents ignored
+assert.deepStrictEqual(find('spalyed').results, []);
+assert.ok(find('spalyed').didYouMean.some((d) => d.product.code === 'SPT'));      // swapped letters
+assert.ok(find('towle rack').didYouMean.some((d) => d.product.code === 'FFTW'));
+assert.ok(!find('tabel').didYouMean.some((d) => d.product.code === '7TL'));         // no silly suggestions
+assert.deepStrictEqual(find('xyzq').didYouMean, []);
+
+// ---- Code history: old SKUs explain what codes used to mean ----
+let old = core.parseSku(P, M, 'F-FFC-03-T1-H0', H);
+assert.ok(old.ok && old.history.some((x) => /2 Mar 2026, H0 meant Mahogany, Unfinished or Leather, Natural Buffalo/.test(x)));
+old = core.parseSku(P, M, 'O-TBL-01-X1', H);
+assert.ok(!old.ok && old.history.some((x) => /X1 meant Rosewood - Custom/.test(x)));
+assert.ok(core.parseSku(P, M, 'F-SPT-01-E0', H).history.some((x) => /E0 meant Refractory Brick/.test(x)));  // E was Refractory Brick before Mar 2026
+assert.deepStrictEqual(core.parseSku(P, M, 'F-SPT-01-K0', H).history, []);      // K has never changed
+assert.deepStrictEqual(core.parseSku(P, M, 'F-SPT-01', H).history, []);
+H.changes.forEach((e) => assert.ok(e.code && e.meant && /^\d{4}-\d\d-\d\d$/.test(e.from) && /^\d{4}-\d\d-\d\d$/.test(e.until) && e.from <= e.until, JSON.stringify(e)));
+
+// ---- Other names on sizes / finishes survive formatting ----
+n = clone(P); n.products.find((p) => p.code === 'TRT').sizes[0].aka = 'Only Legs';
+assert.deepStrictEqual(JSON.parse(core.formatProducts(n)), n);
+nm = clone(M); nm.find((m) => m.code === 'E').finishes[3].aka = 'Olive Green';
+assert.deepStrictEqual(JSON.parse(core.formatMaterials(nm)), nm);
+assert.deepStrictEqual(core.validate(n, nm).errors, []);
+
 // ---- Formatting round-trips ----
 assert.deepStrictEqual(JSON.parse(core.formatProducts(P)), P);
 assert.deepStrictEqual(JSON.parse(core.formatMaterials(M)), M);
