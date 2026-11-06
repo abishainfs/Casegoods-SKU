@@ -4,7 +4,7 @@ Make, check and look up Casegoods SKUs, and edit the product catalogue without t
 
 | Page | For |
 |---|---|
-| **`index.html` → Make a SKU** | Choose a product, size and materials; the SKU builds itself. |
+| **`index.html` → SKU generator** | Choose a product, size and materials; the SKU builds itself. |
 | **`index.html` → SKU list** | Every product, size, material and finish code, with filters. Paste a SKU into the search to check it, or use *Check a list of SKUs* for many at once. |
 | **`editor.html`** | Add, change or retire products and materials. Publishes to the website. |
 
@@ -36,7 +36,9 @@ Make, check and look up Casegoods SKUs, and edit the product catalogue without t
 | `store.json` | Written by the shop check: SKUs live on casegoods.in, plus product links and pictures. |
 | `sku-core.js` | All the rules: checks, change detection, building and reading SKUs, descriptions. Used by every page and script. |
 | `styles.css` | Shared look. |
-| `logo.svg` | The Casegoods logo (from casegoods.in). |
+| `logo.svg`, `favicon.ico` | Casegoods logo and browser icon (from casegoods.in). |
+| `footer.js` | The help footer on every page: contact, editing with your own AI, Shopify. |
+| `CLAUDE.md` | Rules that Claude Code follows when someone asks it to change the catalogue. |
 | `scripts/validate.js` | `node scripts/validate.js [--fix] [--against <commit>]` checks the catalogue and reports changes that affect existing SKUs. |
 | `scripts/test.js` | Self-test (including SKUs that are live on the shop). |
 | `scripts/store-check.js` | Compares casegoods.in with the catalogue and writes `store.json` and `reports/`. |

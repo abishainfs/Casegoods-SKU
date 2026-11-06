@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casegoods SKUs</title>
-  <link rel="icon" href="Casegoods_Logo.png">
+  <title>Casegoods SKU generator</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* ----- Make a SKU ----- */
+    /* ----- SKU generator ----- */
     .make { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
     @media (min-width: 960px) { .make { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: 40px; align-items: start; } .result-col { position: sticky; top: 110px; } }
     .step { border-top: 1px solid var(--ink); padding: 18px 0 26px; }
@@ -86,7 +86,7 @@
   <div class="inner">
     <a class="brand" href="index.html" aria-label="Casegoods SKUs — home"><img src="logo.svg" alt="Casegoods" onerror="this.onerror=null;this.src='Casegoods_Logo.png'"></a>
     <nav class="nav" aria-label="Main">
-      <button data-view="make" class="active">Make a SKU</button>
+      <button data-view="make" class="active">SKU generator</button>
       <button data-view="list">SKU list</button>
       <a class="nav-cta" href="editor.html">Edit catalogue</a>
     </nav>
@@ -98,7 +98,7 @@
 
   <!-- =========================================================== MAKE -->
   <section id="view-make">
-    <h1>Make a SKU</h1>
+    <h1>SKU generator</h1>
     <p class="lede">Choose a product, its size and materials. The SKU builds itself as you go.</p>
 
     <div class="make">
@@ -169,8 +169,7 @@
           <div style="overflow-x:auto"><table class="table"><tbody id="savedBody"></tbody></table></div>
           <p id="savedEmpty" class="muted" style="font-size:14px;margin:0">Nothing saved yet.</p>
           <div class="saved-tools">
-            <button class="btn btn-small" id="copyAllBtn">Copy all</button>
-            <button class="btn btn-small" id="downloadBtn">Download for Excel (CSV)</button>
+            <button class="btn btn-small" id="copyAllBtn" title="Copies every saved SKU with its description — paste straight into Excel or Google Sheets (two columns).">Copy all (paste into a spreadsheet)</button>
             <button class="btn btn-small btn-danger" id="clearBtn">Clear</button>
           </div>
         </div>
@@ -189,7 +188,6 @@
         <input type="search" id="bookSearch" placeholder="e.g. chair, SPT, brass — or F-RTT-01-T1-M0" autocomplete="off">
       </div>
       <button class="btn" id="bulkToggle" aria-expanded="false">Check a list of SKUs</button>
-      <button class="btn" id="exportBtn" title="Every product and size, with category, status, notes and links — for price lists, exhibition sheets or stock takes.">Download as spreadsheet</button>
     </div>
     <div id="skuResult"></div>
 
@@ -201,7 +199,6 @@
           <textarea id="checkInput" placeholder="F-RTT-01-T1-M0&#10;o-tbl-02-h1&#10;L-0TL-01"></textarea>
           <div class="btn-row" style="margin-top:12px">
             <button class="btn btn-primary" id="checkBtn">Check</button>
-            <button class="btn" id="checkDownload" disabled>Download results</button>
             <button class="btn btn-link" id="checkClear">Clear</button>
           </div>
         </div>
@@ -220,12 +217,14 @@
     <div class="filters" id="filters" role="group" aria-label="Show"></div>
     <label style="margin-top:4px;font-weight:400"><input type="checkbox" id="bookRetired"> Show retired products</label>
     <div id="book"></div>
+    <p class="muted" style="font-size:13px;margin-top:28px">Need the whole list in Excel? <button class="btn-link" id="exportBtn" style="font:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;color:inherit">Download it as a spreadsheet</button>.</p>
   </section>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="sku-core.js"></script>
+<script src="footer.js" defer></script>
 <script>
 (function () {
   'use strict';
@@ -272,6 +271,19 @@
   };
   const today = () => new Date().toISOString().slice(0, 10);
   const productByCode = (code) => catalog.products.find((p) => p.code === code);
+
+  /** Is this SKU (or the start of one, e.g. F-RTT-01) on casegoods.in? */
+  const shopMatch = (sku) => {
+    if (!sku) return null;
+    if (store.skus[sku]) return { exact: true, n: 1, url: store.skus[sku].url, label: `${store.skus[sku].product}, ${store.skus[sku].variant}` };
+    const keys = Object.keys(store.skus).filter((k) => k.startsWith(sku + '-'));
+    if (!keys.length) return null;
+    const first = store.skus[keys[0]];
+    return { exact: false, n: keys.length, url: first.url.split('?')[0], label: first.product };
+  };
+  const shopLink = (m, short) => m.exact
+    ? h('a', { href: m.url, target: '_blank', rel: 'noopener' }, short ? 'Yes ↗' : m.label)
+    : h('a', { href: m.url, target: '_blank', rel: 'noopener', title: 'This SKU without materials. The shop lists it with materials added.' }, short ? `Yes, ${m.n} variant${m.n > 1 ? 's' : ''} ↗` : `${m.label} (${m.n} variant${m.n > 1 ? 's' : ''} with materials)`);
 
   // ---------------------------------------------------------------- views
   const show = (view) => {
@@ -409,9 +421,10 @@
     history.replaceState(null, '', '#' + r.sku);
 
     // Is it on the online shop? Is the shop using the same thing with the materials the other way round?
-    const onShop = store.skus[r.sku];
+    const onShop = shopMatch(r.sku);
     if (onShop) {
-      live.append(h('span', { class: 'ok' }, '● '), 'Live on casegoods.in — ', h('a', { href: onShop.url, target: '_blank', rel: 'noopener' }, `${onShop.product}, ${onShop.variant}`));
+      live.append(h('span', { class: 'ok' }, '● '), onShop.exact ? 'Live on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop),
+        onShop.exact ? '' : h('span', { class: 'muted' }, ' · add the materials to match one exactly'));
     } else if (sel.mat1 && sel.mat2) {
       const swapped = r.sku.split('-'); [swapped[3], swapped[4]] = [swapped[4], swapped[3]];
       const alt = swapped.join('-');
@@ -447,7 +460,7 @@
         h('button', { class: 'btn btn-small btn-link', onclick: () => copyText(s.sku) }, 'Copy'),
         h('button', { class: 'btn btn-small btn-link', title: 'Remove', 'aria-label': 'Remove', onclick: () => { saved.splice(idx, 1); save(SAVED_KEY, saved); renderSaved(); } }, '✕')))));
     $('savedEmpty').classList.toggle('hidden', saved.length > 0);
-    ['copyAllBtn', 'downloadBtn', 'clearBtn'].forEach((id) => ($(id).disabled = !saved.length));
+    ['copyAllBtn', 'clearBtn'].forEach((id) => ($(id).disabled = !saved.length));
   };
   $('saveBtn').onclick = () => {
     if (!current) return;
@@ -458,7 +471,6 @@
   $('copyBtn').onclick = () => current && copyText(current.sku);
   $('copyBothBtn').onclick = () => current && copyText(`${current.sku}\t${current.description}`, `${current.sku} + description`);
   $('copyAllBtn').onclick = () => copyText(saved.map((s) => `${s.sku}\t${s.description}`).join('\n'), `${saved.length} SKUs`);
-  $('downloadBtn').onclick = () => downloadCsv(`casegoods-skus-${today()}.csv`, [['SKU', 'Description', 'Saved']].concat(saved.map((s) => [s.sku, s.description, (s.date || '').slice(0, 10)])));
   $('clearBtn').onclick = () => { if (confirm('Remove all saved SKUs from this browser?')) { saved = []; save(SAVED_KEY, saved); renderSaved(); } };
   $('resetBtn').onclick = () => {
     $('search').value = ''; sel.product = ''; fillProducts(); pickProduct('');
@@ -486,7 +498,7 @@
     const body = $('checkBody'); body.innerHTML = '';
     checkRows.forEach((r) => {
       const status = !r.ok ? ['✕', 'err', 'Problem'] : r.warnings.filter((w) => !/^Read as/.test(w)).length ? ['!', 'warn', 'Check'] : ['✓', 'ok', 'Valid'];
-      const onShop = r.ok && store.skus[r.sku];
+      const onShop = r.ok && shopMatch(r.sku);
       body.append(h('tr', {},
         h('td', { class: status[1], title: status[2], style: 'font-weight:700' }, status[0]),
         h('td', {}, r.sku || r.input, r.sku !== r.input.trim() ? h('div', { class: 'muted', style: 'font-size:12px' }, `typed: ${r.input}`) : null),
@@ -495,7 +507,7 @@
           r.errors.map((e) => h('div', { class: 'why' }, e)),
           r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
           r.suggestions.map((s) => h('div', { style: 'margin-top:6px' }, 'Did you mean ', h('button', { class: 'btn btn-small', onclick: () => setFromSku(s) }, s), '?'))),
-        h('td', { style: 'font-size:13px' }, onShop ? h('a', { href: onShop.url, target: '_blank', rel: 'noopener' }, 'Yes ↗') : h('span', { class: 'muted' }, r.ok ? 'No' : '')),
+        h('td', { style: 'font-size:13px' }, onShop ? shopLink(onShop, true) : h('span', { class: 'muted' }, r.ok ? 'No' : '')),
         h('td', {}, r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open') : null)));
     });
     $('checkTable').classList.toggle('hidden', !checkRows.length);
@@ -504,14 +516,11 @@
     if (checkRows.length) $('checkSummary').append(
       h('span', {}, `${checkRows.length} checked`), h('span', { class: 'ok' }, `${ok} valid`),
       checkRows.length - ok ? h('span', { class: 'err' }, `${checkRows.length - ok} with problems`) : '');
-    $('checkDownload').disabled = !checkRows.length;
   };
   let checkTimer;
   $('checkInput').addEventListener('input', () => { clearTimeout(checkTimer); checkTimer = setTimeout(runCheck, 300); });
   $('checkBtn').onclick = runCheck;
   $('checkClear').onclick = () => { $('checkInput').value = ''; runCheck(); };
-  $('checkDownload').onclick = () => downloadCsv(`casegoods-sku-check-${today()}.csv`, [['As typed', 'SKU', 'Valid', 'Meaning', 'Problems', 'On casegoods.in']]
-    .concat(checkRows.map((r) => [r.input, r.sku, r.ok ? 'yes' : 'no', r.description, r.errors.concat(r.warnings.filter((w) => !/^Read as/.test(w)), r.suggestions.map((s) => `Did you mean ${s}?`)).join(' '), r.ok && store.skus[r.sku] ? 'yes' : ''])));
 
   // ---------------------------------------------------------------- SKU LIST (search, filters, single + bulk check)
   let filter = '';   // '' = everything, a category code, or 'materials'
@@ -534,16 +543,16 @@
     const card = h('div', { class: 'sku-card' + (r.ok ? '' : ' bad') });
     const segs = h('div', { class: 'sku-segs' });
     renderSegs(r.segments.map((x) => x.code), r.segments.map((x) => (x.ok ? x.meaning : '✕ ' + x.meaning)), segs, true);
-    const onShop = r.ok && store.skus[r.sku];
+    const onShop = r.ok && shopMatch(r.sku);
     card.append(...[
       h('p', { class: 'eyebrow' }, r.ok ? '✓ Valid SKU' : '✕ Not a valid SKU'), segs,
       r.ok ? h('p', { class: 'desc', style: 'margin-bottom:8px' }, r.description) : null,
       r.errors.map((e) => h('div', { class: 'why' }, e)),
       r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
-      onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), 'Live on casegoods.in — ', h('a', { href: onShop.url, target: '_blank', rel: 'noopener' }, `${onShop.product}, ${onShop.variant}`)) : null,
+      onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), onShop.exact ? 'Live on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop)) : null,
       h('div', { class: 'btn-row', style: 'margin-top:14px' },
         r.ok ? h('button', { class: 'btn btn-small', onclick: () => copyText(r.sku) }, 'Copy') : null,
-        r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open in Make a SKU') : null,
+        r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open in SKU generator') : null,
         r.suggestions.map((sug) => h('button', { class: 'btn btn-small btn-primary', onclick: () => { $('bookSearch').value = sug; renderBook(); } }, `Did you mean ${sug}?`)))].flat().filter(Boolean));
     box.append(card);
     return r;
@@ -572,7 +581,7 @@
             p.bespoke ? h('span', { class: 'retired-tag', style: 'border-color:var(--ink);color:var(--ink)', title: 'Bespoke / one-off / prototype — not in the regular catalogue yet.' }, 'Bespoke') : null,
             p.notes ? h('div', { class: 'muted', style: 'font-size:13px' }, p.notes) : null,
             h('div', { style: 'font-size:13px' },
-              h('a', { href: '#' + SkuCore.categoryCodeFor(catalog, p) + '-' + p.code + '-' + SkuCore.sizesFor(p)[0].code, class: 'muted' }, 'Make'), ' · ',
+              h('a', { href: '#' + p.code, class: 'muted', title: 'Opens the SKU generator with this product already chosen — just pick the size and materials.' }, 'Generate a SKU'), ' · ',
               store.products[p.code] ? [h('a', { href: store.products[p.code].url, target: '_blank', rel: 'noopener', class: 'muted' }, 'casegoods.in ↗'), ' · '] : null,
               p.link ? [h('a', { href: p.link, target: '_blank', rel: 'noopener', class: 'muted' }, 'Files ↗'), ' · '] : null,
               h('a', { href: 'editor.html#' + p.code, class: 'muted' }, 'Edit'))),
@@ -651,6 +660,8 @@
       const sku = decodeURIComponent(location.hash.slice(1));
       if (sku === 'list' || sku === 'book') return show('list');
       if (sku === 'check') { show('list'); return toggleBulk(true); }
+      const byCode = sku && productByCode(sku.toUpperCase());
+      if (byCode) { $('search').value = ''; sel.product = byCode.code; fillProducts(); pickProduct(byCode.code); show('make'); window.scrollTo(0, 0); return; }
       if (sku && (!current || current.sku !== sku)) setFromSku(sku);
     };
     fromAddress();

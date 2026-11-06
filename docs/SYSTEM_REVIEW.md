@@ -83,7 +83,7 @@ The full list is in `reports/store-check.md`, with every variant in `reports/sto
 - **Sizes and finishes as buttons** when there are up to about a dozen (all options visible at once), and a dropdown when there are more (e.g. 28 dhurrie sizes).
 - **Pictures.** Small product photos from the shop are shown next to the chosen product, purely to confirm "yes, that one". They come from the weekly shop check, so nobody has to maintain them, and products not on the shop simply show no picture.
 - **The description is written the way the website writes it:** "Folding Flat Chair, Slung Leather — Frame: Teak, Natural · Seat: Leather, Natural Buffalo". It avoids repetition ("Jute Rope", not "Rope, Jute Rope") and merges two colours of the same material ("Woven Jute, Red & Blue").
-- **One site, three places:** Make a SKU, SKU list (which includes checking) and Edit catalogue share a header. Every product in the SKU list links to *Make* and *Edit*, and the editor links back with *Try in generator*.
+- **One site, three places:** SKU generator, SKU list (which includes checking) and Edit catalogue share a header. Every product in the SKU list links to *Generate a SKU* and *Edit*, and the editor links back with *Try in generator*.
 
 ## 6. Decisions for you
 

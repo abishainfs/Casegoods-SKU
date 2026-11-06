@@ -4,14 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casegoods SKUs: Edit catalogue</title>
-  <link rel="icon" href="Casegoods_Logo.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .page { max-width: 1040px; }
-    .page { max-width: 1320px; }
     .ed-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
     @media (min-width: 1000px) { .ed-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; } .ed-side { position: sticky; top: 110px; } }
     @media (max-width: 999px) { .ed-side { order: -1; } }
@@ -74,7 +72,7 @@
   <div class="inner">
     <a class="brand" href="index.html" aria-label="Casegoods SKUs — home"><img src="logo.svg" alt="Casegoods" onerror="this.onerror=null;this.src='Casegoods_Logo.png'"></a>
     <nav class="nav" aria-label="Main">
-      <a href="index.html">Make a SKU</a>
+      <a href="index.html">SKU generator</a>
       <a href="index.html#list">SKU list</a>
       <a class="nav-cta active" href="editor.html" aria-current="page">Edit catalogue</a>
     </nav>
@@ -178,6 +176,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="sku-core.js"></script>
+<script src="footer.js" defer></script>
 <script>
 (function () {
   'use strict';
@@ -309,6 +308,9 @@
     $('publishBtn').disabled = !dirty || errors.length > 0;
     $('discardBtn').disabled = !dirty;
     $('downloadBtn').disabled = errors.length > 0;
+    // Downloading is only the fallback for computers without an access key.
+    $('downloadBtn').classList.toggle('hidden', !!settings().token);
+    $('discardBtn').style.gridColumn = settings().token ? '1 / -1' : '';
 
     // Everything goes in the side panel: problems first, then risky changes, then the rest.
     const box = $('changeList'); box.innerHTML = '';
@@ -450,7 +452,7 @@
       h('div', { class: 'item-actions' },
         h('label', { class: 'check', for: 'stage-' + key, style: 'gap:10px' }, 'Status', stage, tip('In catalogue: normal. Bespoke / one-off / prototype: made for a client, an exhibition or a trial; it gets a real code now, so if it joins the catalogue later its SKUs stay exactly the same. Retired: hidden from the generator, code reserved forever. Use Retired instead of deleting.', 'tip-right')),
         h('div', { class: 'btn-row' },
-          h('a', { class: 'btn btn-small btn-link', href: `index.html#${SkuCore.categoryCodeFor(catalog, p)}-${p.code}-${SkuCore.sizesFor(p)[0].code}`, target: '_blank' }, 'Try in generator ↗'),
+          h('a', { class: 'btn btn-small btn-link', href: `index.html#${p.code}`, target: '_blank' }, 'Open in SKU generator ↗'),
           h('button', { class: 'btn btn-danger btn-small', onclick: () => {
             if (!confirm(`Delete "${p.name}" (${p.code}) completely?${liveWarning(liveForProduct(p.code))}\n\nIf SKUs for this product have ever been used, choose Cancel and tick "Retired" instead, so the code is never reused by mistake.`)) return;
             catalog.products.splice(catalog.products.indexOf(p), 1); openItems.clear(); renderProducts(); toast(`Deleted ${p.code}`);
