@@ -38,6 +38,7 @@
       "code": "DOL",
       "name": "Dīpā Oil Lamp",
       "category": "Objects",
+      "aka": "Dīpā",
       "sizes": [
         { "code": "01", "name": "Tall" },
         { "code": "02", "name": "Wide" }
@@ -47,6 +48,7 @@
       "code": "COD",
       "name": "Chulha Oil Diffuser",
       "category": "Objects",
+      "aka": "Chulha",
       "sizes": []
     },
     {
@@ -251,6 +253,7 @@
       "code": "3LT",
       "name": "Three Leg Table",
       "category": "Furniture",
+      "aka": "Three Legged Table",
       "sizes": [
         { "code": "01", "name": "H410" },
         { "code": "02", "name": "H510" },
@@ -300,6 +303,7 @@
       "code": "SPT",
       "name": "Splayed Plank Table",
       "category": "Furniture",
+      "aka": "Splayed Plank",
       "sizes": [
         { "code": "01", "name": "Table 2800 Straight Edge" },
         { "code": "02", "name": "Table 2800 Chamfered Edge" },
@@ -396,6 +400,7 @@
       "code": "DRS",
       "name": "Drift Chair",
       "category": "Furniture",
+      "aka": "Capsule Chair",
       "sizes": [
         { "code": "01", "name": "Dining Chair - Wood Seat" },
         { "code": "02", "name": "Dining Chair - Upholstered Seat" },
@@ -457,6 +462,7 @@
       "code": "CYL",
       "name": "Cylinder Handle",
       "category": "Hardware",
+      "aka": "Cylinder",
       "sizes": [
         { "code": "01", "name": "Type 1" },
         { "code": "02", "name": "Type 2" },
@@ -472,6 +478,7 @@
       "code": "CFH",
       "name": "Cast and Faced Handle",
       "category": "Hardware",
+      "aka": "Cast and Faced",
       "sizes": [
         { "code": "01", "name": "Type 1" },
         { "code": "02", "name": "Type 2" },
@@ -487,6 +494,7 @@
       "code": "DHK",
       "name": "Double Dome Knob",
       "category": "Hardware",
+      "aka": "Double Hemisphere Knob",
       "sizes": [
         { "code": "01", "name": "Ø45" }
       ]
@@ -495,6 +503,7 @@
       "code": "BBH",
       "name": "Bamboo Handle",
       "category": "Hardware",
+      "aka": "Bamboo Handles",
       "sizes": [
         { "code": "01", "name": "Type 1" },
         { "code": "02", "name": "Type 2" },

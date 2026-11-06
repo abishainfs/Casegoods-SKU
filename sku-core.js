@@ -40,6 +40,11 @@
   // Letters that are easy to confuse with digits when typing or reading a SKU.
   const lookalike = (code) => str(code).replace(/O/g, '0').replace(/[IL]/g, '1').replace(/S/g, '5').replace(/B/g, '8');
 
+  /** An item's name plus its other / old names ("aka", comma-separated). */
+  const namesOf = (x) => [str(x && x.name).trim()].concat(str(x && x.aka).split(',').map((a) => a.trim())).filter(Boolean);
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const niceDate = (d) => { const [y, m, dd] = str(d).split('-').map(Number); return y ? `${dd} ${MONTHS[m - 1]} ${y}` : str(d); };
+
   // ---------------------------------------------------------------------------
   // 1. Checking the catalogue for mistakes
   // ---------------------------------------------------------------------------
@@ -141,6 +146,7 @@
         if (sn && sizeNames.has(sn.toLowerCase())) warn(`${label}: sizes ${sizeNames.get(sn.toLowerCase())} and ${sc} have the same name "${sn}". Two codes for one thing creates duplicate SKUs.`);
         sizeCodes.set(sc, sn);
         sizeNames.set(sn.toLowerCase(), sc);
+        if (s.aka !== undefined && typeof s.aka !== 'string') err(`${label}: size ${sc} "aka" (other names) must be text.`);
       });
     });
     catNames.forEach((code, lname) => {
@@ -166,6 +172,7 @@
       if (name && matNames.has(name.toLowerCase())) warn(`Two materials are named "${name}" (${matNames.get(name.toLowerCase())} and ${code}).`);
       matCodes.set(code, name);
       matNames.set(name.toLowerCase(), code);
+      if (m.aka !== undefined && typeof m.aka !== 'string') err(`${label}: "aka" (other names) must be text.`);
       if (!Array.isArray(m.finishes) || m.finishes.length === 0) return err(`${label} needs at least one finish.`);
       const fCodes = new Map();
       const fNames = new Map();
@@ -180,6 +187,7 @@
         if (fn && fNames.has(fn.toLowerCase())) warn(`${label}: finishes ${fNames.get(fn.toLowerCase())} and ${fc} are both called "${fn}".`);
         fCodes.set(fc, fn);
         fNames.set(fn.toLowerCase(), fc);
+        if (f.aka !== undefined && typeof f.aka !== 'string') err(`${label}: finish ${fc} "aka" (other names) must be text.`);
       });
     });
 
@@ -394,8 +402,15 @@
    *   description, errors: [...], warnings: [...], suggestions: [...]
    * }
    */
-  function parseSku(productsFile, materials, input) {
-    const res = { input: str(input), sku: '', ok: false, segments: [], description: '', errors: [], warnings: [], suggestions: [] };
+  function parseSku(productsFile, materials, input, history) {
+    const res = { input: str(input), sku: '', ok: false, segments: [], description: '', errors: [], warnings: [], suggestions: [], history: [] };
+    // Codes that meant something else in the past (code-history.json): explain them, so old SKUs can still be read.
+    const past = (c) => ((history && history.changes) || []).filter((e) => e.code === c);
+    const said = new Set();
+    const note = (c) => past(c).forEach((e) => {
+      const t = `From ${niceDate(e.from)} to ${niceDate(e.until)}, ${c} meant ${e.meant}.`;
+      if (!said.has(t)) { said.add(t); res.history.push(t); }
+    });
     let s = str(input).trim().toUpperCase().replace(/[\s_.‐-―−/]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     res.sku = s;
     if (!s) { res.errors.push('Nothing to check.'); return res; }
@@ -417,10 +432,12 @@
     if (!product) {
       const alt = products.filter((p) => lookalike(p.code) === lookalike(code));
       res.errors.push(`"${code}" is not a product code.${alt.length ? ` Did you mean ${alt.map((p) => `${p.code} (${p.name})`).join(' or ')}?` : ''}`);
+      note(code);
       if (alt.length === 1) product = alt[0];
     }
     seg(code, 'Product', product ? product.name : 'unknown', !!(product && product.code === code));
-    if (product && product.retired) res.warnings.push(`${product.code} (${product.name}) is retired.`);
+    if (product && product.code === code) note(code);
+    if (product && product.retired) res.warnings.push(`${product.code} (${product.name}) is retired.${product.notes ? ' ' + product.notes : ''}`);
     if (product && product.bespoke) res.warnings.push(`${product.code} (${product.name}) is a bespoke / one-off product, not in the regular catalogue.`);
     if (product && cat) {
       const pc = categoryFor(productsFile, product);
@@ -444,6 +461,7 @@
       if (!m) res.errors.push(`"${pair[0]}" is not a material code.`);
       else if (!f) res.errors.push(`${m.name} has no finish "${pair[1]}". Finishes: ${m.finishes.map((y) => `${y.code} (${y.name})`).join(', ')}.`);
       seg(pair, label, m ? materialLabel(m, f) || m.name : 'unknown', !!(m && f));
+      if (past(pair).length) note(pair); else note(pair[0]);
       if (f && isCustom(f)) res.warnings.push(`${pair} is the shared code for any custom ${m.name.toLowerCase()} finish — the SKU alone doesn't say which.`);
       return { m, f };
     };
@@ -463,10 +481,76 @@
   }
 
   // ---------------------------------------------------------------------------
+  // 3b. Searching: by name, old / other name, code or size, with "Did you mean…?"
+  // ---------------------------------------------------------------------------
+  const fold = (t) => str(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9ø]+/g, ' ').trim();
+  // Edit distance where swapping two neighbouring letters ("tabel" → "table") counts as one typo.
+  function distance(a, b) {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i].concat(Array(b.length).fill(0)));
+    for (let j = 0; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+    return d[a.length][b.length];
+  }
+  // How closely one typed word matches one word of a name: 3 = starts with it, 2 = contains it, 1 = a typo away, 0 = no.
+  const wordScore = (q, w) => {
+    if (w.startsWith(q)) return 3;
+    if (q.length >= 4 && w.includes(q)) return 2;
+    if (q.length < 3) return 0;
+    const allowed = q.length <= 5 ? 1 : 2;
+    return distance(q, w) <= allowed || (w.length > q.length && distance(q, w.slice(0, q.length)) <= allowed - 1) ? 1 : 0;
+  };
+
+  /**
+   * Find products for a search, e.g. "capsule chair", "spalyed", "SPT", "1440".
+   * Returns { results: [{ product, via, matched }], didYouMean: [{ product, matched }] }
+   *   via = 'code' | 'name' | 'other name' | 'size' | 'notes'
+   */
+  function searchProducts(productsFile, query, opts = {}) {
+    const q = fold(query);
+    const out = { results: [], didYouMean: [] };
+    if (!q) return out;
+    const words = q.split(' ');
+    const pool = (productsFile.products || []).filter((p) => opts.includeRetired || !p.retired);
+    const contains = (text) => { const t = fold(text); return words.every((w) => t.includes(w)); };
+    pool.forEach((p) => {
+      let via = '', matched = '';
+      if (fold(p.code) === q.replace(/ /g, '')) via = 'code';
+      else if (contains(`${p.code} ${p.name}`)) via = 'name';
+      else {
+        const old = namesOf(p).slice(1).find((n) => contains(n));
+        if (old) { via = 'other name'; matched = old; }
+        else if ((p.sizes || []).some((s) => namesOf(s).some((n) => contains(n)))) { via = 'size'; matched = (p.sizes || []).find((s) => namesOf(s).some((n) => contains(n))).name; }
+        else if (p.notes && contains(p.notes)) via = 'notes';
+      }
+      if (via) out.results.push({ product: p, via, matched });
+    });
+    if (!out.results.length) {
+      // Nothing matched exactly: look for near-misses (typos, missing letters) in names and old names.
+      const scored = pool.map((p) => {
+        let best = 0, bestName = '';
+        namesOf(p).forEach((n) => {
+          const nw = fold(n).split(' ');
+          const s = words.reduce((sum, w) => sum + Math.max(0, ...nw.map((x) => wordScore(w, x))), 0) / words.length;
+          if (s > best) { best = s; bestName = n; }
+        });
+        return { product: p, matched: bestName, score: best };
+      }).filter((x) => x.score >= 1).sort((a, b) => b.score - a.score);
+      out.didYouMean = scored.slice(0, 3);
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------------------
   // 4. Tidy, human-friendly file formatting (one size / finish per line)
   // ---------------------------------------------------------------------------
   const q = (v) => JSON.stringify(v);
-  const pair = (o) => `{ "code": ${q(str(o.code))}, "name": ${q(str(o.name).trim())} }`;
+  const pair = (o) => `{ "code": ${q(str(o.code))}, "name": ${q(str(o.name).trim())}${str(o.aka).trim() ? `, "aka": ${q(str(o.aka).trim())}` : ''} }`;
   const list = (items, indent) =>
     items.length ? `[\n${items.map((x) => indent + '  ' + pair(x)).join(',\n')}\n${indent}]` : '[]';
 
@@ -495,7 +579,7 @@
 
   function formatMaterials(materials) {
     const body = materials
-      .map((m) => `  {\n    "code": ${q(str(m.code))},\n    "name": ${q(str(m.name).trim())},\n    "finishes": ${list(m.finishes || [], '    ')}\n  }`)
+      .map((m) => `  {\n    "code": ${q(str(m.code))},\n    "name": ${q(str(m.name).trim())},\n${str(m.aka).trim() ? `    "aka": ${q(str(m.aka).trim())},\n` : ''}    "finishes": ${list(m.finishes || [], '    ')}\n  }`)
       .join(',\n');
     return `[\n${body}\n]\n`;
   }
@@ -504,7 +588,7 @@
     RULES, DEFAULT_SIZE,
     validate, compare,
     buildSku, parseSku, describe, materialLabel,
-    sizesFor, categoryFor, categoryCodeFor, lookalike,
+    sizesFor, categoryFor, categoryCodeFor, lookalike, namesOf, niceDate, searchProducts,
     formatProducts, formatMaterials,
   };
 });

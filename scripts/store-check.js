@@ -45,7 +45,8 @@ function matchProduct(title) {
 
 function matchFinish(material, text) {
   const t = squash(text);
-  const exact = material.finishes.filter((f) => squash(f.name) === t);
+  // Exact match on the finish's name or any of its old / other names (e.g. "Olive Green").
+  const exact = material.finishes.filter((f) => namesOf(f).some((n) => squash(n) === t));
   if (exact.length === 1) return { f: exact[0], sure: true };
   const contains = material.finishes.filter((f) => squash(f.name).includes(t) || t.includes(squash(f.name)));
   if (contains.length === 1) return { f: contains[0], sure: false };
@@ -60,18 +61,20 @@ function parseMaterialValue(value) {
   const [left, ...rest] = value.split('/');
   const right = rest.join('/').trim();
   if (!right) return null;
-  const mat = M.find((m) => squash(m.name) === squash(left) || squash(m.name).includes(squash(left)) || squash(left).includes(squash(m.name)));
+  const mat = M.find((m) => namesOf(m).some((n) => squash(n) === squash(left)))
+    || M.find((m) => squash(m.name).includes(squash(left)) || squash(left).includes(squash(m.name)));
   if (mat) {
     const r = matchFinish(mat, right);
     return [{ m: mat, f: r.f, sure: r.sure, problem: r.f ? null : `"${value.trim()}": ${mat.name} finish "${right}" ${r.options && r.options.length ? `could be ${r.options.join(' or ')}` : 'is not in the catalogue'}` }];
   }
   // A colour pair like "Red/Blue": find the one material that has both finishes.
-  const both = M.filter((m) => m.finishes.some((f) => squash(f.name) === squash(left)) && m.finishes.some((f) => squash(f.name) === squash(right)));
+  const fin = (m, t) => m.finishes.find((f) => namesOf(f).some((n) => squash(n) === squash(t)));
+  const both = M.filter((m) => fin(m, left) && fin(m, right));
   if (both.length === 1) {
     const m = both[0];
     return [
-      { m, f: m.finishes.find((f) => squash(f.name) === squash(left)), sure: false },
-      { m, f: m.finishes.find((f) => squash(f.name) === squash(right)), sure: false },
+      { m, f: fin(m, left), sure: false },
+      { m, f: fin(m, right), sure: false },
     ];
   }
   return null;
@@ -91,6 +94,8 @@ function matchSize(product, descriptors, pool) {
     if (sizes.length === 1) return { size: sizes[0], sure: true };
     return { size: null, problem: `no size shown on the shop; catalogue has ${sizes.length} sizes` };
   }
+  const byName = sizes.filter((s) => namesOf(s).slice(1).some((n) => squash(n) === squash(text)));
+  if (byName.length === 1) return { size: byName[0], sure: true };
   const dn = numbers(text);
   const dw = words(text);
   const strict = sizes.filter((s) => sameSet(numbers(s.name), dn) && subset(words(s.name), new Set([...dw, ...pool])));

@@ -2,6 +2,7 @@
   {
     "code": "T",
     "name": "Teak",
+    "aka": "Teakwood",
     "finishes": [
       { "code": "0", "name": "Unfinished" },
       { "code": "1", "name": "Natural" },
@@ -112,6 +113,7 @@
   {
     "code": "M",
     "name": "Marble",
+    "aka": "Stone - Marble",
     "finishes": [
       { "code": "0", "name": "White" },
       { "code": "1", "name": "Pink" },
@@ -168,6 +170,7 @@
   {
     "code": "J",
     "name": "Woven Jute",
+    "aka": "Jute",
     "finishes": [
       { "code": "0", "name": "Yellow" },
       { "code": "1", "name": "Orange" },

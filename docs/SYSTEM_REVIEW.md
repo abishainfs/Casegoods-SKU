@@ -75,6 +75,30 @@ The full list is in `reports/store-check.md`, with every variant in `reports/sto
 
 **Filling in the 178 suggested SKUs on Shopify:** open the CSV, filter *Confidence = high*, and paste each SKU into the variant in Shopify admin. For bulk updates, an app such as Matrixify can import the column. Do the "check" rows by eye.
 
+## 4b. Names change; codes must not
+
+In Casegoods' product development, names change all the time: the Drift Chair was the *Capsule Chair*, the Fillet Edge Table was the *Fillet Joint Table*, the Three Leg Table was the *Three Legged Table*. That's fine, **as long as the code stays the same**. The system now supports it:
+
+- **Old & other names** can be stored on every product, size, material and finish: development nicknames, old names, or the name used on casegoods.in. Search finds them ("capsule" → *"Capsule Chair" is now called Drift Chair (DRS)*), and the weekly shop check uses them to match the website.
+- **Renaming in the editor keeps the old name automatically.** Nobody has to remember to do it.
+- **Typos get "Did you mean…?"**: "spalyed" → *Splayed Plank Table / Splayed Plank Bench*, "bamboo handels" → *Bamboo Handle*. Accents are ignored ("dipa" finds Dīpā).
+- The old names already in the repository's history have been filled in: Three Legged Table, Splayed Plank, Chulha, Dīpā, Cylinder, Cast and Faced, Double Hemisphere Knob, Bamboo Handles, Fillet Joint Table, Capsule Chair, Teakwood, Stone - Marble, Jute.
+
+### The dangerous kind: when a code changed meaning
+
+The history shows this *has* happened, three times:
+
+| Date | What changed |
+|---|---|
+| **21 Nov 2025** | Materials were reorganised. `O` went from Mahogany to Oak; `T2`/`T3` swapped (Black ↔ Dark Stained); every Aluminium finish moved; Marble `M1`–`M5` shifted; the Leather finishes were reordered; `E` was Refractory Brick. |
+| **21 Nov 2025 – 2 Mar 2026** | `H` was used by **both** Mahogany and Leather, and `R` by both Rosewood and Rope (until Nov 2026). The old generator always picked the first one, so a "Leather" SKU came out as Mahogany. |
+| **4 Feb 2026** | Nickel Satin and Nickel Polished swapped codes (`B5`/`B6`, `U4`/`U5`). |
+| **2 Mar 2026** | Leather moved from `H` to `E`; `H` became Mahogany only. |
+
+All 63 old meanings are in **`code-history.json`**, generated from the repository's history. When someone checks an old SKU, the site now explains it: *"From 21 Nov 2025 to 2 Mar 2026, H0 meant Mahogany, Unfinished or Leather, Natural Buffalo."* The 37 SKUs on the shop were all made after these changes and read correctly.
+
+**Going forward:** the editor warns before any change like this. Renames are fine; reusing or reshuffling codes isn't. If it ever has to happen, add a line to `code-history.json`.
+
 ## 5. Design decisions
 
 - **Clarity first, Casegoods second.** The look borrows the website's DNA: black on white, grotesk type with serif accents, square corners and thin rules. But buttons stay big and obvious, there's one black primary action per area, and focus outlines and error colours are always visible.

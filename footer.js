@@ -30,7 +30,9 @@ Rules:
   products including retired ones), "name", "category" (one of the category names at the
   top) and "sizes" (each with a 2-character "code" like "01", unique within the product,
   and a "name"). Optional: "retired": true, "bespoke": true (never both), "primaryPart",
-  "secondaryPart", "aka" (other names), "notes" (one line), "link" (a full https:// address). Keep them if present.
+  "secondaryPart", "aka" (old / other names), "notes" (one line), "link" (a full https:// address).
+  Sizes, materials and finishes may also have "aka". Keep all of these if present.
+- When renaming anything, keep its code and add the old name to its "aka".
 - New sizes get the next unused number. NEVER renumber or reuse existing codes: they are
   printed on products, invoices and the shop.
 - To discontinue a product, add "retired": true instead of deleting it.

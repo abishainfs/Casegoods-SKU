@@ -62,6 +62,13 @@
     .fchip[aria-pressed=true] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
     .fchip .n { color: var(--faint); margin-left: 6px; font-size: 12px; }
     .fchip[aria-pressed=true] .n { color: #bbb; }
+    .search-hint { font-size: 14px; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .search-hint:empty { display: none; }
+    #listHint { margin: -6px 0 16px; }
+    .was-tag { font-size: 12px; color: var(--muted); margin-left: 8px; font-style: italic; }
+    details.older { margin-top: 8px; font-size: 13px; color: var(--warn); }
+    details.older summary { cursor: pointer; }
+    details.older ul { margin: 6px 0 0; padding-left: 18px; }
     .sku-card { border: 1px solid var(--ink); padding: 18px 20px; margin-bottom: 24px; }
     .sku-card.bad { border-color: var(--danger); background: var(--paper) !important; }
     .sku-card .sku-segs { margin: 4px 0 12px; }
@@ -117,6 +124,7 @@
               <select id="product"></select>
             </div>
           </div>
+          <div id="searchHint" class="search-hint"></div>
           <div id="peek"></div>
         </div>
 
@@ -189,6 +197,7 @@
       </div>
       <button class="btn" id="bulkToggle" aria-expanded="false">Check a list of SKUs</button>
     </div>
+    <div id="listHint" class="search-hint"></div>
     <div id="skuResult"></div>
 
     <div id="bulk" class="panel soft hidden">
@@ -245,6 +254,7 @@
   let catalog = { categories: [], products: [] };
   let materials = [];
   let store = { products: {}, skus: {} };
+  let codeHistory = { changes: [] };   // what codes used to mean (code-history.json)
   let current = null;
 
   // ---------------------------------------------------------------- helpers
@@ -321,12 +331,27 @@
     s.innerHTML = '';
     s.append(h('option', { value: '' }, q ? 'Matching products…' : 'Choose a product'));
     let count = 0, only = null;
-    const matches = (p) => !q || `${p.code} ${p.name} ${p.aka || ''} ${p.notes || ''} ${(p.sizes || []).map((z) => z.name).join(' ')}`.toLowerCase().includes(q);
-    const group = (label, items) => {
+    // Search by name, old/other name, code or size — with "Did you mean…?" for typos.
+    const found = SkuCore.searchProducts(catalog, q);
+    const via = new Map(found.results.map((r) => [r.product.code, r]));
+    const matches = (p) => !q || via.has(p.code);
+    const label = (p) => {
+      const r = via.get(p.code);
+      return `${p.code}  ${p.name}${r && r.via === 'other name' ? `  (was ${r.matched})` : ''}`;
+    };
+    const group = (glabel, items) => {
       if (!items.length) return;
-      s.append(h('optgroup', { label }, items.map((p) => h('option', { value: p.code }, `${p.code}  ${p.name}`))));
+      s.append(h('optgroup', { label: glabel }, items.map((p) => h('option', { value: p.code }, label(p)))));
       count += items.length; only = items[0];
     };
+    const hint = $('searchHint'); hint.innerHTML = '';
+    if (q && !found.results.length && found.didYouMean.length) hint.append('Did you mean ',
+      ...found.didYouMean.map((d, i) => [i ? ' / ' : '', h('button', { type: 'button', class: 'btn btn-small', onclick: () => { $('search').value = d.matched; fillProducts(); } }, d.matched)]).flat(), '?');
+    else if (q && !found.results.length) hint.append('Nothing found. Try part of the name, the code (e.g. SPT) or a size.');
+    else if (q) {
+      const old = found.results.filter((r) => r.via === 'other name');
+      if (old.length) hint.append(...old.map((r) => h('div', {}, `"${r.matched}" is now called `, h('strong', {}, r.product.name), ` (${r.product.code}).`)));
+    }
     catalog.categories.forEach((c) => group(`${c.code} — ${c.name}`,
       catalog.products.filter((p) => !p.retired && !p.bespoke && p.category.trim().toLowerCase() === c.name.toLowerCase() && matches(p))));
     // Bespoke pieces, one-offs and prototypes: listed separately so nobody mistakes them for catalogue products.
@@ -488,7 +513,7 @@
     const lines = $('checkInput').value.split(/[\n,;\t]+/).map((s) => s.trim()).filter(Boolean);
     const seen = new Map();
     checkRows = lines.map((line) => {
-      const r = SkuCore.parseSku(catalog, materials, line);
+      const r = SkuCore.parseSku(catalog, materials, line, codeHistory);
       if (r.ok) {
         if (seen.has(r.sku)) r.warnings.push(`Listed twice (also line ${seen.get(r.sku)}).`);
         else seen.set(r.sku, lines.indexOf(line) + 1);
@@ -506,6 +531,7 @@
           r.ok ? h('span', { class: 'serif', style: 'font-size:16px' }, r.description) : null,
           r.errors.map((e) => h('div', { class: 'why' }, e)),
           r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
+          r.history.length ? h('details', { class: 'older' }, h('summary', {}, `Older SKU? ${r.history.length === 1 ? 'One code' : 'Some codes'} here used to mean something else`), h('ul', {}, r.history.map((t) => h('li', {}, t)))) : null,
           r.suggestions.map((s) => h('div', { style: 'margin-top:6px' }, 'Did you mean ', h('button', { class: 'btn btn-small', onclick: () => setFromSku(s) }, s), '?'))),
         h('td', { style: 'font-size:13px' }, onShop ? shopLink(onShop, true) : h('span', { class: 'muted' }, r.ok ? 'No' : '')),
         h('td', {}, r.ok ? h('button', { class: 'btn btn-small', onclick: () => setFromSku(r.sku) }, 'Open') : null)));
@@ -539,7 +565,7 @@
   const renderSkuCard = (raw) => {
     const box = $('skuResult'); box.innerHTML = '';
     if (!looksLikeSku(raw)) return null;
-    const r = SkuCore.parseSku(catalog, materials, raw);
+    const r = SkuCore.parseSku(catalog, materials, raw, codeHistory);
     const card = h('div', { class: 'sku-card' + (r.ok ? '' : ' bad') });
     const segs = h('div', { class: 'sku-segs' });
     renderSegs(r.segments.map((x) => x.code), r.segments.map((x) => (x.ok ? x.meaning : '✕ ' + x.meaning)), segs, true);
@@ -549,6 +575,7 @@
       r.ok ? h('p', { class: 'desc', style: 'margin-bottom:8px' }, r.description) : null,
       r.errors.map((e) => h('div', { class: 'why' }, e)),
       r.warnings.filter((w) => !/^Read as/.test(w)).map((w) => h('div', { class: 'why w' }, w)),
+      r.history.length ? h('details', { class: 'older' }, h('summary', {}, `Older SKU? ${r.history.length === 1 ? 'One code' : 'Some codes'} here used to mean something else`), h('ul', {}, r.history.map((t) => h('li', {}, t)))) : null,
       onShop ? h('p', { class: 'live', style: 'margin:8px 0 0' }, h('span', { class: 'ok' }, '● '), onShop.exact ? 'Live on casegoods.in — ' : 'On casegoods.in — ', shopLink(onShop)) : null,
       h('div', { class: 'btn-row', style: 'margin-top:14px' },
         r.ok ? h('button', { class: 'btn btn-small', onclick: () => copyText(r.sku) }, 'Copy') : null,
@@ -568,17 +595,25 @@
     const showRetired = $('bookRetired').checked || !!parsed;
     const box = $('book'); box.innerHTML = '';
     const match = (...xs) => !q || xs.join(' ').toLowerCase().includes(q);
+    const found = q ? SkuCore.searchProducts(catalog, q, { includeRetired: true }) : null;
+    const foundBy = found ? new Map(found.results.map((r) => [r.product.code, r])) : null;
+    const listHint = $('listHint'); listHint.innerHTML = '';
+    if (found && !found.results.length && found.didYouMean.length) listHint.append('Did you mean ',
+      ...found.didYouMean.map((d, i) => [i ? ' / ' : '', h('button', { type: 'button', class: 'btn btn-small', onclick: () => { $('bookSearch').value = d.matched; renderBook(); } }, d.matched)]).flat(), '?');
     if (filter !== 'materials') catalog.categories.forEach((c) => {
       if (filter && filter !== c.code && filter !== 'bespoke') return;
       const items = catalog.products.filter((p) => p.category.trim().toLowerCase() === c.name.toLowerCase() && (showRetired || !p.retired)
         && (filter !== 'bespoke' || p.bespoke)
-        && (!onlyCode || p.code === onlyCode) && match(p.code, p.name, p.aka || '', c.name, (p.sizes || []).map((s) => s.name).join(' ')));
+        && (!onlyCode || p.code === onlyCode) && (!found || foundBy.has(p.code) || match(c.name)));
       if (!items.length) return;
       box.append(h('div', { class: 'book-cat' }, h('h2', {}, h('span', { class: 'mono' }, c.code), c.name, h('span', { class: 'muted', style: 'font-size:13px;margin-left:auto' }, `${items.length}`)),
         items.map((p) => h('div', { class: 'book-item' },
           h('div', { class: 'code' }, p.code),
-          h('div', {}, p.name, p.retired ? h('span', { class: 'retired-tag', title: 'Not for new SKUs. The code stays reserved so it is never reused.' }, 'Retired') : null,
+          h('div', {}, p.name,
+            foundBy && foundBy.get(p.code) && foundBy.get(p.code).via === 'other name' ? h('span', { class: 'was-tag' }, `found as "${foundBy.get(p.code).matched}"`) : null,
+            p.retired ? h('span', { class: 'retired-tag', title: 'Not for new SKUs. The code stays reserved so it is never reused.' }, 'Retired') : null,
             p.bespoke ? h('span', { class: 'retired-tag', style: 'border-color:var(--ink);color:var(--ink)', title: 'Bespoke / one-off / prototype — not in the regular catalogue yet.' }, 'Bespoke') : null,
+            p.aka ? h('div', { class: 'muted', style: 'font-size:13px' }, `Also called: ${p.aka}`) : null,
             p.notes ? h('div', { class: 'muted', style: 'font-size:13px' }, p.notes) : null,
             h('div', { style: 'font-size:13px' },
               h('a', { href: '#' + p.code, class: 'muted', title: 'Opens the SKU generator with this product already chosen — just pick the size and materials.' }, 'Generate a SKU'), ' · ',
@@ -589,9 +624,9 @@
     });
     if (!filter || filter === 'materials') {
       const usedMats = parsed ? parsed.segments.slice(3).map((x) => x.code[0]) : null;
-      const mats = materials.filter((m) => (!usedMats || usedMats.includes(m.code)) && match(m.code, m.name, m.finishes.map((f) => f.name).join(' ')));
+      const mats = materials.filter((m) => (!usedMats || usedMats.includes(m.code)) && match(m.code, m.name, m.aka || '', m.finishes.map((f) => `${f.name} ${f.aka || ''}`).join(' ')));
       if (mats.length) box.append(h('div', { class: 'book-cat' }, h('h2', {}, 'Materials & finishes'),
-        mats.map((m) => h('div', { class: 'book-item' }, h('div', { class: 'code' }, m.code), h('div', {}, m.name),
+        mats.map((m) => h('div', { class: 'book-item' }, h('div', { class: 'code' }, m.code), h('div', {}, m.name, m.aka ? h('div', { class: 'muted', style: 'font-size:13px' }, `Also called: ${m.aka}`) : null),
           h('div', { class: 'vals' }, m.finishes.map((f) => h('span', {}, h('b', {}, m.code + f.code), f.name)))))));
     }
     if (!box.children.length) box.append(h('p', { class: 'muted', style: 'margin-top:24px' }, 'Nothing matches that search.'));
@@ -640,8 +675,8 @@
   (async () => {
     renderSaved(); renderSegs([], []);
     try {
-      const [p, m, s] = await Promise.all([getJson('products.json'), getJson('materials.json'), getJson('store.json', true)]);
-      catalog = p; materials = m; if (s && s.skus) store = s;
+      const [p, m, s, hist] = await Promise.all([getJson('products.json'), getJson('materials.json'), getJson('store.json', true), getJson('code-history.json', true)]);
+      catalog = p; materials = m; if (s && s.skus) store = s; if (hist && hist.changes) codeHistory = hist;
     } catch (e) {
       banner([e.message], true);
       ['search', 'product', 'mat1', 'mat2'].forEach((id) => ($(id).disabled = true));

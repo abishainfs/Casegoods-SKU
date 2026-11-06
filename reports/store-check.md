@@ -1,6 +1,6 @@
 # Shop check: casegoods.in vs the SKU catalogue
 
-_Last checked: Fri, 06 Nov 2026 20:51:59 GMT — this page updates automatically every Monday._
+_Last checked: Fri, 06 Nov 2026 20:58:26 GMT — this page updates automatically every Monday._
 
 | | |
 |---|---|
