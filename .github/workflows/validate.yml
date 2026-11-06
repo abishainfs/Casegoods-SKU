@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Self-test
         run: node scripts/test.js
-      - name: Check products.json and materials.json
-        run: node scripts/validate.js
+      - name: Check products.json and materials.json (and what changed)
+        run: node scripts/validate.js --against "${{ github.event.pull_request.base.sha || github.event.before }}"

@@ -3,83 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casegoods: Catalogue Editor</title>
+  <title>Casegoods SKUs: Edit catalogue</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .wrap { width: 100%; max-width: 1000px; }
-    header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    header img { height: 3.5rem; border-radius: .4rem; }
-    header a { margin-left: auto; font-size: .85rem; color: #007aff; }
-    .statusbar { position: sticky; top: 0; z-index: 10; background: #fff; border: 1px solid #e5e5ea; border-radius: .9rem;
-      padding: .9rem 1.1rem; margin-bottom: 1.25rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
-      box-shadow: 0 4px 12px rgba(0,0,0,.06); }
-    .statusbar .msg { flex: 1; min-width: 200px; font-size: .9rem; }
-    .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .tab { padding: .55rem 1rem; border-radius: .6rem; border: 1px solid #d1d1d6; background: #fff; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; }
-    .tab.active { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
-    .toolbar { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
-    .toolbar input[type=text], .toolbar select { width: auto; flex: 1; min-width: 160px; }
-    .item { background: #fff; border: 1px solid #e5e5ea; border-radius: .75rem; margin-bottom: .6rem; }
-    .item > summary { list-style: none; padding: .8rem 1rem; display: flex; gap: .75rem; align-items: center; font-weight: 400; }
+    .ed-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    @media (min-width: 1000px) { .ed-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; } .ed-side { position: sticky; top: 110px; } }
+    @media (max-width: 999px) { .ed-side { order: -1; } }
+    .side-box { border: 1px solid var(--ink); background: var(--paper); }
+    .side-head { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+    .side-head h2 { margin: 0; font-size: 17px; }
+    .side-head .msg { font-size: 14px; margin-top: 2px; }
+    .side-scroll { max-height: calc(100vh - 360px); min-height: 60px; overflow: auto; padding: 4px 16px 10px; }
+    @media (max-width: 999px) { .side-scroll { max-height: 40vh; } }
+    .side-sec { margin: 12px 0 0; }
+    .side-sec h3 { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 6px; }
+    .side-sec ul { margin: 0; padding-left: 16px; font-size: 13px; line-height: 1.45; }
+    .side-sec li + li { margin-top: 5px; }
+    .side-sec .note { font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+    .side-sec.err h3, .side-sec.err li { color: var(--danger); }
+    .side-sec.danger { background: var(--warn-bg); margin: 12px -16px 0; padding: 10px 16px; border-left: 3px solid #d9a400; }
+    .side-sec.danger h3 { color: #4d3400; }
+    .side-actions { padding: 14px 16px 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .side-actions #publishBtn { grid-column: 1 / -1; }
+    .side-empty { font-size: 14px; color: var(--ok); margin: 12px 0 6px; }
+    .tabs { display: flex; gap: 0; margin: 8px 0 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .tab { font: inherit; font-size: 15px; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; cursor: pointer; color: var(--muted); margin-bottom: -1px; }
+    .tab:hover { color: var(--ink); }
+    .tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+    .toolbar input[type=search], .toolbar select { width: auto; flex: 1; min-width: 170px; }
+    .toolbar .check { white-space: nowrap; }
+    .item { border: 1px solid var(--line); margin-bottom: -1px; background: var(--paper); }
+    .item[open] { border-color: var(--ink); position: relative; z-index: 1; margin-bottom: 10px; }
+    .item > summary { list-style: none; padding: 12px 14px; display: flex; gap: 14px; align-items: center; }
     .item > summary::-webkit-details-marker { display: none; }
-    .item > summary::before { content: '▸'; color: #8e8e93; transition: transform .15s; }
-    .item[open] > summary::before { transform: rotate(90deg); }
-    .item .code { font-family: ui-monospace, Menlo, monospace; font-weight: 700; min-width: 3.5rem; }
-    .item .meta { margin-left: auto; color: #8e8e93; font-size: .8rem; text-align: right; }
-    .item.retired { opacity: .6; }
-    .item.has-error { border-color: #ff9aa4; }
-    .item-body { padding: 0 1rem 1rem; border-top: 1px solid #f2f2f7; }
-    .fields { display: grid; grid-template-columns: 1fr; gap: .8rem; margin: 1rem 0; }
-    @media (min-width: 640px) { .fields { grid-template-columns: 8rem 1fr 12rem; } }
-    .sub { width: 100%; border-collapse: collapse; margin-bottom: .6rem; }
-    .sub td { padding: .25rem .3rem .25rem 0; }
-    .sub td:first-child { width: 5.5rem; }
+    .item > summary::before { content: '+'; color: var(--muted); width: 12px; font-family: var(--mono); }
+    .item[open] > summary::before { content: '–'; }
+    .item .code { font-family: var(--mono); font-weight: 600; min-width: 3.6rem; }
+    .item .meta { margin-left: auto; color: var(--muted); font-size: 13px; text-align: right; }
+    .item.retired > summary { color: var(--faint); }
+    .item.has-error { border-color: var(--danger); background: var(--danger-bg); }
+    .item-body { padding: 4px 16px 18px; border-top: 1px solid var(--line); background: var(--paper); }
+    .fields { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 14px 0 18px; }
+    @media (min-width: 700px) { .fields.f3 { grid-template-columns: 9rem 1fr 13rem; } .fields.f2 { grid-template-columns: 9rem 1fr; } .fields.parts { grid-template-columns: 1fr 1fr; } }
+    .sub { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    .sub td { padding: 3px 6px 3px 0; vertical-align: middle; }
+    .sub td:first-child { width: 5.6rem; }
+    .sub td.use { width: 1%; white-space: nowrap; font-size: 12px; color: var(--ok); padding-right: 10px; }
     .sub td:last-child { width: 1%; white-space: nowrap; }
-    .sub input { padding: .45rem .6rem; font-size: .9rem; }
-    .code-input { font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; }
-    .bad { border-color: #ff3b30 !important; background: #fff6f6 !important; }
-    .item-actions { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: .6rem; }
-    .check { display: inline-flex; gap: .4rem; align-items: center; font-size: .85rem; font-weight: 400; cursor: pointer; margin: 0; }
-    .hint { font-size: .78rem; color: #8e8e93; margin: .2rem 0 0; }
-    .problems { max-height: 14rem; overflow: auto; }
-    .settings p { font-size: .85rem; line-height: 1.55; }
-    .hidden { display: none !important; }
+    .sub input { min-height: 38px; padding: 6px 10px; font-size: 14px; }
+    .item-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 400; cursor: pointer; margin: 0; }
+    .hint { font-size: 12px; color: var(--muted); margin: 5px 0 0; }
+    .problems { max-height: 16rem; overflow: auto; }
+    .live-count { color: var(--ok); }
+    .stage-tag { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--ink); color: var(--ink); padding: 1px 6px; margin-right: 8px; }
+    .history li { padding: 10px 0; border-bottom: 1px solid var(--line); list-style: none; }
+    .history ul { padding: 0; margin: 0; }
+    .history .when { font-size: 12px; color: var(--muted); }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <img src="Casegoods_Logo.png" alt="" onerror="this.style.display='none'">
-    <div>
-      <h1 style="font-size:1.6rem">Catalogue editor</h1>
-      <div class="muted">Add, change or retire products, sizes and materials.</div>
-    </div>
-    <a href="index.html">← Back to SKU generator</a>
-  </header>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="index.html" aria-label="Casegoods SKUs — home"><img src="logo.svg" alt="Casegoods" onerror="this.onerror=null;this.src='Casegoods_Logo.png'"></a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">SKU generator</a>
+      <a href="index.html#list">SKU list</a>
+      <a class="nav-cta active" href="editor.html" aria-current="page">Edit catalogue</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1>Edit catalogue</h1>
+  <p class="lede">Add, change or retire products, sizes and materials. Nothing goes live until you press <em>Publish</em>, and mistakes are caught before they can.</p>
 
   <div id="loadBanner"></div>
 
-  <div class="statusbar" id="statusbar">
-    <div class="msg" id="statusMsg">Loading…</div>
-    <button class="btn btn-secondary btn-small" id="discardBtn">Undo all changes</button>
-    <button class="btn btn-secondary btn-small" id="downloadBtn">Download files</button>
-    <button class="btn btn-primary" id="publishBtn">Publish to website</button>
-  </div>
-  <div id="problems"></div>
-
+  <div class="ed-layout" id="layout">
+  <div class="ed-main">
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="products">Products</button>
     <button class="tab" data-tab="materials">Materials &amp; finishes</button>
     <button class="tab" data-tab="categories">Categories</button>
+    <button class="tab" data-tab="history">History &amp; shop check</button>
     <button class="tab" data-tab="settings">Publishing setup</button>
   </div>
 
   <section id="tab-products">
     <div class="toolbar">
-      <input type="text" id="search" placeholder="Search by name or code…">
+      <input type="search" id="search" placeholder="Search by name, code or size…">
       <select id="catFilter"></select>
       <label class="check"><input type="checkbox" id="showRetired"> Show retired</label>
       <button class="btn btn-primary btn-small" id="addProduct">+ Add product</button>
@@ -89,58 +107,90 @@
 
   <section id="tab-materials" class="hidden">
     <div class="toolbar">
-      <input type="text" id="matSearch" placeholder="Search materials…">
+      <input type="search" id="matSearch" placeholder="Search materials or finishes…">
       <button class="btn btn-primary btn-small" id="addMaterial">+ Add material</button>
     </div>
     <div id="materialList"></div>
   </section>
 
   <section id="tab-categories" class="hidden">
-    <div class="card">
-      <p class="muted" style="margin-top:0">Categories are the first letter of every SKU. Changing an existing category code changes every SKU in it — only do that if you are sure.</p>
+    <div class="panel">
+      <p class="muted" style="margin-top:0">Categories are the first letter of every SKU. Changing an existing category's code changes every SKU in it, so only do that if you are sure.</p>
       <table class="sub" id="catTable"></table>
-      <button class="btn btn-secondary btn-small" id="addCategory">+ Add category</button>
+      <button class="btn btn-small" id="addCategory">+ Add category</button>
+    </div>
+  </section>
+
+  <section id="tab-history" class="hidden">
+    <div class="panel history">
+      <h2>Recent catalogue changes</h2>
+      <p class="muted" style="margin-top:0">Every publish is recorded. Any change can be undone from GitHub.</p>
+      <div id="historyList" class="muted">Loading…</div>
+    </div>
+    <div class="panel">
+      <h2>Shop check</h2>
+      <p style="margin-top:0">Every Monday the system compares <strong>casegoods.in</strong> with this catalogue: SKUs that are wrong or missing on the shop, products still on sale that are retired here, and sizes or finishes named differently in the two places. It also suggests a SKU for every shop variant that doesn't have one.</p>
+      <p id="shopSummary" class="muted"></p>
+      <div class="btn-row" id="shopLinks"></div>
     </div>
   </section>
 
   <section id="tab-settings" class="hidden">
-    <div class="card settings">
-      <h2>Publishing setup (one time per computer)</h2>
-      <p>To let the <strong>Publish to website</strong> button save changes directly, paste the access key you were given below.
-        It is stored only in this browser on this computer. If you don't have one, use <strong>Download files</strong> instead and
-        follow the guide (<em>docs/EDITING_GUIDE.md</em>).</p>
-      <label for="token">Access key (GitHub token)</label>
+    <div class="panel">
+      <h2>Publishing setup <span class="muted" style="font-weight:400">— once per computer</span></h2>
+      <p style="margin-top:0">To let <strong>Publish</strong> save changes directly, paste the access key you were given. It's stored only in this browser on this computer.
+        No key? Use <strong>Download files</strong> instead (see <em>docs/EDITING_GUIDE.md</em>).</p>
+      <label for="token">Access key <button type="button" class="tip" data-tip="A GitHub 'fine-grained token' that can only change this one project. Whoever manages GitHub creates it. It starts with github_pat_.">?</button></label>
       <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
-      <div class="row" style="margin-top:1rem">
-        <div><label for="repo">Repository</label><input type="text" id="repo"></div>
-        <div><label for="branch">Branch</label><input type="text" id="branch"></div>
+      <label for="who" style="margin-top:16px">Your name <button type="button" class="tip" data-tip="Added to every change you publish, so the History tab shows who made it. (GitHub itself records changes under the owner of the access key.)">?</button></label>
+      <input type="text" id="who" placeholder="e.g. Priyanka" autocomplete="name" style="max-width:320px">
+      <details style="margin-top:16px"><summary class="muted">Advanced</summary>
+        <div class="fields parts" style="margin-top:12px">
+          <div><label for="repo">Repository</label><input type="text" id="repo"></div>
+          <div><label for="branch">Branch</label><input type="text" id="branch"></div>
+        </div>
+      </details>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-primary" id="saveSettings">Save &amp; test connection</button>
+        <button class="btn btn-danger" id="forgetSettings">Remove key from this computer</button>
       </div>
-      <div class="toolbar" style="margin-top:1rem">
-        <button class="btn btn-primary btn-small" id="saveSettings">Save &amp; test connection</button>
-        <button class="btn btn-danger btn-small" id="forgetSettings">Remove key from this computer</button>
-      </div>
-      <div id="settingsMsg"></div>
+      <div id="settingsMsg" style="margin-top:16px"></div>
     </div>
   </section>
-</div>
+  </div>
+
+  <aside class="ed-side" id="statusbar" aria-label="Unpublished changes">
+    <div class="side-box">
+      <div class="side-head"><h2>Changes</h2><div class="msg" id="statusMsg">Loading…</div></div>
+      <div class="side-scroll" id="changeList"></div>
+      <div class="side-actions">
+        <button class="btn btn-primary" id="publishBtn">Publish</button>
+        <button class="btn btn-small" id="downloadBtn" title="Save the two catalogue files to this computer — for uploading to GitHub by hand if publishing isn't set up.">Download files</button>
+        <button class="btn btn-small" id="discardBtn" title="Throw away everything you haven't published yet.">Undo all</button>
+      </div>
+    </div>
+  </aside>
+  </div>
+</main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="sku-core.js"></script>
+<script src="footer.js" defer></script>
 <script>
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
   const DRAFT_KEY = 'casegoods-editor-draft';
   const SETTINGS_KEY = 'casegoods-editor-settings';
-  const DEFAULT_SETTINGS = { token: '', repo: 'abishainfs/Casegoods-SKU', branch: 'main' };
+  const DEFAULT_SETTINGS = { token: '', repo: 'abishainfs/Casegoods-SKU', branch: 'main', who: '' };
 
-  let catalog, materials;          // what you're editing
-  let original = { products: '', materials: '' }; // formatted text as last loaded/published
-  const openItems = new Set();     // which product/material panels are expanded
+  let catalog, materials;                           // what you're editing
+  let original = { products: '', materials: '' };   // as last loaded / published
+  let store = { products: {}, skus: {} };           // live SKUs on casegoods.in (from the weekly shop check)
+  const openItems = new Set();
 
-  // ---------- helpers ----------
-  const clone = (x) => JSON.parse(JSON.stringify(x));
+  // ---------------------------------------------------------------- helpers
   let toastTimer;
   const toast = (msg, ms = 3000) => {
     const t = $('toast'); t.textContent = msg; t.classList.add('visible');
@@ -149,158 +199,175 @@
   const h = (tag, attrs = {}, ...kids) => {
     const n = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
+      if (v === undefined || v === null || v === false) continue;
       if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
       else if (k === 'class') n.className = v;
-      else if (k in n && k !== 'list') n[k] = v;
-      else n.setAttribute(k, v);
+      else if (k in n && typeof v !== 'string') n[k] = v;
+      else n.setAttribute(k, v === true ? '' : v);
     }
-    kids.flat().forEach((c) => c != null && n.append(c instanceof Node ? c : String(c)));
+    kids.flat().forEach((c) => c != null && c !== false && n.append(c instanceof Node ? c : String(c)));
     return n;
   };
+  const tip = (text, cls = '') => h('button', { type: 'button', class: 'tip ' + cls, 'data-tip': text, tabindex: 0 }, '?');
   const settings = () => {
     try { return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem(SETTINGS_KEY))); }
     catch (e) { return Object.assign({}, DEFAULT_SETTINGS); }
   };
   const text = () => ({ products: SkuCore.formatProducts(catalog), materials: SkuCore.formatMaterials(materials) });
-  const saveDraft = () => {
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ catalog, materials, base: original, at: Date.now() })); } catch (e) {}
-  };
+  const saveDraft = () => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ catalog, materials, base: original, at: Date.now() })); } catch (e) {} };
   const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} };
   const nextCode = (used, width) => {
-    for (let i = 1; i < Math.pow(10, width); i++) {
-      const c = String(i).padStart(width, '0');
-      if (!used.includes(c)) return c;
-    }
+    for (let i = 1; i < Math.pow(10, width); i++) { const c = String(i).padStart(width, '0'); if (!used.includes(c)) return c; }
     return '';
   };
   const upper = (v) => v.toUpperCase().replace(/\s/g, '');
+  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-  // ---------- GitHub ----------
+  // Live SKUs on casegoods.in that use a product / size / material / finish.
+  const liveSkus = () => Object.keys(store.skus || {});
+  const liveFor = (test) => liveSkus().filter((sku) => test(sku.split('-')));
+  const liveForProduct = (code) => liveFor((s) => s[1] === code);
+  const liveForSize = (code, size) => liveFor((s) => s[1] === code && s[2] === size);
+  const liveForMaterial = (code) => liveFor((s) => (s[3] || '')[0] === code || (s[4] || '')[0] === code);
+  const liveForFinish = (code, fin) => liveFor((s) => s[3] === code + fin || s[4] === code + fin);
+  const liveWarning = (list) => list.length ? `\n\n⚠ ${plural(list.length, 'SKU')} using it ${list.length === 1 ? 'is' : 'are'} live on casegoods.in (e.g. ${list.slice(0, 3).join(', ')}).` : '';
+
+  // ---------------------------------------------------------------- GitHub
   const b64encode = (s) => { let bin = ''; new TextEncoder().encode(s).forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin); };
   const b64decode = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
-  const gh = async (path, opts = {}) => {
+  const gh = async (path, opts = {}, needKey = true) => {
     const s = settings();
-    const res = await fetch(`https://api.github.com/repos/${s.repo}/${path}`, Object.assign({}, opts, {
-      headers: { Authorization: `Bearer ${s.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-      cache: 'no-store',
-    }));
+    const headers = { Accept: 'application/vnd.github+json' };
+    if (s.token) headers.Authorization = `Bearer ${s.token}`;
+    if (opts.body) headers['Content-Type'] = 'application/json';
+    let res;
+    try {
+      res = await fetch(`https://api.github.com/repos/${s.repo}/${path}`, Object.assign({}, opts, { headers, cache: 'no-store' }));
+    } catch (e) {
+      throw new Error('This browser could not reach GitHub. Check the internet connection, and turn off ad blockers or privacy extensions for this page. Some office networks also block api.github.com.');
+    }
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      const why = res.status === 401 ? 'The access key is wrong or has expired.'
-        : res.status === 403 || res.status === 404 ? 'The access key does not have permission to change this repository (or the repository name is wrong).'
+      throw new Error(res.status === 401 ? 'The access key is wrong or has expired.'
+        : res.status === 403 || res.status === 404 ? (needKey ? 'The access key does not have permission to change this repository (or the repository name is wrong).' : 'GitHub refused the request (it may be busy — try again later).')
         : res.status === 409 ? 'Someone else saved a change at the same moment. Reload the page and try again.'
-        : body.message || `GitHub said "${res.status}".`;
-      throw new Error(why);
+        : body.message || `GitHub said "${res.status}".`);
     }
     return res.json();
   };
   const ghGetFile = async (name) => {
-    const s = settings();
-    const r = await gh(`contents/${name}?ref=${encodeURIComponent(s.branch)}`);
+    const r = await gh(`contents/${name}?ref=${encodeURIComponent(settings().branch)}`);
     return { sha: r.sha, text: b64decode(r.content) };
   };
 
-  // ---------- loading ----------
-  const loadFromSite = async (name) => {
-    const res = await fetch(`${name}?v=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`${name} could not be downloaded.`);
+  // ---------------------------------------------------------------- loading
+  const loadFromSite = async (name, optional) => {
+    const res = await fetch(`${name}?v=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+    if (!res || !res.ok) { if (optional) return null; throw new Error(`${name} could not be downloaded.`); }
     return res.text();
   };
   const loadData = async () => {
     let pText, mText;
     if (settings().token) {
-      // Read straight from GitHub so you always see the very latest version.
+      // Read straight from GitHub so you always edit the very latest version.
       try { [pText, mText] = (await Promise.all([ghGetFile('products.json'), ghGetFile('materials.json')])).map((f) => f.text); }
       catch (e) { console.warn('GitHub read failed, using website copy', e); }
     }
     if (!pText) [pText, mText] = await Promise.all([loadFromSite('products.json'), loadFromSite('materials.json')]);
     const parse = (t, name) => { try { return JSON.parse(t); } catch (e) { throw new Error(`${name} has a typing mistake and can't be opened: ${e.message}`); } };
+    const s = await loadFromSite('store.json', true);
+    if (s) { try { store = JSON.parse(s); } catch (e) {} }
     return { catalog: parse(pText, 'products.json'), materials: parse(mText, 'materials.json') };
   };
 
-  // ---------- change summary (used for the publish message) ----------
-  const summarize = () => {
-    const before = { p: JSON.parse(original.products || '{"products":[]}').products || [], m: JSON.parse(original.materials || '[]') };
-    const out = [];
-    const diff = (oldList, newList, label) => {
-      const oldMap = new Map(oldList.map((x) => [x.code, JSON.stringify(x)]));
-      const newMap = new Map(newList.map((x) => [x.code, JSON.stringify(x)]));
-      newList.forEach((x) => {
-        if (!oldMap.has(x.code)) out.push(`added ${label} ${x.code} (${x.name})`);
-        else if (oldMap.get(x.code) !== newMap.get(x.code)) out.push(`updated ${label} ${x.code} (${x.name})`);
-      });
-      oldList.forEach((x) => { if (!newMap.has(x.code)) out.push(`removed ${label} ${x.code} (${x.name})`); });
-    };
-    diff(before.p, catalog.products, 'product');
-    diff(before.m, materials, 'material');
-    if (out.length === 0 && JSON.stringify(JSON.parse(original.products).categories) !== JSON.stringify(catalog.categories)) out.push('updated categories');
-    return out;
+  // ---------------------------------------------------------------- what changed
+  const changes = () => SkuCore.compare(JSON.parse(original.products), JSON.parse(original.materials), catalog, materials);
+  const commitMessage = (list) => {
+    const lines = list.map((c) => c.text.split('. ')[0].replace(/\.$/, ''));
+    const who = (settings().who || '').trim();
+    return `Catalogue editor: ${lines.slice(0, 4).join('; ')}${lines.length > 4 ? `; +${lines.length - 4} more` : ''}`.slice(0, 230) + (who ? ` (by ${who})` : '')
+      + (lines.length ? '\n\n' + lines.map((l) => '- ' + l).join('\n') : '');
   };
 
-  // ---------- status / validation ----------
+  // ---------------------------------------------------------------- status / validation
   let lastResult = { errors: [], warnings: [] };
+  let refreshTimer;
+  const changed = () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(refresh, 120); };
   const refresh = () => {
     lastResult = SkuCore.validate(catalog, materials);
     const t = text();
-    const changed = (t.products !== original.products) + (t.materials !== original.materials);
+    const dirty = t.products !== original.products || t.materials !== original.materials;
+    const list = dirty ? changes() : [];
+    const danger = list.filter((c) => c.level === 'danger');
     const { errors, warnings } = lastResult;
-    const msg = $('statusMsg');
-    if (errors.length) msg.innerHTML = `<strong style="color:#d70015">${errors.length} problem${errors.length > 1 ? 's' : ''} to fix</strong> before you can publish (see below).`;
-    else if (changed) msg.innerHTML = `<strong>You have unpublished changes.</strong> <span class="muted">${summarize().slice(0, 3).join('; ')}${summarize().length > 3 ? '…' : ''}</span>`;
-    else msg.innerHTML = '<span style="color:#0b5c1f">✓ Everything is published and up to date.</span>';
-    $('publishBtn').disabled = !changed || errors.length > 0;
-    $('discardBtn').disabled = !changed;
+    const notices = list.filter((c) => c.level !== 'danger');
+    const msg = $('statusMsg'); msg.innerHTML = '';
+    if (errors.length) msg.append(h('span', { style: 'color:var(--danger)' }, `${plural(errors.length, 'problem')} to fix before publishing`));
+    else if (dirty) msg.append(h('span', {}, list.length ? `${plural(list.length, 'unpublished change')}` : 'Unpublished formatting changes'));
+    else msg.append(h('span', { style: 'color:var(--ok)' }, '✓ Everything is published'));
+    $('publishBtn').disabled = !dirty || errors.length > 0;
+    $('discardBtn').disabled = !dirty;
     $('downloadBtn').disabled = errors.length > 0;
+    // Downloading is only the fallback for computers without an access key.
+    $('downloadBtn').classList.toggle('hidden', !!settings().token);
+    $('discardBtn').style.gridColumn = settings().token ? '1 / -1' : '';
 
-    const box = $('problems');
-    box.innerHTML = '';
-    if (errors.length || warnings.length) {
-      const b = h('div', { class: `banner ${errors.length ? 'banner-error' : 'banner-warn'} problems` },
-        h('strong', {}, errors.length ? 'Please fix:' : 'Worth a look (won\'t stop you publishing):'),
-        h('ul', {}, errors.map((e) => h('li', {}, e)), warnings.map((w) => h('li', {}, '⚠️ ' + w))));
-      box.append(b);
-    }
-    // Mark items that have errors.
+    // Everything goes in the side panel: problems first, then risky changes, then the rest.
+    const box = $('changeList'); box.innerHTML = '';
+    const sec = (cls, title, note, items) => h('div', { class: 'side-sec ' + cls }, h('h3', {}, title), note ? h('p', { class: 'note' }, note) : null,
+      h('ul', {}, items.map((x) => h('li', {}, x))));
+    if (errors.length) box.append(sec('err', 'Fix before publishing', null, errors));
+    if (danger.length) box.append(sec('danger', '⚠ Affects existing SKUs', 'A code was removed, renumbered or changed meaning. SKUs already on labels, invoices or the shop may now be wrong. Adding new codes is always safe.', danger.map((c) => c.text)));
+    if (notices.length) box.append(sec('', danger.length ? 'Other changes' : 'Changes', null, notices.map((c) => c.text)));
+    if (!errors.length && !list.length) box.append(h('p', { class: 'side-empty' }, dirty ? 'Only tidy-ups (spacing, order).' : 'No unpublished changes. Edit anything on the left and it will be listed here.'));
+    if (warnings.length) box.append(h('details', { class: 'side-sec' }, h('summary', { class: 'muted', style: 'font-size:13px' }, `${plural(warnings.length, 'thing')} worth a look`),
+      h('ul', { style: 'margin-top:6px' }, warnings.map((w) => h('li', { class: 'muted' }, w)))));
+
     document.querySelectorAll('.item').forEach((n) => {
       const code = n.dataset.code;
       n.classList.toggle('has-error', !!code && errors.some((e) => e.includes(`(${code})`) || e.includes(`"${code}"`)));
     });
-    if (changed) saveDraft(); else clearDraft();
+    if (dirty) saveDraft(); else clearDraft();
   };
-  const changed = () => refresh();
 
-  // ---------- generic list editor for sizes / finishes ----------
-  const subList = (items, width, codeLabel, nameLabel, codeRule, onStructure) => {
+  // ---------------------------------------------------------------- sizes / finishes list
+  const subList = (items, width, nameLabel, codeRule, opts) => {
     const table = h('table', { class: 'sub' });
     const draw = () => {
       table.innerHTML = '';
-      table.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, codeLabel)), h('td', {}, h('span', { class: 'hint' }, nameLabel)), h('td')));
+      table.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, nameLabel)), h('td', { class: 'use' }), h('td')));
       items.forEach((it, i) => {
-        const code = h('input', { type: 'text', class: 'code-input', value: it.code, maxLength: width,
-          oninput: (e) => { e.target.value = upper(e.target.value); it.code = e.target.value; e.target.classList.toggle('bad', !codeRule.test(it.code) || items.filter((x) => x.code === it.code).length > 1); changed(); } });
+        const dupe = () => items.filter((x) => x.code === it.code).length > 1;
+        const code = h('input', { type: 'text', class: 'code-input', value: it.code, maxLength: width, 'aria-label': `${nameLabel} code`,
+          oninput: (e) => { e.target.value = upper(e.target.value); it.code = e.target.value; e.target.classList.toggle('bad', !codeRule.test(it.code) || dupe()); changed(); } });
         if (!codeRule.test(it.code)) code.classList.add('bad');
-        const name = h('input', { type: 'text', value: it.name, placeholder: 'Name',
+        const name = h('input', { type: 'text', value: it.name, placeholder: nameLabel + ' name', 'aria-label': nameLabel + ' name',
           oninput: (e) => { it.name = e.target.value; e.target.classList.toggle('bad', !it.name.trim()); changed(); } });
         if (!it.name.trim()) name.classList.add('bad');
+        const live = opts.live(it.code);
         table.append(h('tr', {},
           h('td', {}, code), h('td', {}, name),
+          h('td', { class: 'use', title: live.length ? `Live on casegoods.in: ${live.join(', ')}` : '' }, live.length ? `● ${live.length} live` : ''),
           h('td', {},
-            h('button', { class: 'btn btn-secondary btn-small', title: 'Move up', disabled: i === 0,
+            h('button', { class: 'btn btn-small', title: 'Move up', 'aria-label': 'Move up', disabled: i === 0,
               onclick: () => { [items[i - 1], items[i]] = [items[i], items[i - 1]]; draw(); changed(); } }, '↑'), ' ',
-            h('button', { class: 'btn btn-danger btn-small', title: 'Remove',
-              onclick: () => { if (confirm(`Remove "${it.code} – ${it.name}"?\n\nIf SKUs using this code have already been issued, its code should not be reused for something else later.`)) { items.splice(i, 1); draw(); changed(); onStructure(); } } }, '✕'))));
+            h('button', { class: 'btn btn-danger btn-small', title: 'Remove', 'aria-label': 'Remove',
+              onclick: () => {
+                if (!confirm(`Remove ${nameLabel.toLowerCase()} "${it.code} – ${it.name}"?${liveWarning(opts.live(it.code))}\n\nIf this code has ever been used in a SKU, its number should never be given to something else later.`)) return;
+                items.splice(i, 1); draw(); changed(); opts.onChange();
+              } }, '✕'))));
       });
     };
     draw();
-    const add = h('button', { class: 'btn btn-secondary btn-small', onclick: () => {
+    const add = h('button', { class: 'btn btn-small', onclick: () => {
       items.push({ code: nextCode(items.map((x) => x.code), width), name: '' });
-      draw(); changed(); onStructure();
-      table.querySelectorAll('input')[table.querySelectorAll('input').length - 1].focus();
+      draw(); changed(); opts.onChange();
+      const inputs = table.querySelectorAll('input'); inputs[inputs.length - 1].focus();
     } }, `+ Add ${nameLabel.toLowerCase()}`);
     return h('div', {}, table, add);
   };
 
-  // ---------- products ----------
+  // ---------------------------------------------------------------- products
   const renderProducts = () => {
     const list = $('productList');
     const q = $('search').value.trim().toLowerCase();
@@ -309,70 +376,96 @@
     list.innerHTML = '';
     let shown = 0;
     catalog.products.forEach((p) => {
-      if (p.retired && !showRetired) return;
-      if (cat && p.category !== cat) return;
-      if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
+      const isOpen = openItems.has('p:' + catalog.products.indexOf(p));
+      if (!isOpen) {
+        if (p.retired && !showRetired) return;
+        if (cat === '__bespoke' ? !p.bespoke : false) return;
+        if (cat && cat !== '__bespoke' && p.category !== cat) return;
+        if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
+      }
       shown++;
       list.append(productItem(p));
     });
-    if (!shown) list.append(h('p', { class: 'muted' }, 'No products match. Try clearing the search, or add a new product.'));
+    if (!shown) list.append(h('p', { class: 'muted' }, 'No products match. Clear the search, or add a new product.'));
     refresh();
   };
 
   const productItem = (p) => {
     p.sizes = p.sizes || [];
     const key = 'p:' + catalog.products.indexOf(p);
-    const codeEl = h('span', { class: 'code' }, p.code || '???');
-    const nameEl = h('span', {}, p.name || '(new product)');
+    const codeEl = h('span', { class: 'code' });
+    const nameEl = h('span');
     const metaEl = h('span', { class: 'meta' });
-    const noSizesHint = h('p', { class: 'hint', style: 'margin-top:0' }, 'No sizes — SKUs for this product will use 00.');
+    const noSizesHint = h('p', { class: 'hint', style: 'margin:0 0 8px' }, 'No sizes — SKUs for this product use 00. Add sizes only if it comes in more than one version.');
     const updateSummary = () => {
       noSizesHint.classList.toggle('hidden', p.sizes.length > 0);
       codeEl.textContent = p.code || '???';
       nameEl.textContent = p.name || '(new product)';
-      metaEl.textContent = `${p.category} · ${p.sizes.length || 'no'} size${p.sizes.length === 1 ? '' : 's'}${p.retired ? ' · RETIRED' : ''}`;
+      const live = liveForProduct(p.code).length;
+      metaEl.innerHTML = '';
+      metaEl.append(p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : '', `${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
+        live ? h('span', { class: 'live-count' }, ` · ● ${live} live`) : '');
     };
     updateSummary();
-    const det = h('details', { class: 'item' + (p.retired ? ' retired' : ''), open: openItems.has(key),
-      ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) },
-      h('summary', {}, codeEl, nameEl, metaEl));
+    const det = h('details', { class: 'item' + (p.retired ? ' retired' : ''), open: openItems.has(key), id: 'p-' + p.code,
+      ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) }, h('summary', {}, codeEl, nameEl, metaEl));
     det.dataset.code = p.code;
 
-    const code = h('input', { type: 'text', class: 'code-input', value: p.code, maxLength: 4,
+    const code = h('input', { type: 'text', class: 'code-input', value: p.code, maxLength: 4, id: 'code-' + key,
       oninput: (e) => { e.target.value = upper(e.target.value); p.code = e.target.value; det.dataset.code = p.code;
         e.target.classList.toggle('bad', !SkuCore.RULES.productCode.re.test(p.code) || catalog.products.filter((x) => x.code === p.code).length > 1);
         updateSummary(); changed(); } });
     if (!SkuCore.RULES.productCode.re.test(p.code)) code.classList.add('bad');
-    const name = h('input', { type: 'text', value: p.name, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); } });
-    const catSel = h('select', { onchange: (e) => { p.category = e.target.value; updateSummary(); changed(); } },
+    const usedCodes = () => catalog.products.map((x) => x.code).filter(Boolean);
+    code.addEventListener('focus', () => { codeHint.textContent = `3–4 letters/digits, unique forever. Taken: ${usedCodes().length} codes incl. retired.`; });
+    const codeHint = h('p', { class: 'hint' }, '3–4 letters/digits');
+    const name = h('input', { type: 'text', value: p.name, id: 'name-' + key, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); } });
+    const catSel = h('select', { id: 'cat-' + key, onchange: (e) => { p.category = e.target.value; updateSummary(); changed(); } },
       catalog.categories.map((c) => h('option', { value: c.name, selected: c.name === p.category }, `${c.code} – ${c.name}`)));
-    const retired = h('input', { type: 'checkbox', checked: !!p.retired, onchange: (e) => {
-      if (e.target.checked) p.retired = true; else delete p.retired;
-      det.classList.toggle('retired', !!p.retired); updateSummary(); changed(); } });
+    const part = (k, ph) => h('input', { type: 'text', value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value; else delete p[k]; changed(); } });
+    const stage = h('select', { id: 'stage-' + key, style: 'width:auto;min-width:230px', onchange: (e) => {
+      delete p.retired; delete p.bespoke;
+      if (e.target.value === 'bespoke') p.bespoke = true;
+      if (e.target.value === 'retired') p.retired = true;
+      det.classList.toggle('retired', !!p.retired); updateSummary(); changed(); } },
+      h('option', { value: '' }, 'In catalogue'),
+      h('option', { value: 'bespoke', selected: !!p.bespoke }, 'Bespoke / one-off / prototype'),
+      h('option', { value: 'retired', selected: !!p.retired }, 'Retired'));
+    const extra = (k, ph, type = 'text') => h('input', { type, value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value.trim(); else delete p[k]; changed(); } });
+    const detailsSummary = () => [p.primaryPart && `parts: ${p.primaryPart}${p.secondaryPart ? ' / ' + p.secondaryPart : ''}`, p.notes && 'notes', p.link && 'files link'].filter(Boolean).join(' · ');
 
     det.append(h('div', { class: 'item-body' },
-      h('div', { class: 'fields' },
-        h('div', {}, h('label', {}, 'Code'), code, h('p', { class: 'hint' }, '3–4 letters/digits')),
-        h('div', {}, h('label', {}, 'Name'), name),
-        h('div', {}, h('label', {}, 'Category'), catSel)),
-      h('label', {}, 'Sizes / types'),
+      h('div', { class: 'fields f3' },
+        h('div', {}, h('label', { for: 'code-' + key }, 'Code', tip('Becomes part of every SKU for this product (the ABCD in X-ABCD-EF). Once SKUs exist, never change it.', 'tip-right')), code, codeHint),
+        h('div', {}, h('label', { for: 'name-' + key }, 'Name'), name),
+        h('div', {}, h('label', { for: 'cat-' + key }, 'Category', tip('Sets the first letter of the SKU. Moving a product to another category changes all its SKUs.', 'tip-left')), catSel)),
+      h('label', {}, 'Sizes / types', tip('Each version of the product gets a 2-digit code (01, 02…). Add new versions at the end. Never renumber existing ones: their codes are already in use.', 'tip-right')),
       noSizesHint,
-      subList(p.sizes, 2, 'Code', 'Size', SkuCore.RULES.sizeCode.re, updateSummary),
+      subList(p.sizes, 2, 'Size', SkuCore.RULES.sizeCode.re, { live: (sc) => liveForSize(p.code, sc), onChange: updateSummary }),
+      h('details', { style: 'margin-top:16px' }, h('summary', { class: 'muted', style: 'font-size:14px' }, `More details (optional)${detailsSummary() ? ': ' + detailsSummary() : ''}`),
+        h('div', { class: 'fields parts' },
+          h('div', {}, h('label', {}, 'Primary material is for…', tip('Name the parts the two materials are for, e.g. Frame / Seat or Base / Top. The generator then asks "Primary material — Frame", so nobody enters the materials in the wrong order.', 'tip-right')), part('primaryPart', 'e.g. Frame')),
+          h('div', {}, h('label', {}, 'Secondary material is for…'), part('secondaryPart', 'e.g. Seat'))),
+        h('div', { class: 'fields parts', style: 'margin-top:0' },
+          h('div', {}, h('label', {}, 'Notes', tip('One line the team should see when making a SKU: e.g. "Made for the Salone 2026 stand", "Client: Studio X", "Extra bays are separate SKUs".', 'tip-right')), extra('notes', 'e.g. Made for the Salone 2026 stand')),
+          h('div', {}, h('label', {}, 'Files link', tip('A link to drawings, photos or spec sheets, e.g. a Dropbox or Google Drive folder. Shown next to the product in the SKU generator and SKU list. Files themselves stay in Dropbox/Drive.', 'tip-left')), extra('link', 'https://www.dropbox.com/…', 'url')))),
       h('div', { class: 'item-actions' },
-        h('label', { class: 'check', title: 'Retired products are hidden from the SKU generator, but their code stays reserved so it is never reused.' },
-          retired, 'Retired (hide from generator, keep code reserved)'),
-        h('button', { class: 'btn btn-danger btn-small', onclick: () => {
-          if (!confirm(`Delete "${p.name}" (${p.code}) completely?\n\nIf SKUs for this product have ever been used, choose Cancel and tick "Retired" instead, so the code is never reused by mistake.`)) return;
-          catalog.products.splice(catalog.products.indexOf(p), 1); openItems.clear(); renderProducts(); toast(`Deleted ${p.code}`);
-        } }, 'Delete product'))));
+        h('label', { class: 'check', for: 'stage-' + key, style: 'gap:10px' }, 'Status', stage, tip('In catalogue: normal. Bespoke / one-off / prototype: made for a client, an exhibition or a trial; it gets a real code now, so if it joins the catalogue later its SKUs stay exactly the same. Retired: hidden from the generator, code reserved forever. Use Retired instead of deleting.', 'tip-right')),
+        h('div', { class: 'btn-row' },
+          h('a', { class: 'btn btn-small btn-link', href: `index.html#${p.code}`, target: '_blank' }, 'Open in SKU generator ↗'),
+          h('button', { class: 'btn btn-danger btn-small', onclick: () => {
+            if (!confirm(`Delete "${p.name}" (${p.code}) completely?${liveWarning(liveForProduct(p.code))}\n\nIf SKUs for this product have ever been used, choose Cancel and tick "Retired" instead, so the code is never reused by mistake.`)) return;
+            catalog.products.splice(catalog.products.indexOf(p), 1); openItems.clear(); renderProducts(); toast(`Deleted ${p.code}`);
+          } }, 'Delete product')))));
     return det;
   };
 
   $('addProduct').onclick = () => {
-    const category = $('catFilter').value || (catalog.categories[0] && catalog.categories[0].name);
+    const f = $('catFilter').value;
+    const category = (f && f !== '__bespoke' ? f : '') || (catalog.categories[0] && catalog.categories[0].name);
     const p = { code: '', name: '', category, sizes: [] };
-    // Put it after the last product in the same category, so the file stays tidy.
-    let at = catalog.products.length;
+    if (f === '__bespoke') p.bespoke = true;
+    let at = catalog.products.length;  // after the last active product in the same category, so the file stays tidy
     for (let i = catalog.products.length - 1; i >= 0; i--) if (catalog.products[i].category === category && !catalog.products[i].retired) { at = i + 1; break; }
     catalog.products.splice(at, 0, p);
     $('search').value = '';
@@ -380,43 +473,46 @@
     renderProducts();
     const node = [...document.querySelectorAll('#productList .item')].find((n) => n.open);
     if (node) { node.scrollIntoView({ behavior: 'smooth', block: 'center' }); node.querySelector('input').focus(); }
-    toast('New product added — fill in its code and name.');
+    toast('New product added — give it a code and a name.');
   };
   ['search', 'catFilter', 'showRetired'].forEach((id) => $(id).addEventListener('input', () => { openItems.clear(); renderProducts(); }));
 
-  // ---------- materials ----------
+  // ---------------------------------------------------------------- materials
   const renderMaterials = () => {
     const list = $('materialList');
     const q = $('matSearch').value.trim().toLowerCase();
     list.innerHTML = '';
     materials.forEach((m, idx) => {
       m.finishes = m.finishes || [];
-      if (q && !`${m.code} ${m.name} ${m.finishes.map((f) => f.name).join(' ')}`.toLowerCase().includes(q)) return;
       const key = 'm:' + idx;
-      const codeEl = h('span', { class: 'code' }, m.code || '?');
-      const nameEl = h('span', {}, m.name || '(new material)');
+      if (!openItems.has(key) && q && !`${m.code} ${m.name} ${m.finishes.map((f) => f.name).join(' ')}`.toLowerCase().includes(q)) return;
+      const codeEl = h('span', { class: 'code' });
+      const nameEl = h('span');
       const metaEl = h('span', { class: 'meta' });
-      const updateSummary = () => { codeEl.textContent = m.code || '?'; nameEl.textContent = m.name || '(new material)'; metaEl.textContent = `${m.finishes.length} finish${m.finishes.length === 1 ? '' : 'es'}`; };
+      const updateSummary = () => {
+        codeEl.textContent = m.code || '?'; nameEl.textContent = m.name || '(new material)';
+        const live = liveForMaterial(m.code).length;
+        metaEl.innerHTML = ''; metaEl.append(plural(m.finishes.length, 'finish').replace(/finishs/, 'finishes'), live ? h('span', { class: 'live-count' }, ` · ● ${live} live`) : '');
+      };
       updateSummary();
       const det = h('details', { class: 'item', open: openItems.has(key), ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) },
         h('summary', {}, codeEl, nameEl, metaEl));
       det.dataset.code = m.code;
-      const code = h('input', { type: 'text', class: 'code-input', value: m.code, maxLength: 1,
+      const code = h('input', { type: 'text', class: 'code-input', value: m.code, maxLength: 1, id: 'mcode-' + idx,
         oninput: (e) => { e.target.value = upper(e.target.value); m.code = e.target.value; det.dataset.code = m.code;
           e.target.classList.toggle('bad', !SkuCore.RULES.materialCode.re.test(m.code) || materials.filter((x) => x.code === m.code).length > 1);
           updateSummary(); changed(); } });
       if (!SkuCore.RULES.materialCode.re.test(m.code)) code.classList.add('bad');
-      const used = materials.map((x) => x.code).join(' ');
+      const free = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter((c) => !materials.some((x) => x.code === c)).join(' ');
       det.append(h('div', { class: 'item-body' },
-        h('div', { class: 'fields', style: 'grid-template-columns: 8rem 1fr' },
-          h('div', {}, h('label', {}, 'Code'), code, h('p', { class: 'hint' }, '1 letter/digit')),
-          h('div', {}, h('label', {}, 'Name'), h('input', { type: 'text', value: m.name, oninput: (e) => { m.name = e.target.value; updateSummary(); changed(); } }),
-            h('p', { class: 'hint' }, `Codes in use: ${used}`))),
-        h('label', {}, 'Finishes'),
-        subList(m.finishes, 1, 'Code', 'Finish', SkuCore.RULES.finishCode.re, updateSummary),
+        h('div', { class: 'fields f2' },
+          h('div', {}, h('label', { for: 'mcode-' + idx }, 'Code', tip('One letter: the G (or I) in the SKU. Never change it once SKUs exist.', 'tip-right')), code, h('p', { class: 'hint' }, `Free letters: ${free || 'none'}`)),
+          h('div', {}, h('label', { for: 'mname-' + idx }, 'Name'), h('input', { type: 'text', id: 'mname-' + idx, value: m.name, oninput: (e) => { m.name = e.target.value; updateSummary(); changed(); } }))),
+        h('label', {}, 'Finishes', tip('Each finish gets one character (0–9 or a letter): the H (or J) in the SKU. "Custom" covers every custom finish of this material — the SKU can\'t tell custom finishes apart.', 'tip-right')),
+        subList(m.finishes, 1, 'Finish', SkuCore.RULES.finishCode.re, { live: (fc) => liveForFinish(m.code, fc), onChange: updateSummary }),
         h('div', { class: 'item-actions' }, h('span'),
           h('button', { class: 'btn btn-danger btn-small', onclick: () => {
-            if (!confirm(`Delete material "${m.name}" (${m.code})?\n\nSKUs already issued with this code will no longer be explained in the legend.`)) return;
+            if (!confirm(`Delete material "${m.name}" (${m.code})?${liveWarning(liveForMaterial(m.code))}\n\nSKUs that use this code will no longer be explained.`)) return;
             materials.splice(idx, 1); openItems.clear(); renderMaterials(); toast(`Deleted ${m.name}`);
           } }, 'Delete material'))));
       list.append(det);
@@ -432,46 +528,82 @@
     renderMaterials();
     const node = [...document.querySelectorAll('#materialList .item')].pop();
     node.scrollIntoView({ behavior: 'smooth', block: 'center' }); node.querySelectorAll('input')[1].focus();
-    toast(`New material added with the next free code (${letters[0]}). Give it a name and finishes.`);
+    toast(`New material added with the next free letter (${letters[0]}). Give it a name and finishes.`);
   };
 
-  // ---------- categories ----------
+  // ---------------------------------------------------------------- categories
   const renderCategories = () => {
-    const t = $('catTable');
-    t.innerHTML = '';
-    t.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, 'Name')), h('td')));
+    const t = $('catTable'); t.innerHTML = '';
+    t.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, 'Name')), h('td', { class: 'use' }), h('td')));
     catalog.categories.forEach((c, i) => {
       const count = catalog.products.filter((p) => p.category === c.name).length;
       t.append(h('tr', {},
-        h('td', {}, h('input', { type: 'text', class: 'code-input', value: c.code, maxLength: 1, oninput: (e) => { e.target.value = upper(e.target.value); c.code = e.target.value; changed(); } })),
-        h('td', {}, h('input', { type: 'text', value: c.name, onchange: (e) => {
+        h('td', {}, h('input', { type: 'text', class: 'code-input', value: c.code, maxLength: 1, 'aria-label': 'Category code', oninput: (e) => { e.target.value = upper(e.target.value); c.code = e.target.value; changed(); } })),
+        h('td', {}, h('input', { type: 'text', value: c.name, 'aria-label': 'Category name', onchange: (e) => {
           const old = c.name; c.name = e.target.value.trim();
-          catalog.products.forEach((p) => { if (p.category === old) p.category = c.name; }); // keep products attached
+          catalog.products.forEach((p) => { if (p.category === old) p.category = c.name; });
           changed(); fillCatFilter(); } })),
-        h('td', {}, h('button', { class: 'btn btn-danger btn-small', disabled: count > 0, title: count ? `${count} products use this category` : 'Remove',
+        h('td', { class: 'use', style: 'color:var(--muted)' }, plural(count, 'product')),
+        h('td', {}, h('button', { class: 'btn btn-danger btn-small', disabled: count > 0, title: count ? 'Move or delete its products first' : 'Remove', 'aria-label': 'Remove',
           onclick: () => { catalog.categories.splice(i, 1); renderCategories(); fillCatFilter(); changed(); } }, '✕'))));
     });
   };
   $('addCategory').onclick = () => { catalog.categories.push({ code: '', name: '' }); renderCategories(); changed(); };
   const fillCatFilter = () => {
-    const sel = $('catFilter'); const v = sel.value;
-    sel.innerHTML = '';
-    sel.append(h('option', { value: '' }, 'All categories'), catalog.categories.map((c) => h('option', { value: c.name }, c.name)));
+    const sel = $('catFilter'); const v = sel.value; sel.innerHTML = '';
+    sel.append(h('option', { value: '' }, 'All categories'), ...catalog.categories.map((c) => h('option', { value: c.name }, c.name)), h('option', { value: '__bespoke' }, 'Bespoke / one-offs only'));
     sel.value = v;
   };
 
-  // ---------- tabs ----------
-  document.querySelectorAll('.tab').forEach((b) => b.onclick = () => {
-    document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x === b));
-    document.querySelectorAll('section[id^=tab-]').forEach((s) => s.classList.toggle('hidden', s.id !== 'tab-' + b.dataset.tab));
-    openItems.clear();
-    if (b.dataset.tab === 'products') renderProducts();
-    if (b.dataset.tab === 'materials') renderMaterials();
-    if (b.dataset.tab === 'categories') renderCategories();
-  });
+  // ---------------------------------------------------------------- history & shop check
+  let historyLoaded = false;
+  const renderHistory = async () => {
+    const s = settings();
+    const web = `https://github.com/${s.repo}`;
+    $('shopLinks').innerHTML = '';
+    $('shopLinks').append(
+      h('a', { class: 'btn', href: `${web}/blob/${s.branch}/reports/store-check.md`, target: '_blank', rel: 'noopener' }, 'Read the shop report ↗'),
+      h('a', { class: 'btn', href: `${web}/blob/${s.branch}/reports/store-sku-suggestions.csv`, target: '_blank', rel: 'noopener' }, 'Suggested SKUs (spreadsheet) ↗'),
+      h('a', { class: 'btn btn-link', href: `${web}/actions/workflows/store-check.yml`, target: '_blank', rel: 'noopener' }, 'Run the check now ↗'));
+    $('shopSummary').textContent = store.checkedAt
+      ? `Last checked ${new Date(store.checkedAt).toLocaleString()}: ${plural(liveSkus().length, 'SKU')} filled in on the shop, for ${plural(Object.keys(store.products || {}).length, 'catalogue product')}.`
+      : 'The shop has not been checked yet.';
+    if (historyLoaded) return;
+    const box = $('historyList');
+    try {
+      const commits = await gh(`commits?per_page=25&sha=${encodeURIComponent(s.branch)}`, {}, false);
+      const relevant = commits.filter((c) => !/^Shop check/.test(c.commit.message)).slice(0, 15);
+      box.innerHTML = '';
+      box.append(h('ul', {}, relevant.map((c) => {
+        const first = c.commit.message.split('\n')[0];
+        const by = (first.match(/\(by ([^)]+)\)$/) || [])[1];
+        return h('li', {},
+          h('div', {}, h('a', { href: c.html_url, target: '_blank', rel: 'noopener' }, first.replace(/ \(by [^)]+\)$/, '').replace(/^Catalogue editor: /, ''))),
+          h('div', { class: 'when' }, `${new Date(c.commit.author.date).toLocaleString()} · ${by || c.commit.author.name}${by ? '' : ' (no name set)'}`));
+      })),
+        h('p', { style: 'margin:14px 0 0' }, h('a', { href: `${web}/commits/${s.branch}/products.json`, target: '_blank', rel: 'noopener' }, 'Full history of products.json ↗'), ' · ',
+          h('a', { href: `${web}/commits/${s.branch}/materials.json`, target: '_blank', rel: 'noopener' }, 'materials.json ↗')));
+      historyLoaded = true;
+    } catch (e) {
+      box.innerHTML = '';
+      box.append(h('p', {}, 'Could not load the history: ' + e.message + ' '), h('a', { href: `${web}/commits/${s.branch}`, target: '_blank', rel: 'noopener' }, 'Open it on GitHub ↗'));
+    }
+  };
 
-  // ---------- actions ----------
-  const renderAll = () => { fillCatFilter(); renderProducts(); renderMaterials(); renderCategories(); refresh(); };
+  // ---------------------------------------------------------------- tabs
+  const openTab = (name) => {
+    document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x.dataset.tab === name));
+    document.querySelectorAll('section[id^=tab-]').forEach((s) => s.classList.toggle('hidden', s.id !== 'tab-' + name));
+    openItems.clear();
+    if (name === 'products') renderProducts();
+    if (name === 'materials') renderMaterials();
+    if (name === 'categories') renderCategories();
+    if (name === 'history') renderHistory();
+  };
+  document.querySelectorAll('.tab').forEach((b) => (b.onclick = () => openTab(b.dataset.tab)));
+
+  // ---------------------------------------------------------------- actions
+  const renderAll = () => { fillCatFilter(); renderProducts(); renderCategories(); refresh(); };
 
   $('discardBtn').onclick = () => {
     if (!confirm('Throw away all your unpublished changes?')) return;
@@ -494,50 +626,56 @@
   $('publishBtn').onclick = async () => {
     const s = settings();
     if (!s.token) {
-      toast('Publishing isn\'t set up on this computer yet — see the "Publishing setup" tab, or use Download files.', 6000);
-      document.querySelector('.tab[data-tab=settings]').click();
+      toast('Publishing isn\'t set up on this computer yet — see "Publishing setup", or use Download files.', 6000);
+      openTab('settings');
       return;
     }
     if (lastResult.errors.length) return toast('Fix the problems first.');
     const t = text();
-    const changes = summarize();
-    if (!confirm(`Publish these changes to the website?\n\n• ${changes.join('\n• ') || 'formatting only'}`)) return;
+    const list = changes();
+    const danger = list.filter((c) => c.level === 'danger');
+    const safe = list.filter((c) => c.level !== 'danger');
+    let msg = 'Publish these changes?\n';
+    if (safe.length) msg += `\n${safe.map((c) => '• ' + c.text).join('\n')}\n`;
+    if (danger.length) msg += `\n⚠ AFFECTS EXISTING SKUs:\n${danger.map((c) => '• ' + c.text).join('\n')}\n\nOnly continue if you're sure these SKUs aren't in use, or that this is a correction.`;
+    if (!list.length) msg += '\n• Formatting only';
+    if (!confirm(msg)) return;
     const btn = $('publishBtn'); btn.disabled = true; btn.textContent = 'Publishing…';
     try {
       const files = [['products.json', t.products, original.products], ['materials.json', t.materials, original.materials]].filter((f) => f[1] !== f[2]);
       for (const [name, content, before] of files) {
         const remote = await ghGetFile(name);
-        // Someone else changed this file since you opened the editor?
         let same = true;
         try { same = JSON.stringify(JSON.parse(remote.text)) === JSON.stringify(JSON.parse(before)); } catch (e) { same = false; }
         if (!same && !confirm(`${name} was changed by someone else since you opened the editor.\n\nOK = overwrite their change with yours\nCancel = stop (then reload the page to see their version)`)) {
           throw new Error('Publishing cancelled — nothing was overwritten.');
         }
-        await gh(`contents/${name}`, { method: 'PUT', body: JSON.stringify({
-          message: `Catalogue editor: ${changes.join('; ').slice(0, 300) || 'update ' + name}`,
-          content: b64encode(content), sha: remote.sha, branch: s.branch }) });
+        await gh(`contents/${name}`, { method: 'PUT', body: JSON.stringify({ message: commitMessage(list), content: b64encode(content), sha: remote.sha, branch: s.branch }) });
       }
-      original = t; clearDraft(); refresh();
-      toast('✓ Published! The website updates within a minute or two.', 6000);
+      original = t; clearDraft(); historyLoaded = false; refresh();
+      toast('✓ Published. The website updates within a minute or two.', 6000);
     } catch (e) {
       alert('Could not publish.\n\n' + e.message + '\n\nYour changes are still here. You can also use "Download files" instead.');
     } finally {
-      btn.textContent = 'Publish to website'; refresh();
+      btn.textContent = 'Publish'; refresh();
     }
   };
 
-  // settings tab
-  const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; };
+  // settings
+  const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; $('who').value = s.who || ''; };
+  $('who').addEventListener('change', () => { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(Object.assign(settings(), { who: $('who').value.trim() }))); } catch (e) {} });
   $('saveSettings').onclick = async () => {
-    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main' };
+    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main', who: $('who').value.trim() };
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
     const msg = $('settingsMsg'); msg.innerHTML = '';
+    if (!s.token) return msg.append(h('div', { class: 'banner banner-error' }, 'Paste the access key first.'));
+    if (!/^(github_pat_|ghp_)/.test(s.token)) msg.append(h('div', { class: 'banner banner-warn' }, 'That doesn\'t look like a GitHub access key (they start with github_pat_). Testing anyway…'));
     try {
       const repo = await gh('');
-      if (!repo.permissions || !repo.permissions.push) throw new Error('The key can read the repository but not change it. It needs "Contents: Read and write" permission.');
-      msg.append(h('div', { class: 'banner banner-ok', style: 'margin-top:1rem' }, '✓ Connected. The Publish button is ready to use on this computer.'));
+      if (!repo.permissions || !repo.permissions.push) throw new Error('The key can read the project but not change it. It needs "Contents: Read and write" permission.');
+      msg.append(h('div', { class: 'banner banner-ok' }, '✓ Connected. Publish is ready to use on this computer.'));
     } catch (e) {
-      msg.append(h('div', { class: 'banner banner-error', style: 'margin-top:1rem' }, 'Not connected: ' + e.message));
+      msg.append(h('div', { class: 'banner banner-error' }, 'Not connected: ' + e.message));
     }
   };
   $('forgetSettings').onclick = () => { try { localStorage.removeItem(SETTINGS_KEY); } catch (e) {} showSettings(); toast('Key removed from this computer.'); };
@@ -547,33 +685,42 @@
     if (t && (t.products !== original.products || t.materials !== original.materials)) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  // ---------- start ----------
+  // Open a product directly: editor.html#SPT
+  const openFromHash = () => {
+    const code = decodeURIComponent(location.hash.slice(1)).toUpperCase();
+    const idx = catalog.products.findIndex((p) => p.code === code);
+    if (idx < 0) return;
+    openTab('products');
+    openItems.add('p:' + idx); renderProducts();
+    const node = $('p-' + code); if (node) node.scrollIntoView({ block: 'center' });
+  };
+
+  // ---------------------------------------------------------------- start
   (async () => {
     showSettings();
     try {
       const data = await loadData();
       catalog = data.catalog; materials = data.materials;
-      if (!catalog || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories) || !Array.isArray(materials)) {
-        throw new Error('The data files are not in the expected layout.');
-      }
+      if (!catalog || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories) || !Array.isArray(materials)) throw new Error('The data files are not in the expected layout.');
       original = text();
     } catch (e) {
       $('loadBanner').append(h('div', { class: 'banner banner-error' }, h('strong', {}, 'Could not open the catalogue. '), e.message));
       $('statusbar').classList.add('hidden');
       return;
     }
-    // Offer to restore unpublished work from last time.
     try {
       const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
       if (d && d.catalog && d.materials) {
         const when = new Date(d.at).toLocaleString();
         const baseMatches = d.base && d.base.products === original.products && d.base.materials === original.materials;
-        if (confirm(`You have unpublished changes from ${when}.\n\nOK = continue with them\nCancel = throw them away${baseMatches ? '' : '\n\nNote: the catalogue has been changed by someone else since then. If you continue, check carefully before publishing.'}`)) {
+        if (confirm(`You have unpublished changes from ${when}.\n\nOK = continue with them\nCancel = throw them away${baseMatches ? '' : '\n\nNote: someone else has changed the catalogue since then. If you continue, check the changes carefully before publishing.'}`)) {
           catalog = d.catalog; materials = d.materials;
         } else clearDraft();
       }
     } catch (e) {}
     renderAll();
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
   })();
 })();
 </script>

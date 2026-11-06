@@ -1,46 +1,54 @@
-# Casegoods SKU Generator
+# Casegoods SKUs
 
-A small website that builds Casegoods SKUs, plus a no-code editor for the product catalogue.
+Make, check and look up Casegoods SKUs, and edit the product catalogue without touching code.
 
-- **`index.html`**: the SKU generator everyone uses.
-- **`editor.html`**: the catalogue editor, for adding, changing or retiring products, sizes and materials without touching code.
-- **To edit the catalogue**, read **[docs/EDITING_GUIDE.md](docs/EDITING_GUIDE.md)**. It's written for non-technical people.
+| Page | For |
+|---|---|
+| **`index.html` → SKU generator** | Choose a product, size and materials; the SKU builds itself. |
+| **`index.html` → SKU list** | Every product, size, material and finish code, with filters. Paste a SKU into the search to check it, or use *Check a list of SKUs* for many at once. |
+| **`editor.html`** | Add, change or retire products and materials. Publishes to the website. |
+
+- **Editing the catalogue?** Read **[docs/EDITING_GUIDE.md](docs/EDITING_GUIDE.md)**, written for non-technical people.
+- **Why it works this way and what it protects against:** **[docs/SYSTEM_REVIEW.md](docs/SYSTEM_REVIEW.md)**
+- **Bespoke pieces, integrations, a team questionnaire:** **[docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)**
+- **Online shop vs catalogue:** **[reports/store-check.md](reports/store-check.md)**, updated every Monday.
 
 ## SKU format
 
-`X-ABCD-EF-GH-IJ`, e.g. `F-SPT-03-T1-P1`
+`X-ABCD-EF-GH-IJ`, e.g. `F-FFC-03-T1-E0` (Folding Flat Chair, Slung Leather, Teak Natural frame, Natural Buffalo leather seat)
 
 | Part | Meaning | Rule |
 |---|---|---|
 | X | Category | 1 capital letter (F, L, O, H, T) |
-| ABCD | Product | 3–4 capital letters/digits, unique forever |
-| EF | Size / type | 2 characters, unique within the product (`00` if the product has no sizes) |
+| ABCD | Product | 3–4 capitals/digits, unique forever |
+| EF | Size / type | 2 characters, unique within the product (`00` if it has none) |
 | GH | Primary material + finish | optional, 1 character each |
 | IJ | Secondary material + finish | optional, needs a primary material |
+
+**Golden rule:** a code never changes meaning. Add new codes; retire old ones; never renumber.
 
 ## Files
 
 | File | What it holds |
 |---|---|
-| `products.json` | Categories and every product with its sizes. `"retired": true` hides a product from the generator but keeps its code reserved. |
+| `products.json` | Categories and every product with its sizes. Optional per product: `"retired": true` or `"bespoke": true`, `"primaryPart"` / `"secondaryPart"` (e.g. "Frame" / "Seat"), `"notes"`, `"link"` (Dropbox/Drive folder). |
 | `materials.json` | Materials and their finishes. |
-| `sku-core.js` | The rules: checking for mistakes, building SKUs and tidy file formatting. The generator, the editor and the automatic check all use it. |
-| `styles.css` | Shared look for both pages. |
-| `scripts/validate.js` | `node scripts/validate.js` checks the data. Add `--fix` to also tidy the formatting. |
-| `scripts/test.js` | Self-test for `sku-core.js`. |
-| `.github/workflows/validate.yml` | Runs both scripts on GitHub after every change, giving a green tick or a red cross. |
-| `Archive/` | Old versions, kept for reference. The site doesn't use them. |
-
-## Safety nets
-
-1. The **editor** won't publish while there are problems (duplicate codes, missing names, codes in the wrong format).
-2. **GitHub** checks every change automatically. A red ❌ on a commit means something needs fixing.
-3. The **generator** shows a red warning box if the data ever has problems, instead of quietly producing wrong SKUs.
-4. **Every change is a commit**, so any mistake can be undone from the repository history.
+| `store.json` | Written by the shop check: SKUs live on casegoods.in, plus product links and pictures. |
+| `sku-core.js` | All the rules: checks, change detection, building and reading SKUs, descriptions. Used by every page and script. |
+| `styles.css` | Shared look. |
+| `logo.svg`, `favicon.ico` | Casegoods logo and browser icon (from casegoods.in). |
+| `footer.js` | The help footer on every page: contact, editing with your own AI, Shopify. |
+| `CLAUDE.md` | Rules that Claude Code follows when someone asks it to change the catalogue. |
+| `scripts/validate.js` | `node scripts/validate.js [--fix] [--against <commit>]` checks the catalogue and reports changes that affect existing SKUs. |
+| `scripts/test.js` | Self-test (including SKUs that are live on the shop). |
+| `scripts/store-check.js` | Compares casegoods.in with the catalogue and writes `store.json` and `reports/`. |
+| `.github/workflows/validate.yml` | Runs the checks on every change: green ✅ or red ❌. |
+| `.github/workflows/store-check.yml` | Runs the shop check every Monday, or on demand. |
+| `Archive/` | Old versions, kept for reference. Not used. |
 
 ## Running locally
 
-The pages load JSON files, so they must be served over HTTP, not opened as a file:
+The pages load JSON files, so serve the folder over HTTP rather than opening the file directly:
 
 ```bash
 python3 -m http.server 8000
