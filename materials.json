@@ -111,7 +111,7 @@
   },
   {
     "code": "M",
-    "name": "Stone - Marble",
+    "name": "Marble",
     "finishes": [
       { "code": "0", "name": "White" },
       { "code": "1", "name": "Pink" },

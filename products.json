@@ -182,6 +182,8 @@
       "code": "FFC",
       "name": "Folding Flat Chair",
       "category": "Furniture",
+      "primaryPart": "Frame",
+      "secondaryPart": "Seat",
       "sizes": [
         { "code": "01", "name": "Teak Veneer" },
         { "code": "02", "name": "Pressed Leather" },
@@ -238,6 +240,8 @@
       "code": "RTT",
       "name": "Right Triangle Table",
       "category": "Furniture",
+      "primaryPart": "Base",
+      "secondaryPart": "Top",
       "sizes": [
         { "code": "01", "name": "Ø1200" },
         { "code": "02", "name": "Ø1500" }
