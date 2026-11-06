@@ -226,14 +226,16 @@
   const upper = (v) => v.toUpperCase().replace(/\s/g, '');
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-  // Live SKUs on casegoods.in that use a product / size / material / finish.
+  // SKUs that are actually filled in on casegoods.in (Shopify's SKU field), from the weekly shop check.
+  // Strictly what Shopify says: a product can be on the shop with none of its variants having a SKU yet.
   const liveSkus = () => Object.keys(store.skus || {});
   const liveFor = (test) => liveSkus().filter((sku) => test(sku.split('-')));
   const liveForProduct = (code) => liveFor((s) => s[1] === code);
   const liveForSize = (code, size) => liveFor((s) => s[1] === code && s[2] === size);
   const liveForMaterial = (code) => liveFor((s) => (s[3] || '')[0] === code || (s[4] || '')[0] === code);
   const liveForFinish = (code, fin) => liveFor((s) => s[3] === code + fin || s[4] === code + fin);
-  const liveWarning = (list) => list.length ? `\n\n⚠ ${plural(list.length, 'SKU')} using it ${list.length === 1 ? 'is' : 'are'} live on casegoods.in (e.g. ${list.slice(0, 3).join(', ')}).` : '';
+  const liveWarning = (list) => list.length ? `\n\n⚠ ${plural(list.length, 'variant')} on casegoods.in ${list.length === 1 ? 'has' : 'have'} a SKU using it (e.g. ${list.slice(0, 3).join(', ')}).` : '';
+  const SHOP_TIP = 'From the weekly shop check: how many product variants on casegoods.in have this code in their Shopify SKU field. Variants with an empty SKU field are not counted.';
 
   // ---------------------------------------------------------------- GitHub
   const b64encode = (s) => { let bin = ''; new TextEncoder().encode(s).forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin); };
@@ -371,7 +373,7 @@
         const live = opts.live(it.code);
         table.append(h('tr', {},
           h('td', {}, code), h('td', {}, name), h('td', { class: 'aka-col' }, aka),
-          h('td', { class: 'use', title: live.length ? `Live on casegoods.in: ${live.join(', ')}` : '' }, live.length ? `● ${live.length} live` : ''),
+          h('td', { class: 'use', title: live.length ? `${SHOP_TIP}\n\n${live.join(', ')}` : '' }, live.length ? `in ${plural(live.length, 'shop SKU')}` : ''),
           h('td', {},
             h('button', { class: 'btn btn-small', title: 'Move up', 'aria-label': 'Move up', disabled: i === 0,
               onclick: () => { [items[i - 1], items[i]] = [items[i], items[i - 1]]; draw(); changed(); } }, '↑'), ' ',
@@ -425,10 +427,11 @@
       noSizesHint.classList.toggle('hidden', p.sizes.length > 0);
       codeEl.textContent = p.code || '???';
       nameEl.textContent = (p.name || '(new product)') + (p.aka ? `  ·  also ${p.aka}` : '');
-      const live = liveForProduct(p.code).length;
+      const shop = store.products && store.products[p.code];
       metaEl.innerHTML = '';
       metaEl.append(p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : '', `${p.category} · ${p.sizes.length ? plural(p.sizes.length, 'size') : 'no sizes'}`, p.retired ? ' · retired' : '',
-        live ? h('span', { class: 'live-count' }, ` · ● ${live} live`) : '');
+        shop ? h('span', { class: 'live-count', title: 'From the weekly shop check of casegoods.in (Shopify).' },
+          ` · on casegoods.in, ${shop.variants ? `${shop.withSku} of ${shop.variants} variants have a SKU` : 'SKUs not counted yet'}`) : '');
     };
     updateSummary();
     const det = h('details', { class: 'item' + (p.retired ? ' retired' : ''), open: openItems.has(key), id: 'p-' + p.code,
@@ -522,7 +525,7 @@
       const updateSummary = () => {
         codeEl.textContent = m.code || '?'; nameEl.textContent = m.name || '(new material)';
         const live = liveForMaterial(m.code).length;
-        metaEl.innerHTML = ''; metaEl.append(plural(m.finishes.length, 'finish').replace(/finishs/, 'finishes'), live ? h('span', { class: 'live-count' }, ` · ● ${live} live`) : '');
+        metaEl.innerHTML = ''; metaEl.append(plural(m.finishes.length, 'finish').replace(/finishs/, 'finishes'), live ? h('span', { class: 'live-count', title: SHOP_TIP }, ` · in ${plural(live, 'shop SKU')}`) : '');
       };
       updateSummary();
       const det = h('details', { class: 'item', open: openItems.has(key), ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) },
