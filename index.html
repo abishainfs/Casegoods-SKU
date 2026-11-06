@@ -23,7 +23,6 @@
     @media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } }
     .hint { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
     .product-peek { display: flex; gap: 14px; align-items: center; margin-top: 14px; }
-    .product-peek img { width: 84px; height: 84px; object-fit: cover; background: var(--soft); flex: none; }
     .product-peek a { font-size: 14px; }
 
     /* result */
@@ -95,7 +94,7 @@
     <nav class="nav" aria-label="Main">
       <button data-view="make" class="active">SKU generator</button>
       <button data-view="list">SKU list</button>
-      <a class="nav-cta" href="editor.html">Edit catalogue</a>
+      <a class="nav-cta" href="editor.html">Edit info</a>
     </nav>
   </div>
 </header>
@@ -224,7 +223,7 @@
     </div>
 
     <div class="filters" id="filters" role="group" aria-label="Show"></div>
-    <label style="margin-top:4px;font-weight:400"><input type="checkbox" id="bookRetired"> Show retired products</label>
+    <label style="margin-top:4px;font-weight:400"><input type="checkbox" id="bookRetired" checked> Show retired products</label>
     <div id="book"></div>
     <p class="muted" style="font-size:13px;margin-top:28px">Need the whole list in Excel? <button class="btn-link" id="exportBtn" style="font:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;color:inherit">Download it as a spreadsheet</button>.</p>
   </section>
@@ -374,12 +373,11 @@
     // Part names ("Frame", "Seat"...)
     $('m1Title').textContent = p && p.primaryPart ? `Primary material — ${p.primaryPart}` : 'Primary material';
     $('m2Title').textContent = p && p.secondaryPart ? `Secondary material — ${p.secondaryPart}` : 'Secondary material';
-    // Picture + link from the online shop
+    // Link to the product on the online shop, notes and files
     const peek = $('peek'); peek.innerHTML = '';
     const sp = p && store.products[p.code];
     if (p && (sp || p.notes || p.link || p.bespoke)) {
       peek.append(h('div', { class: 'product-peek' },
-        sp && (sp.thumb || sp.image) ? h('img', { src: sp.thumb || sp.image, alt: '', loading: 'lazy', onerror: function () { if (sp.image && this.src !== sp.image) this.src = sp.image; else this.remove(); } }) : null,
         h('div', {},
           h('div', {}, p.bespoke ? h('span', { class: 'stage-tag' }, 'Bespoke') : null, sp ? sp.title : p.name),
           p.notes ? h('div', { class: 'serif', style: 'font-size:16px;color:var(--muted)' }, p.notes) : null,

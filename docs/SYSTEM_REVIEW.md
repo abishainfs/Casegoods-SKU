@@ -105,9 +105,9 @@ All 63 old meanings are in **`code-history.json`**, generated from the repositor
 - **One flow, four steps.** Product → size → material → second material, with the SKU building itself on the right. Each segment is labelled underneath, so the structure teaches itself.
 - **Search instead of category-first.** Typing "chair" or "SPT" finds the product; the category letter follows automatically.
 - **Sizes and finishes as buttons** when there are up to about a dozen (all options visible at once), and a dropdown when there are more (e.g. 28 dhurrie sizes).
-- **Pictures.** Small product photos from the shop are shown next to the chosen product, purely to confirm "yes, that one". They come from the weekly shop check, so nobody has to maintain them, and products not on the shop simply show no picture.
+- **No pictures.** Product photos were tried and removed to keep the site light. Each product links to its page on casegoods.in instead.
 - **The description is written the way the website writes it:** "Folding Flat Chair, Slung Leather — Frame: Teak, Natural · Seat: Leather, Natural Buffalo". It avoids repetition ("Jute Rope", not "Rope, Jute Rope") and merges two colours of the same material ("Woven Jute, Red & Blue").
-- **One site, three places:** SKU generator, SKU list (which includes checking) and Edit catalogue share a header. Every product in the SKU list links to *Generate a SKU* and *Edit*, and the editor links back with *Try in generator*.
+- **One site, three places:** SKU generator, SKU list (which includes checking) and Edit info share a header. Every product in the SKU list links to *Generate a SKU* and *Edit*, and the editor links back with *Try in generator*.
 
 ## 6. Decisions for you
 

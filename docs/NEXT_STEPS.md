@@ -54,7 +54,7 @@ Each product now has two optional fields under **More details**:
 
 | Integration | Value | Effort | Recommendation |
 |---|---|---|---|
-| **Shopify (read)** | Shows what's live, suggests missing SKUs, adds photos and links | Built | ✅ Running weekly |
+| **Shopify (read)** | Shows what's on the shop, suggests missing SKUs, links each product | Built | ✅ Running weekly |
 | **Spreadsheet export** | Price lists, exhibition sheets, stock takes | Built | ✅ the *Download it as a spreadsheet* link at the bottom of the SKU list |
 | **Dropbox / Drive links** | One click from a product to its drawings | Built (Files link) | ✅ Fill in as you go |
 | **QR codes on labels / tags** | Scan a tag → this site explains the SKU (`…/index.html#F-RTT-01-T1-M0` already works as a link) | Small | 👍 Good next step for exhibitions and the workshop |
@@ -87,6 +87,6 @@ Short enough to answer in five minutes. Paste it into a Google Form, or just sen
 
 ## 5. Keep it simple
 
-- Three places only: **SKU generator**, **SKU list**, **Edit catalogue**. Resist adding more tabs.
+- Three places only: **SKU generator**, **SKU list**, **Edit info**. Resist adding more tabs.
 - Before building a feature, ask: *can a link, a note or the spreadsheet export do this?* Usually yes.
 - The rules in `sku-core.js` are the heart of it. Everything else is presentation.
