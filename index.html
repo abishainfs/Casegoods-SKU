@@ -321,7 +321,7 @@
     s.innerHTML = '';
     s.append(h('option', { value: '' }, q ? 'Matching products…' : 'Choose a product'));
     let count = 0, only = null;
-    const matches = (p) => !q || `${p.code} ${p.name} ${p.notes || ''} ${(p.sizes || []).map((z) => z.name).join(' ')}`.toLowerCase().includes(q);
+    const matches = (p) => !q || `${p.code} ${p.name} ${p.aka || ''} ${p.notes || ''} ${(p.sizes || []).map((z) => z.name).join(' ')}`.toLowerCase().includes(q);
     const group = (label, items) => {
       if (!items.length) return;
       s.append(h('optgroup', { label }, items.map((p) => h('option', { value: p.code }, `${p.code}  ${p.name}`))));
@@ -572,7 +572,7 @@
       if (filter && filter !== c.code && filter !== 'bespoke') return;
       const items = catalog.products.filter((p) => p.category.trim().toLowerCase() === c.name.toLowerCase() && (showRetired || !p.retired)
         && (filter !== 'bespoke' || p.bespoke)
-        && (!onlyCode || p.code === onlyCode) && match(p.code, p.name, c.name, (p.sizes || []).map((s) => s.name).join(' ')));
+        && (!onlyCode || p.code === onlyCode) && match(p.code, p.name, p.aka || '', c.name, (p.sizes || []).map((s) => s.name).join(' ')));
       if (!items.length) return;
       box.append(h('div', { class: 'book-cat' }, h('h2', {}, h('span', { class: 'mono' }, c.code), c.name, h('span', { class: 'muted', style: 'font-size:13px;margin-left:auto' }, `${items.length}`)),
         items.map((p) => h('div', { class: 'book-item' },

@@ -31,7 +31,7 @@ Make, check and look up Casegoods SKUs, and edit the product catalogue without t
 
 | File | What it holds |
 |---|---|
-| `products.json` | Categories and every product with its sizes. Optional per product: `"retired": true` or `"bespoke": true`, `"primaryPart"` / `"secondaryPart"` (e.g. "Frame" / "Seat"), `"notes"`, `"link"` (Dropbox/Drive folder). |
+| `products.json` | Categories and every product with its sizes. Optional per product: `"retired": true` or `"bespoke": true`, `"primaryPart"` / `"secondaryPart"` (e.g. "Frame" / "Seat"), `"aka"` (other names, e.g. the website name), `"notes"`, `"link"` (Dropbox/Drive folder). |
 | `materials.json` | Materials and their finishes. |
 | `store.json` | Written by the shop check: SKUs live on casegoods.in, plus product links and pictures. |
 | `sku-core.js` | All the rules: checks, change detection, building and reading SKUs, descriptions. Used by every page and script. |

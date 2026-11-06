@@ -31,11 +31,14 @@ const sameSet = (a, b) => a.size === b.size && [...a].every((x) => b.has(x));
 const subset = (a, b) => [...a].every((x) => b.has(x));
 
 // ---------------------------------------------------------------- matching
+const namesOf = (p) => [p.name].concat(String(p.aka || '').split(',').map((a) => a.trim()).filter(Boolean));
 function matchProduct(title) {
-  const exact = P.products.filter((p) => squash(p.name) === squash(title));
+  // Exact name or "other name" (aka) — active products first, so a renamed product beats its retired old code.
+  const exact = P.products.filter((p) => namesOf(p).some((n) => squash(n) === squash(title)))
+    .sort((a, b) => (a.retired ? 1 : 0) - (b.retired ? 1 : 0));
   if (exact.length) return { product: exact[0], how: 'exact' };
   const tw = words(title);
-  const partial = P.products.filter((p) => subset(words(p.name), tw)).sort((a, b) => words(b.name).size - words(a.name).size);
+  const partial = P.products.filter((p) => !p.retired && subset(words(p.name), tw)).sort((a, b) => words(b.name).size - words(a.name).size);
   if (partial.length && (partial.length === 1 || words(partial[0].name).size > words(partial[1].name).size)) return { product: partial[0], how: 'partial' };
   return { product: null, how: partial.length ? 'ambiguous' : 'none' };
 }
@@ -81,7 +84,7 @@ function matchSize(product, descriptors, pool) {
   let text = descriptors.join(' ');
   if (!text.trim()) {
     // e.g. "Standing Straight Lamp Floor": the size is in the shop's product title.
-    const extra = [...words(pool.title)].filter((w) => !squash(product.name).includes(w));
+    const extra = [...words(pool.title)].filter((w) => !namesOf(product).some((n) => squash(n).includes(w)));
     if (extra.length) text = extra.join(' ');
   }
   if (!text.trim()) {

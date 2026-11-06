@@ -50,6 +50,7 @@ Good to know:
 - **History & shop check** tab: recent changes, and the weekly report comparing casegoods.in with the catalogue (wrong or missing SKUs, plus a suggested SKU for every shop variant).
 - **More details (optional)**, under each product:
   - **Part names**: what the two materials are for (e.g. *Frame* / *Seat*), so nobody enters them in the wrong order.
+  - **Other names**: an old name, or the name used on casegoods.in if it differs (e.g. FET is "Fillet Joint Table" on the website). Used by search and the shop check.
   - **Notes**: one line shown when someone picks the product (e.g. "Made for the Salone 2026 stand").
   - **Files link**: a Dropbox or Drive folder with drawings and photos.
 - **Your name** (Publishing setup) is added to each change, so History shows who made it.

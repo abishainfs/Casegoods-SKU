@@ -360,6 +360,8 @@
       "code": "FET",
       "name": "Fillet Edge Table",
       "category": "Furniture",
+      "aka": "Fillet Joint Table",
+      "notes": "Formerly Fillet Joint Table (FJT), renamed Nov 2025. The website still uses the old name.",
       "sizes": [
         { "code": "01", "name": "Square 1080mm" },
         { "code": "02", "name": "Square 1200mm" },
@@ -596,6 +598,7 @@
       "name": "Fillet Joint Table",
       "category": "Furniture",
       "retired": true,
+      "notes": "Old code. Renamed to Fillet Edge Table (FET) in Nov 2025. Use FET for new SKUs.",
       "sizes": []
     }
   ]

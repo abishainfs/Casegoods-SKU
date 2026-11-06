@@ -101,6 +101,11 @@ assert.ok(core.validate(n, M).errors.some((e) => /both retired and bespoke/.test
 n.products.find((p) => p.code === 'XPT').retired = false; n.products.find((p) => p.code === 'XPT').link = 'dropbox folder';
 assert.ok(core.validate(n, M).errors.some((e) => /files link/.test(e)));
 
+// ---- Other names (aka) ----
+assert.strictEqual(P.products.find((p) => p.code === 'FET').aka, 'Fillet Joint Table');
+n = clone(P); n.products.find((p) => p.code === 'GML').aka = 'Bookends';
+assert.ok(core.validate(n, M).warnings.some((w) => /other name "Bookends"/.test(w)));
+
 // ---- Formatting round-trips ----
 assert.deepStrictEqual(JSON.parse(core.formatProducts(P)), P);
 assert.deepStrictEqual(JSON.parse(core.formatMaterials(M)), M);

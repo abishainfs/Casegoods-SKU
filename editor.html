@@ -381,7 +381,7 @@
         if (p.retired && !showRetired) return;
         if (cat === '__bespoke' ? !p.bespoke : false) return;
         if (cat && cat !== '__bespoke' && p.category !== cat) return;
-        if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
+        if (q && !(`${p.code} ${p.name} ${p.aka || ''}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
       }
       shown++;
       list.append(productItem(p));
@@ -432,7 +432,7 @@
       h('option', { value: 'bespoke', selected: !!p.bespoke }, 'Bespoke / one-off / prototype'),
       h('option', { value: 'retired', selected: !!p.retired }, 'Retired'));
     const extra = (k, ph, type = 'text') => h('input', { type, value: p[k] || '', placeholder: ph, oninput: (e) => { if (e.target.value.trim()) p[k] = e.target.value.trim(); else delete p[k]; changed(); } });
-    const detailsSummary = () => [p.primaryPart && `parts: ${p.primaryPart}${p.secondaryPart ? ' / ' + p.secondaryPart : ''}`, p.notes && 'notes', p.link && 'files link'].filter(Boolean).join(' · ');
+    const detailsSummary = () => [p.primaryPart && `parts: ${p.primaryPart}${p.secondaryPart ? ' / ' + p.secondaryPart : ''}`, p.aka && `also called ${p.aka}`, p.notes && 'notes', p.link && 'files link'].filter(Boolean).join(' · ');
 
     det.append(h('div', { class: 'item-body' },
       h('div', { class: 'fields f3' },
@@ -446,6 +446,9 @@
         h('div', { class: 'fields parts' },
           h('div', {}, h('label', {}, 'Primary material is for…', tip('Name the parts the two materials are for, e.g. Frame / Seat or Base / Top. The generator then asks "Primary material — Frame", so nobody enters the materials in the wrong order.', 'tip-right')), part('primaryPart', 'e.g. Frame')),
           h('div', {}, h('label', {}, 'Secondary material is for…'), part('secondaryPart', 'e.g. Seat'))),
+        h('div', { class: 'fields parts', style: 'margin-top:0' },
+          h('div', {}, h('label', {}, 'Other names', tip('Older names, or the name used on casegoods.in if it is different (e.g. Fillet Edge Table is still called "Fillet Joint Table" on the website). Separate several with commas. Used by search and the weekly shop check.', 'tip-right')), extra('aka', 'e.g. Fillet Joint Table')),
+          h('div', {})),
         h('div', { class: 'fields parts', style: 'margin-top:0' },
           h('div', {}, h('label', {}, 'Notes', tip('One line the team should see when making a SKU: e.g. "Made for the Salone 2026 stand", "Client: Studio X", "Extra bays are separate SKUs".', 'tip-right')), extra('notes', 'e.g. Made for the Salone 2026 stand')),
           h('div', {}, h('label', {}, 'Files link', tip('A link to drawings, photos or spec sheets, e.g. a Dropbox or Google Drive folder. Shown next to the product in the SKU generator and SKU list. Files themselves stay in Dropbox/Drive.', 'tip-left')), extra('link', 'https://www.dropbox.com/…', 'url')))),

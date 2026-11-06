@@ -106,6 +106,9 @@
       if (code) lookalikes.set(lookalike(code), code);
       if (name && prodNames.has(name.toLowerCase())) warn(`Two products are named "${name}" (${prodNames.get(name.toLowerCase())} and ${code}).`);
       prodNames.set(name.toLowerCase(), code);
+      str(p.aka).split(',').map((a) => a.trim()).filter(Boolean).forEach((a) => {
+        if (!p.retired && products.some((o) => o !== p && !o.retired && norm(o.name) === norm(a))) warn(`${label}: its other name "${a}" is the name of another active product.`);
+      });
 
       const cat = str(p.category).trim();
       if (!catNames.has(cat.toLowerCase())) err(`${label}: category "${cat}" does not exist. Use one of: ${[...catCodes.values()].join(', ')}.`);
@@ -115,6 +118,7 @@
       if (p.bespoke !== undefined && typeof p.bespoke !== 'boolean') err(`${label}: "bespoke" must be true or false.`);
       if (p.retired && p.bespoke) err(`${label} is marked both retired and bespoke — choose one.`);
       if (p.notes !== undefined && typeof p.notes !== 'string') err(`${label}: "notes" must be text.`);
+      if (p.aka !== undefined && typeof p.aka !== 'string') err(`${label}: "aka" (other names) must be text.`);
       if (p.link !== undefined && !/^https?:\/\/\S+$/i.test(str(p.link))) err(`${label}: the files link must be a full web address starting with https://`);
       ['primaryPart', 'secondaryPart'].forEach((k) => {
         if (p[k] !== undefined && typeof p[k] !== 'string') err(`${label}: "${k}" must be text.`);
@@ -479,6 +483,7 @@
         if (p.bespoke) lines.push(`      "bespoke": true`);
         if (str(p.primaryPart).trim()) lines.push(`      "primaryPart": ${q(str(p.primaryPart).trim())}`);
         if (str(p.secondaryPart).trim()) lines.push(`      "secondaryPart": ${q(str(p.secondaryPart).trim())}`);
+        if (str(p.aka).trim()) lines.push(`      "aka": ${q(str(p.aka).trim())}`);
         if (str(p.notes).trim()) lines.push(`      "notes": ${q(str(p.notes).trim())}`);
         if (str(p.link).trim()) lines.push(`      "link": ${q(str(p.link).trim())}`);
         lines.push(`      "sizes": ${list(p.sizes || [], '      ')}`);
