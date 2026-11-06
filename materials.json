@@ -3,416 +3,185 @@
     "code": "T",
     "name": "Teak",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Natural"
-      },
-      {
-        "code": "2",
-        "name": "Dark Stained"
-      },
-      {
-        "code": "3",
-        "name": "Black Stained"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Natural" },
+      { "code": "2", "name": "Dark Stained" },
+      { "code": "3", "name": "Black Stained" }
     ]
   },
   {
     "code": "H",
     "name": "Mahogany",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Natural"
-      },
-      {
-        "code": "2",
-        "name": "Dark Stained"
-      },
-      {
-        "code": "3",
-        "name": "Black Stained"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Natural" },
+      { "code": "2", "name": "Dark Stained" },
+      { "code": "3", "name": "Black Stained" }
     ]
   },
   {
     "code": "R",
     "name": "Rosewood",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Natural"
-      },
-      {
-        "code": "2",
-        "name": "Dark Stained"
-      },
-      {
-        "code": "3",
-        "name": "Black Stained"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Natural" },
+      { "code": "2", "name": "Dark Stained" },
+      { "code": "3", "name": "Black Stained" }
     ]
   },
   {
     "code": "A",
     "name": "Ash",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Natural"
-      },
-      {
-        "code": "2",
-        "name": "Black Stained"
-      },
-      {
-        "code": "3",
-        "name": "Dark Stained"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Natural" },
+      { "code": "2", "name": "Black Stained" },
+      { "code": "3", "name": "Dark Stained" }
     ]
   },
   {
     "code": "O",
     "name": "Oak",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Natural"
-      },
-      {
-        "code": "2",
-        "name": "Black Stained"
-      },
-      {
-        "code": "3",
-        "name": "Dark Stained"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Natural" },
+      { "code": "2", "name": "Black Stained" },
+      { "code": "3", "name": "Dark Stained" }
     ]
   },
   {
     "code": "U",
     "name": "Aluminium",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "1",
-        "name": "Raw/Waxed"
-      },
-      {
-        "code": "2",
-        "name": "Satin"
-      },
-      {
-        "code": "3",
-        "name": "Polished"
-      },
-      {
-        "code": "4",
-        "name": "Nickel, Polished"
-      },
-      {
-        "code": "5",
-        "name": "Nickel, Satin"
-      },
-      {
-        "code": "6",
-        "name": "Neutral Anodised"
-      },
-      {
-        "code": "7",
-        "name": "White Anodised"
-      },
-      {
-        "code": "8",
-        "name": "Black Anodised"
-      },
-      {
-        "code": "9",
-        "name": "Custom"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "1", "name": "Raw/Waxed" },
+      { "code": "2", "name": "Satin" },
+      { "code": "3", "name": "Polished" },
+      { "code": "4", "name": "Nickel, Polished" },
+      { "code": "5", "name": "Nickel, Satin" },
+      { "code": "6", "name": "Neutral Anodised" },
+      { "code": "7", "name": "White Anodised" },
+      { "code": "8", "name": "Black Anodised" },
+      { "code": "9", "name": "Custom" }
     ]
   },
   {
     "code": "S",
     "name": "Stainless Steel",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Unfinished"
-      },
-      {
-        "code": "3",
-        "name": "Satin"
-      },
-      {
-        "code": "2",
-        "name": "Polished"
-      },
-      {
-        "code": "1",
-        "name": "Brushed"
-      }
+      { "code": "0", "name": "Unfinished" },
+      { "code": "3", "name": "Satin" },
+      { "code": "2", "name": "Polished" },
+      { "code": "1", "name": "Brushed" }
     ]
   },
   {
     "code": "B",
     "name": "Brass",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Cast"
-      },
-      {
-        "code": "2",
-        "name": "Satin"
-      },
-      {
-        "code": "1",
-        "name": "Polished"
-      },
-      {
-        "code": "3",
-        "name": "Slightly Aged"
-      },
-      {
-        "code": "4",
-        "name": "Blackened"
-      },
-      {
-        "code": "5",
-        "name": "Nickel, Polished"
-      },
-      {
-        "code": "6",
-        "name": "Nickel, Satin"
-      }
+      { "code": "0", "name": "Cast" },
+      { "code": "2", "name": "Satin" },
+      { "code": "1", "name": "Polished" },
+      { "code": "3", "name": "Slightly Aged" },
+      { "code": "4", "name": "Blackened" },
+      { "code": "5", "name": "Nickel, Polished" },
+      { "code": "6", "name": "Nickel, Satin" }
     ]
   },
   {
     "code": "C",
     "name": "Copper",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Cast"
-      },
-      {
-        "code": "1",
-        "name": "Satin"
-      },
-      {
-        "code": "2",
-        "name": "Polished"
-      },
-      {
-        "code": "3",
-        "name": "Slightly Aged"
-      },
-      {
-        "code": "4",
-        "name": "Blackened"
-      },
-      {
-        "code": "5",
-        "name": "Nickel Plated"
-      }
+      { "code": "0", "name": "Cast" },
+      { "code": "1", "name": "Satin" },
+      { "code": "2", "name": "Polished" },
+      { "code": "3", "name": "Slightly Aged" },
+      { "code": "4", "name": "Blackened" },
+      { "code": "5", "name": "Nickel Plated" }
     ]
   },
   {
     "code": "Q",
     "name": "Sandstone",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Grey"
-      },
-      {
-        "code": "1",
-        "name": "Beige"
-      },
-      {
-        "code": "C",
-        "name": "Custom"
-      }
+      { "code": "0", "name": "Grey" },
+      { "code": "1", "name": "Beige" },
+      { "code": "C", "name": "Custom" }
     ]
   },
   {
     "code": "M",
     "name": "Stone - Marble",
     "finishes": [
-      {
-        "code": "0",
-        "name": "White"
-      },
-      {
-        "code": "1",
-        "name": "Pink"
-      },
-      {
-        "code": "2",
-        "name": "Green"
-      },
-      {
-        "code": "3",
-        "name": "Black"
-      },
-      {
-        "code": "4",
-        "name": "Grey Spotted"
-      },
-      {
-        "code": "5",
-        "name": "Beige"
-      },
-      {
-        "code": "6",
-        "name": "Custom"
-      }
+      { "code": "0", "name": "White" },
+      { "code": "1", "name": "Pink" },
+      { "code": "2", "name": "Green" },
+      { "code": "3", "name": "Black" },
+      { "code": "4", "name": "Grey Spotted" },
+      { "code": "5", "name": "Beige" },
+      { "code": "6", "name": "Custom" }
     ]
   },
   {
     "code": "Z",
     "name": "Terrazzo",
     "finishes": [
-      {
-        "code": "C",
-        "name": "Custom"
-      },
-      {
-        "code": "1",
-        "name": "Black with White Chips"
-      },
-      {
-        "code": "2",
-        "name": "Recycled Glass"
-      }
+      { "code": "C", "name": "Custom" },
+      { "code": "1", "name": "Black with White Chips" },
+      { "code": "2", "name": "Recycled Glass" }
     ]
   },
   {
     "code": "K",
     "name": "Refractory Brick",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Natural"
-      }
+      { "code": "0", "name": "Natural" }
     ]
   },
   {
     "code": "L",
     "name": "Cast Lime Block",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Natural, Waxed"
-      }
+      { "code": "0", "name": "Natural, Waxed" }
     ]
   },
   {
     "code": "F",
     "name": "Fabric",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Eggshell, Linen"
-      },
-      {
-        "code": "1",
-        "name": "Cotton"
-      }
+      { "code": "0", "name": "Eggshell, Linen" },
+      { "code": "1", "name": "Cotton" }
     ]
   },
   {
     "code": "E",
     "name": "Leather",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Natural Buffalo"
-      },
-      {
-        "code": "1",
-        "name": "Red"
-      },
-      {
-        "code": "2",
-        "name": "Green"
-      },
-      {
-        "code": "3",
-        "name": "Olive"
-      },
-      {
-        "code": "4",
-        "name": "Mustard"
-      },
-      {
-        "code": "C",
-        "name": "Custom"
-      }
+      { "code": "0", "name": "Natural Buffalo" },
+      { "code": "1", "name": "Red" },
+      { "code": "2", "name": "Green" },
+      { "code": "3", "name": "Olive" },
+      { "code": "4", "name": "Mustard" },
+      { "code": "C", "name": "Custom" }
     ]
   },
   {
     "code": "J",
     "name": "Woven Jute",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Yellow"
-      },
-      {
-        "code": "1",
-        "name": "Orange"
-      },
-      {
-        "code": "2",
-        "name": "Red"
-      },
-      {
-        "code": "3",
-        "name": "Blue"
-      }
+      { "code": "0", "name": "Yellow" },
+      { "code": "1", "name": "Orange" },
+      { "code": "2", "name": "Red" },
+      { "code": "3", "name": "Blue" }
     ]
   },
   {
-    "code": "R",
+    "code": "P",
     "name": "Rope",
     "finishes": [
-      {
-        "code": "0",
-        "name": "Recycled Rope"
-      },
-      {
-        "code": "1",
-        "name": "Jute Rope"
-      },
-      {
-        "code": "2",
-        "name": "Custom"
-      }
+      { "code": "0", "name": "Recycled Rope" },
+      { "code": "1", "name": "Jute Rope" },
+      { "code": "2", "name": "Custom" }
     ]
   }
 ]

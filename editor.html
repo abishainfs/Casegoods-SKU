@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casegoods: Catalogue Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wrap { width: 100%; max-width: 1000px; }
+    header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    header img { height: 3.5rem; border-radius: .4rem; }
+    header a { margin-left: auto; font-size: .85rem; color: #007aff; }
+    .statusbar { position: sticky; top: 0; z-index: 10; background: #fff; border: 1px solid #e5e5ea; border-radius: .9rem;
+      padding: .9rem 1.1rem; margin-bottom: 1.25rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+    .statusbar .msg { flex: 1; min-width: 200px; font-size: .9rem; }
+    .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tab { padding: .55rem 1rem; border-radius: .6rem; border: 1px solid #d1d1d6; background: #fff; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; }
+    .tab.active { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+    .toolbar { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+    .toolbar input[type=text], .toolbar select { width: auto; flex: 1; min-width: 160px; }
+    .item { background: #fff; border: 1px solid #e5e5ea; border-radius: .75rem; margin-bottom: .6rem; }
+    .item > summary { list-style: none; padding: .8rem 1rem; display: flex; gap: .75rem; align-items: center; font-weight: 400; }
+    .item > summary::-webkit-details-marker { display: none; }
+    .item > summary::before { content: '▸'; color: #8e8e93; transition: transform .15s; }
+    .item[open] > summary::before { transform: rotate(90deg); }
+    .item .code { font-family: ui-monospace, Menlo, monospace; font-weight: 700; min-width: 3.5rem; }
+    .item .meta { margin-left: auto; color: #8e8e93; font-size: .8rem; text-align: right; }
+    .item.retired { opacity: .6; }
+    .item.has-error { border-color: #ff9aa4; }
+    .item-body { padding: 0 1rem 1rem; border-top: 1px solid #f2f2f7; }
+    .fields { display: grid; grid-template-columns: 1fr; gap: .8rem; margin: 1rem 0; }
+    @media (min-width: 640px) { .fields { grid-template-columns: 8rem 1fr 12rem; } }
+    .sub { width: 100%; border-collapse: collapse; margin-bottom: .6rem; }
+    .sub td { padding: .25rem .3rem .25rem 0; }
+    .sub td:first-child { width: 5.5rem; }
+    .sub td:last-child { width: 1%; white-space: nowrap; }
+    .sub input { padding: .45rem .6rem; font-size: .9rem; }
+    .code-input { font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; }
+    .bad { border-color: #ff3b30 !important; background: #fff6f6 !important; }
+    .item-actions { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: .6rem; }
+    .check { display: inline-flex; gap: .4rem; align-items: center; font-size: .85rem; font-weight: 400; cursor: pointer; margin: 0; }
+    .hint { font-size: .78rem; color: #8e8e93; margin: .2rem 0 0; }
+    .problems { max-height: 14rem; overflow: auto; }
+    .settings p { font-size: .85rem; line-height: 1.55; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="Casegoods_Logo.png" alt="" onerror="this.style.display='none'">
+    <div>
+      <h1 style="font-size:1.6rem">Catalogue editor</h1>
+      <div class="muted">Add, change or retire products, sizes and materials.</div>
+    </div>
+    <a href="index.html">← Back to SKU generator</a>
+  </header>
+
+  <div id="loadBanner"></div>
+
+  <div class="statusbar" id="statusbar">
+    <div class="msg" id="statusMsg">Loading…</div>
+    <button class="btn btn-secondary btn-small" id="discardBtn">Undo all changes</button>
+    <button class="btn btn-secondary btn-small" id="downloadBtn">Download files</button>
+    <button class="btn btn-primary" id="publishBtn">Publish to website</button>
+  </div>
+  <div id="problems"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="products">Products</button>
+    <button class="tab" data-tab="materials">Materials &amp; finishes</button>
+    <button class="tab" data-tab="categories">Categories</button>
+    <button class="tab" data-tab="settings">Publishing setup</button>
+  </div>
+
+  <section id="tab-products">
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search by name or code…">
+      <select id="catFilter"></select>
+      <label class="check"><input type="checkbox" id="showRetired"> Show retired</label>
+      <button class="btn btn-primary btn-small" id="addProduct">+ Add product</button>
+    </div>
+    <div id="productList"></div>
+  </section>
+
+  <section id="tab-materials" class="hidden">
+    <div class="toolbar">
+      <input type="text" id="matSearch" placeholder="Search materials…">
+      <button class="btn btn-primary btn-small" id="addMaterial">+ Add material</button>
+    </div>
+    <div id="materialList"></div>
+  </section>
+
+  <section id="tab-categories" class="hidden">
+    <div class="card">
+      <p class="muted" style="margin-top:0">Categories are the first letter of every SKU. Changing an existing category code changes every SKU in it — only do that if you are sure.</p>
+      <table class="sub" id="catTable"></table>
+      <button class="btn btn-secondary btn-small" id="addCategory">+ Add category</button>
+    </div>
+  </section>
+
+  <section id="tab-settings" class="hidden">
+    <div class="card settings">
+      <h2>Publishing setup (one time per computer)</h2>
+      <p>To let the <strong>Publish to website</strong> button save changes directly, paste the access key you were given below.
+        It is stored only in this browser on this computer. If you don't have one, use <strong>Download files</strong> instead and
+        follow the guide (<em>docs/EDITING_GUIDE.md</em>).</p>
+      <label for="token">Access key (GitHub token)</label>
+      <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
+      <div class="row" style="margin-top:1rem">
+        <div><label for="repo">Repository</label><input type="text" id="repo"></div>
+        <div><label for="branch">Branch</label><input type="text" id="branch"></div>
+      </div>
+      <div class="toolbar" style="margin-top:1rem">
+        <button class="btn btn-primary btn-small" id="saveSettings">Save &amp; test connection</button>
+        <button class="btn btn-danger btn-small" id="forgetSettings">Remove key from this computer</button>
+      </div>
+      <div id="settingsMsg"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="sku-core.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const DRAFT_KEY = 'casegoods-editor-draft';
+  const SETTINGS_KEY = 'casegoods-editor-settings';
+  const DEFAULT_SETTINGS = { token: '', repo: 'abishainfs/Casegoods-SKU', branch: 'main' };
+
+  let catalog, materials;          // what you're editing
+  let original = { products: '', materials: '' }; // formatted text as last loaded/published
+  const openItems = new Set();     // which product/material panels are expanded
+
+  // ---------- helpers ----------
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  let toastTimer;
+  const toast = (msg, ms = 3000) => {
+    const t = $('toast'); t.textContent = msg; t.classList.add('visible');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('visible'), ms);
+  };
+  const h = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else if (k === 'class') n.className = v;
+      else if (k in n && k !== 'list') n[k] = v;
+      else n.setAttribute(k, v);
+    }
+    kids.flat().forEach((c) => c != null && n.append(c instanceof Node ? c : String(c)));
+    return n;
+  };
+  const settings = () => {
+    try { return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem(SETTINGS_KEY))); }
+    catch (e) { return Object.assign({}, DEFAULT_SETTINGS); }
+  };
+  const text = () => ({ products: SkuCore.formatProducts(catalog), materials: SkuCore.formatMaterials(materials) });
+  const saveDraft = () => {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ catalog, materials, base: original, at: Date.now() })); } catch (e) {}
+  };
+  const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} };
+  const nextCode = (used, width) => {
+    for (let i = 1; i < Math.pow(10, width); i++) {
+      const c = String(i).padStart(width, '0');
+      if (!used.includes(c)) return c;
+    }
+    return '';
+  };
+  const upper = (v) => v.toUpperCase().replace(/\s/g, '');
+
+  // ---------- GitHub ----------
+  const b64encode = (s) => { let bin = ''; new TextEncoder().encode(s).forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin); };
+  const b64decode = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+  const gh = async (path, opts = {}) => {
+    const s = settings();
+    const res = await fetch(`https://api.github.com/repos/${s.repo}/${path}`, Object.assign({}, opts, {
+      headers: { Authorization: `Bearer ${s.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      cache: 'no-store',
+    }));
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      const why = res.status === 401 ? 'The access key is wrong or has expired.'
+        : res.status === 403 || res.status === 404 ? 'The access key does not have permission to change this repository (or the repository name is wrong).'
+        : res.status === 409 ? 'Someone else saved a change at the same moment. Reload the page and try again.'
+        : body.message || `GitHub said "${res.status}".`;
+      throw new Error(why);
+    }
+    return res.json();
+  };
+  const ghGetFile = async (name) => {
+    const s = settings();
+    const r = await gh(`contents/${name}?ref=${encodeURIComponent(s.branch)}`);
+    return { sha: r.sha, text: b64decode(r.content) };
+  };
+
+  // ---------- loading ----------
+  const loadFromSite = async (name) => {
+    const res = await fetch(`${name}?v=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${name} could not be downloaded.`);
+    return res.text();
+  };
+  const loadData = async () => {
+    let pText, mText;
+    if (settings().token) {
+      // Read straight from GitHub so you always see the very latest version.
+      try { [pText, mText] = (await Promise.all([ghGetFile('products.json'), ghGetFile('materials.json')])).map((f) => f.text); }
+      catch (e) { console.warn('GitHub read failed, using website copy', e); }
+    }
+    if (!pText) [pText, mText] = await Promise.all([loadFromSite('products.json'), loadFromSite('materials.json')]);
+    const parse = (t, name) => { try { return JSON.parse(t); } catch (e) { throw new Error(`${name} has a typing mistake and can't be opened: ${e.message}`); } };
+    return { catalog: parse(pText, 'products.json'), materials: parse(mText, 'materials.json') };
+  };
+
+  // ---------- change summary (used for the publish message) ----------
+  const summarize = () => {
+    const before = { p: JSON.parse(original.products || '{"products":[]}').products || [], m: JSON.parse(original.materials || '[]') };
+    const out = [];
+    const diff = (oldList, newList, label) => {
+      const oldMap = new Map(oldList.map((x) => [x.code, JSON.stringify(x)]));
+      const newMap = new Map(newList.map((x) => [x.code, JSON.stringify(x)]));
+      newList.forEach((x) => {
+        if (!oldMap.has(x.code)) out.push(`added ${label} ${x.code} (${x.name})`);
+        else if (oldMap.get(x.code) !== newMap.get(x.code)) out.push(`updated ${label} ${x.code} (${x.name})`);
+      });
+      oldList.forEach((x) => { if (!newMap.has(x.code)) out.push(`removed ${label} ${x.code} (${x.name})`); });
+    };
+    diff(before.p, catalog.products, 'product');
+    diff(before.m, materials, 'material');
+    if (out.length === 0 && JSON.stringify(JSON.parse(original.products).categories) !== JSON.stringify(catalog.categories)) out.push('updated categories');
+    return out;
+  };
+
+  // ---------- status / validation ----------
+  let lastResult = { errors: [], warnings: [] };
+  const refresh = () => {
+    lastResult = SkuCore.validate(catalog, materials);
+    const t = text();
+    const changed = (t.products !== original.products) + (t.materials !== original.materials);
+    const { errors, warnings } = lastResult;
+    const msg = $('statusMsg');
+    if (errors.length) msg.innerHTML = `<strong style="color:#d70015">${errors.length} problem${errors.length > 1 ? 's' : ''} to fix</strong> before you can publish (see below).`;
+    else if (changed) msg.innerHTML = `<strong>You have unpublished changes.</strong> <span class="muted">${summarize().slice(0, 3).join('; ')}${summarize().length > 3 ? '…' : ''}</span>`;
+    else msg.innerHTML = '<span style="color:#0b5c1f">✓ Everything is published and up to date.</span>';
+    $('publishBtn').disabled = !changed || errors.length > 0;
+    $('discardBtn').disabled = !changed;
+    $('downloadBtn').disabled = errors.length > 0;
+
+    const box = $('problems');
+    box.innerHTML = '';
+    if (errors.length || warnings.length) {
+      const b = h('div', { class: `banner ${errors.length ? 'banner-error' : 'banner-warn'} problems` },
+        h('strong', {}, errors.length ? 'Please fix:' : 'Worth a look (won\'t stop you publishing):'),
+        h('ul', {}, errors.map((e) => h('li', {}, e)), warnings.map((w) => h('li', {}, '⚠️ ' + w))));
+      box.append(b);
+    }
+    // Mark items that have errors.
+    document.querySelectorAll('.item').forEach((n) => {
+      const code = n.dataset.code;
+      n.classList.toggle('has-error', !!code && errors.some((e) => e.includes(`(${code})`) || e.includes(`"${code}"`)));
+    });
+    if (changed) saveDraft(); else clearDraft();
+  };
+  const changed = () => refresh();
+
+  // ---------- generic list editor for sizes / finishes ----------
+  const subList = (items, width, codeLabel, nameLabel, codeRule, onStructure) => {
+    const table = h('table', { class: 'sub' });
+    const draw = () => {
+      table.innerHTML = '';
+      table.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, codeLabel)), h('td', {}, h('span', { class: 'hint' }, nameLabel)), h('td')));
+      items.forEach((it, i) => {
+        const code = h('input', { type: 'text', class: 'code-input', value: it.code, maxLength: width,
+          oninput: (e) => { e.target.value = upper(e.target.value); it.code = e.target.value; e.target.classList.toggle('bad', !codeRule.test(it.code) || items.filter((x) => x.code === it.code).length > 1); changed(); } });
+        if (!codeRule.test(it.code)) code.classList.add('bad');
+        const name = h('input', { type: 'text', value: it.name, placeholder: 'Name',
+          oninput: (e) => { it.name = e.target.value; e.target.classList.toggle('bad', !it.name.trim()); changed(); } });
+        if (!it.name.trim()) name.classList.add('bad');
+        table.append(h('tr', {},
+          h('td', {}, code), h('td', {}, name),
+          h('td', {},
+            h('button', { class: 'btn btn-secondary btn-small', title: 'Move up', disabled: i === 0,
+              onclick: () => { [items[i - 1], items[i]] = [items[i], items[i - 1]]; draw(); changed(); } }, '↑'), ' ',
+            h('button', { class: 'btn btn-danger btn-small', title: 'Remove',
+              onclick: () => { if (confirm(`Remove "${it.code} – ${it.name}"?\n\nIf SKUs using this code have already been issued, its code should not be reused for something else later.`)) { items.splice(i, 1); draw(); changed(); onStructure(); } } }, '✕'))));
+      });
+    };
+    draw();
+    const add = h('button', { class: 'btn btn-secondary btn-small', onclick: () => {
+      items.push({ code: nextCode(items.map((x) => x.code), width), name: '' });
+      draw(); changed(); onStructure();
+      table.querySelectorAll('input')[table.querySelectorAll('input').length - 1].focus();
+    } }, `+ Add ${nameLabel.toLowerCase()}`);
+    return h('div', {}, table, add);
+  };
+
+  // ---------- products ----------
+  const renderProducts = () => {
+    const list = $('productList');
+    const q = $('search').value.trim().toLowerCase();
+    const cat = $('catFilter').value;
+    const showRetired = $('showRetired').checked;
+    list.innerHTML = '';
+    let shown = 0;
+    catalog.products.forEach((p) => {
+      if (p.retired && !showRetired) return;
+      if (cat && p.category !== cat) return;
+      if (q && !(`${p.code} ${p.name}`.toLowerCase().includes(q) || (p.sizes || []).some((s) => s.name.toLowerCase().includes(q)))) return;
+      shown++;
+      list.append(productItem(p));
+    });
+    if (!shown) list.append(h('p', { class: 'muted' }, 'No products match. Try clearing the search, or add a new product.'));
+    refresh();
+  };
+
+  const productItem = (p) => {
+    p.sizes = p.sizes || [];
+    const key = 'p:' + catalog.products.indexOf(p);
+    const codeEl = h('span', { class: 'code' }, p.code || '???');
+    const nameEl = h('span', {}, p.name || '(new product)');
+    const metaEl = h('span', { class: 'meta' });
+    const noSizesHint = h('p', { class: 'hint', style: 'margin-top:0' }, 'No sizes — SKUs for this product will use 00.');
+    const updateSummary = () => {
+      noSizesHint.classList.toggle('hidden', p.sizes.length > 0);
+      codeEl.textContent = p.code || '???';
+      nameEl.textContent = p.name || '(new product)';
+      metaEl.textContent = `${p.category} · ${p.sizes.length || 'no'} size${p.sizes.length === 1 ? '' : 's'}${p.retired ? ' · RETIRED' : ''}`;
+    };
+    updateSummary();
+    const det = h('details', { class: 'item' + (p.retired ? ' retired' : ''), open: openItems.has(key),
+      ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) },
+      h('summary', {}, codeEl, nameEl, metaEl));
+    det.dataset.code = p.code;
+
+    const code = h('input', { type: 'text', class: 'code-input', value: p.code, maxLength: 4,
+      oninput: (e) => { e.target.value = upper(e.target.value); p.code = e.target.value; det.dataset.code = p.code;
+        e.target.classList.toggle('bad', !SkuCore.RULES.productCode.re.test(p.code) || catalog.products.filter((x) => x.code === p.code).length > 1);
+        updateSummary(); changed(); } });
+    if (!SkuCore.RULES.productCode.re.test(p.code)) code.classList.add('bad');
+    const name = h('input', { type: 'text', value: p.name, oninput: (e) => { p.name = e.target.value; updateSummary(); changed(); } });
+    const catSel = h('select', { onchange: (e) => { p.category = e.target.value; updateSummary(); changed(); } },
+      catalog.categories.map((c) => h('option', { value: c.name, selected: c.name === p.category }, `${c.code} – ${c.name}`)));
+    const retired = h('input', { type: 'checkbox', checked: !!p.retired, onchange: (e) => {
+      if (e.target.checked) p.retired = true; else delete p.retired;
+      det.classList.toggle('retired', !!p.retired); updateSummary(); changed(); } });
+
+    det.append(h('div', { class: 'item-body' },
+      h('div', { class: 'fields' },
+        h('div', {}, h('label', {}, 'Code'), code, h('p', { class: 'hint' }, '3–4 letters/digits')),
+        h('div', {}, h('label', {}, 'Name'), name),
+        h('div', {}, h('label', {}, 'Category'), catSel)),
+      h('label', {}, 'Sizes / types'),
+      noSizesHint,
+      subList(p.sizes, 2, 'Code', 'Size', SkuCore.RULES.sizeCode.re, updateSummary),
+      h('div', { class: 'item-actions' },
+        h('label', { class: 'check', title: 'Retired products are hidden from the SKU generator, but their code stays reserved so it is never reused.' },
+          retired, 'Retired (hide from generator, keep code reserved)'),
+        h('button', { class: 'btn btn-danger btn-small', onclick: () => {
+          if (!confirm(`Delete "${p.name}" (${p.code}) completely?\n\nIf SKUs for this product have ever been used, choose Cancel and tick "Retired" instead, so the code is never reused by mistake.`)) return;
+          catalog.products.splice(catalog.products.indexOf(p), 1); openItems.clear(); renderProducts(); toast(`Deleted ${p.code}`);
+        } }, 'Delete product'))));
+    return det;
+  };
+
+  $('addProduct').onclick = () => {
+    const category = $('catFilter').value || (catalog.categories[0] && catalog.categories[0].name);
+    const p = { code: '', name: '', category, sizes: [] };
+    // Put it after the last product in the same category, so the file stays tidy.
+    let at = catalog.products.length;
+    for (let i = catalog.products.length - 1; i >= 0; i--) if (catalog.products[i].category === category && !catalog.products[i].retired) { at = i + 1; break; }
+    catalog.products.splice(at, 0, p);
+    $('search').value = '';
+    openItems.clear(); openItems.add('p:' + at);
+    renderProducts();
+    const node = [...document.querySelectorAll('#productList .item')].find((n) => n.open);
+    if (node) { node.scrollIntoView({ behavior: 'smooth', block: 'center' }); node.querySelector('input').focus(); }
+    toast('New product added — fill in its code and name.');
+  };
+  ['search', 'catFilter', 'showRetired'].forEach((id) => $(id).addEventListener('input', () => { openItems.clear(); renderProducts(); }));
+
+  // ---------- materials ----------
+  const renderMaterials = () => {
+    const list = $('materialList');
+    const q = $('matSearch').value.trim().toLowerCase();
+    list.innerHTML = '';
+    materials.forEach((m, idx) => {
+      m.finishes = m.finishes || [];
+      if (q && !`${m.code} ${m.name} ${m.finishes.map((f) => f.name).join(' ')}`.toLowerCase().includes(q)) return;
+      const key = 'm:' + idx;
+      const codeEl = h('span', { class: 'code' }, m.code || '?');
+      const nameEl = h('span', {}, m.name || '(new material)');
+      const metaEl = h('span', { class: 'meta' });
+      const updateSummary = () => { codeEl.textContent = m.code || '?'; nameEl.textContent = m.name || '(new material)'; metaEl.textContent = `${m.finishes.length} finish${m.finishes.length === 1 ? '' : 'es'}`; };
+      updateSummary();
+      const det = h('details', { class: 'item', open: openItems.has(key), ontoggle: () => (det.open ? openItems.add(key) : openItems.delete(key)) },
+        h('summary', {}, codeEl, nameEl, metaEl));
+      det.dataset.code = m.code;
+      const code = h('input', { type: 'text', class: 'code-input', value: m.code, maxLength: 1,
+        oninput: (e) => { e.target.value = upper(e.target.value); m.code = e.target.value; det.dataset.code = m.code;
+          e.target.classList.toggle('bad', !SkuCore.RULES.materialCode.re.test(m.code) || materials.filter((x) => x.code === m.code).length > 1);
+          updateSummary(); changed(); } });
+      if (!SkuCore.RULES.materialCode.re.test(m.code)) code.classList.add('bad');
+      const used = materials.map((x) => x.code).join(' ');
+      det.append(h('div', { class: 'item-body' },
+        h('div', { class: 'fields', style: 'grid-template-columns: 8rem 1fr' },
+          h('div', {}, h('label', {}, 'Code'), code, h('p', { class: 'hint' }, '1 letter/digit')),
+          h('div', {}, h('label', {}, 'Name'), h('input', { type: 'text', value: m.name, oninput: (e) => { m.name = e.target.value; updateSummary(); changed(); } }),
+            h('p', { class: 'hint' }, `Codes in use: ${used}`))),
+        h('label', {}, 'Finishes'),
+        subList(m.finishes, 1, 'Code', 'Finish', SkuCore.RULES.finishCode.re, updateSummary),
+        h('div', { class: 'item-actions' }, h('span'),
+          h('button', { class: 'btn btn-danger btn-small', onclick: () => {
+            if (!confirm(`Delete material "${m.name}" (${m.code})?\n\nSKUs already issued with this code will no longer be explained in the legend.`)) return;
+            materials.splice(idx, 1); openItems.clear(); renderMaterials(); toast(`Deleted ${m.name}`);
+          } }, 'Delete material'))));
+      list.append(det);
+    });
+    refresh();
+  };
+  $('matSearch').addEventListener('input', () => { openItems.clear(); renderMaterials(); });
+  $('addMaterial').onclick = () => {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter((c) => !materials.some((m) => m.code === c));
+    materials.push({ code: letters[0] || '', name: '', finishes: [{ code: '0', name: '' }] });
+    $('matSearch').value = '';
+    openItems.clear(); openItems.add('m:' + (materials.length - 1));
+    renderMaterials();
+    const node = [...document.querySelectorAll('#materialList .item')].pop();
+    node.scrollIntoView({ behavior: 'smooth', block: 'center' }); node.querySelectorAll('input')[1].focus();
+    toast(`New material added with the next free code (${letters[0]}). Give it a name and finishes.`);
+  };
+
+  // ---------- categories ----------
+  const renderCategories = () => {
+    const t = $('catTable');
+    t.innerHTML = '';
+    t.append(h('tr', {}, h('td', {}, h('span', { class: 'hint' }, 'Code')), h('td', {}, h('span', { class: 'hint' }, 'Name')), h('td')));
+    catalog.categories.forEach((c, i) => {
+      const count = catalog.products.filter((p) => p.category === c.name).length;
+      t.append(h('tr', {},
+        h('td', {}, h('input', { type: 'text', class: 'code-input', value: c.code, maxLength: 1, oninput: (e) => { e.target.value = upper(e.target.value); c.code = e.target.value; changed(); } })),
+        h('td', {}, h('input', { type: 'text', value: c.name, onchange: (e) => {
+          const old = c.name; c.name = e.target.value.trim();
+          catalog.products.forEach((p) => { if (p.category === old) p.category = c.name; }); // keep products attached
+          changed(); fillCatFilter(); } })),
+        h('td', {}, h('button', { class: 'btn btn-danger btn-small', disabled: count > 0, title: count ? `${count} products use this category` : 'Remove',
+          onclick: () => { catalog.categories.splice(i, 1); renderCategories(); fillCatFilter(); changed(); } }, '✕'))));
+    });
+  };
+  $('addCategory').onclick = () => { catalog.categories.push({ code: '', name: '' }); renderCategories(); changed(); };
+  const fillCatFilter = () => {
+    const sel = $('catFilter'); const v = sel.value;
+    sel.innerHTML = '';
+    sel.append(h('option', { value: '' }, 'All categories'), catalog.categories.map((c) => h('option', { value: c.name }, c.name)));
+    sel.value = v;
+  };
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab').forEach((b) => b.onclick = () => {
+    document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x === b));
+    document.querySelectorAll('section[id^=tab-]').forEach((s) => s.classList.toggle('hidden', s.id !== 'tab-' + b.dataset.tab));
+    openItems.clear();
+    if (b.dataset.tab === 'products') renderProducts();
+    if (b.dataset.tab === 'materials') renderMaterials();
+    if (b.dataset.tab === 'categories') renderCategories();
+  });
+
+  // ---------- actions ----------
+  const renderAll = () => { fillCatFilter(); renderProducts(); renderMaterials(); renderCategories(); refresh(); };
+
+  $('discardBtn').onclick = () => {
+    if (!confirm('Throw away all your unpublished changes?')) return;
+    catalog = JSON.parse(original.products); materials = JSON.parse(original.materials);
+    clearDraft(); openItems.clear(); renderAll(); toast('Changes undone.');
+  };
+
+  $('downloadBtn').onclick = () => {
+    if (lastResult.errors.length) return toast('Fix the problems first.');
+    const t = text();
+    const save = (name, content) => {
+      const a = h('a', { href: URL.createObjectURL(new Blob([content], { type: 'application/json' })), download: name });
+      document.body.append(a); a.click(); a.remove();
+    };
+    save('products.json', t.products);
+    setTimeout(() => save('materials.json', t.materials), 300);
+    toast('Downloaded products.json and materials.json. Upload them on GitHub to publish (see the guide).', 6000);
+  };
+
+  $('publishBtn').onclick = async () => {
+    const s = settings();
+    if (!s.token) {
+      toast('Publishing isn\'t set up on this computer yet — see the "Publishing setup" tab, or use Download files.', 6000);
+      document.querySelector('.tab[data-tab=settings]').click();
+      return;
+    }
+    if (lastResult.errors.length) return toast('Fix the problems first.');
+    const t = text();
+    const changes = summarize();
+    if (!confirm(`Publish these changes to the website?\n\n• ${changes.join('\n• ') || 'formatting only'}`)) return;
+    const btn = $('publishBtn'); btn.disabled = true; btn.textContent = 'Publishing…';
+    try {
+      const files = [['products.json', t.products, original.products], ['materials.json', t.materials, original.materials]].filter((f) => f[1] !== f[2]);
+      for (const [name, content, before] of files) {
+        const remote = await ghGetFile(name);
+        // Someone else changed this file since you opened the editor?
+        let same = true;
+        try { same = JSON.stringify(JSON.parse(remote.text)) === JSON.stringify(JSON.parse(before)); } catch (e) { same = false; }
+        if (!same && !confirm(`${name} was changed by someone else since you opened the editor.\n\nOK = overwrite their change with yours\nCancel = stop (then reload the page to see their version)`)) {
+          throw new Error('Publishing cancelled — nothing was overwritten.');
+        }
+        await gh(`contents/${name}`, { method: 'PUT', body: JSON.stringify({
+          message: `Catalogue editor: ${changes.join('; ').slice(0, 300) || 'update ' + name}`,
+          content: b64encode(content), sha: remote.sha, branch: s.branch }) });
+      }
+      original = t; clearDraft(); refresh();
+      toast('✓ Published! The website updates within a minute or two.', 6000);
+    } catch (e) {
+      alert('Could not publish.\n\n' + e.message + '\n\nYour changes are still here. You can also use "Download files" instead.');
+    } finally {
+      btn.textContent = 'Publish to website'; refresh();
+    }
+  };
+
+  // settings tab
+  const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; };
+  $('saveSettings').onclick = async () => {
+    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main' };
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
+    const msg = $('settingsMsg'); msg.innerHTML = '';
+    try {
+      const repo = await gh('');
+      if (!repo.permissions || !repo.permissions.push) throw new Error('The key can read the repository but not change it. It needs "Contents: Read and write" permission.');
+      msg.append(h('div', { class: 'banner banner-ok', style: 'margin-top:1rem' }, '✓ Connected. The Publish button is ready to use on this computer.'));
+    } catch (e) {
+      msg.append(h('div', { class: 'banner banner-error', style: 'margin-top:1rem' }, 'Not connected: ' + e.message));
+    }
+  };
+  $('forgetSettings').onclick = () => { try { localStorage.removeItem(SETTINGS_KEY); } catch (e) {} showSettings(); toast('Key removed from this computer.'); };
+
+  window.addEventListener('beforeunload', (e) => {
+    const t = catalog && text();
+    if (t && (t.products !== original.products || t.materials !== original.materials)) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ---------- start ----------
+  (async () => {
+    showSettings();
+    try {
+      const data = await loadData();
+      catalog = data.catalog; materials = data.materials;
+      if (!catalog || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories) || !Array.isArray(materials)) {
+        throw new Error('The data files are not in the expected layout.');
+      }
+      original = text();
+    } catch (e) {
+      $('loadBanner').append(h('div', { class: 'banner banner-error' }, h('strong', {}, 'Could not open the catalogue. '), e.message));
+      $('statusbar').classList.add('hidden');
+      return;
+    }
+    // Offer to restore unpublished work from last time.
+    try {
+      const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+      if (d && d.catalog && d.materials) {
+        const when = new Date(d.at).toLocaleString();
+        const baseMatches = d.base && d.base.products === original.products && d.base.materials === original.materials;
+        if (confirm(`You have unpublished changes from ${when}.\n\nOK = continue with them\nCancel = throw them away${baseMatches ? '' : '\n\nNote: the catalogue has been changed by someone else since then. If you continue, check carefully before publishing.'}`)) {
+          catalog = d.catalog; materials = d.materials;
+        } else clearDraft();
+      }
+    } catch (e) {}
+    renderAll();
+  })();
+})();
+</script>
+</body>
+</html>

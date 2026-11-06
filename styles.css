@@ -1,0 +1,72 @@
+/* Shared styles for index.html (SKU generator) and editor.html (catalogue editor). */
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 640px) { body { padding: 2rem; } }
+
+.main-container { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 1600px; }
+@media (min-width: 1024px) {
+  .main-container { flex-direction: row; gap: 2rem; align-items: flex-start; }
+  .main-form-card { flex: 2; }
+  .sidebar-container { flex: 1; display: flex; flex-direction: column; gap: 2rem; min-width: 0; }
+}
+
+.card { background: #fff; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e5e5ea;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); }
+@media (min-width: 640px) { .card { padding: 2rem; } }
+.card-section { background: #f9f9fb; border: 1px solid #e5e5ea; border-radius: .75rem; padding: 1.25rem; margin-bottom: 1.5rem; }
+
+h1 { font-size: 2rem; font-weight: 600; margin: 0; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 0 0 1rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 0 0 1rem; display: flex; align-items: center; gap: .5rem; }
+.muted { color: #8e8e93; font-size: .875rem; font-weight: 400; }
+
+label { display: block; font-size: .8rem; font-weight: 600; color: #3c3c43; margin-bottom: .35rem; }
+select, input[type=text], input[type=password] {
+  width: 100%; padding: .6rem .75rem; font: inherit; font-size: .95rem; color: #1d1d1f;
+  background: #fff; border: 1px solid #d1d1d6; border-radius: .5rem;
+}
+select:focus, input:focus { outline: none; border-color: #007aff; box-shadow: 0 0 0 3px rgba(0,122,255,.2); }
+select:disabled { background: #f2f2f7; color: #8e8e93; }
+
+.row { display: flex; flex-direction: column; gap: 1rem; }
+@media (min-width: 640px) { .row { flex-direction: row; } .row > * { flex: 1; min-width: 0; } }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .6rem 1.1rem;
+  font: inherit; font-weight: 600; font-size: .9rem; border-radius: .6rem; border: 1px solid transparent; cursor: pointer; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary { background: #1d1d1f; color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #3a3a3c; }
+.btn-secondary { background: #fff; color: #1d1d1f; border-color: #d1d1d6; }
+.btn-secondary:hover:not(:disabled) { background: #f2f2f7; }
+.btn-danger { background: #fff; color: #d70015; border-color: #ffc9ce; }
+.btn-danger:hover:not(:disabled) { background: #fff0f1; }
+.btn-small { padding: .35rem .7rem; font-size: .8rem; }
+.help-btn { width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 1px solid #c7c7cc; background: #fff;
+  color: #8e8e93; font-weight: 700; font-size: .75rem; cursor: pointer; padding: 0; }
+
+.table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.table th { text-align: left; font-weight: 600; color: #3c3c43; padding: .5rem; border-bottom: 2px solid #e5e5ea; }
+.table td { padding: .5rem; border-bottom: 1px solid #f2f2f7; vertical-align: top; }
+.table tr:hover td { background: #fafafa; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.banner { border-radius: .75rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: .9rem; line-height: 1.5; }
+.banner ul { margin: .5rem 0 0; padding-left: 1.25rem; }
+.banner-error { background: #fff0f1; border: 1px solid #ffc9ce; color: #8a0010; }
+.banner-warn { background: #fff8e6; border: 1px solid #ffe3a3; color: #6b4d00; }
+.banner-ok { background: #ecfbef; border: 1px solid #b7ebc3; color: #0b5c1f; }
+
+.toast { position: fixed; left: 50%; bottom: 2rem; transform: translateX(-50%) translateY(150%);
+  background: #1d1d1f; color: #fff; padding: .75rem 1.25rem; border-radius: .75rem; font-size: .9rem;
+  transition: transform .25s ease; z-index: 100; max-width: calc(100% - 2rem); }
+.toast.visible { transform: translateX(-50%) translateY(0); }
+
+details summary { cursor: pointer; font-weight: 600; }
