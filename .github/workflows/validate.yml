@@ -1,0 +1,19 @@
+name: Check catalogue
+
+on:
+  push:
+    paths: ['products.json', 'materials.json', 'sku-core.js', 'scripts/**', '.github/workflows/validate.yml']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Self-test
+        run: node scripts/test.js
+      - name: Check products.json and materials.json
+        run: node scripts/validate.js

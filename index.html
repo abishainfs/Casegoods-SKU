@@ -1,765 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casegoods: SKU Generator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f5f5f7;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 1rem;
-            color: #1d1d1f;
-        }
-
-        @media (min-width: 640px) {
-            body {
-                padding: 2rem;
-            }
-        }
-
-        .main-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 1600px;
-        }
-
-        @media (min-width: 1024px) {
-            .main-container {
-                flex-direction: row;
-                gap: 2rem;
-            }
-            .main-form-card {
-                flex: 2;
-            }
-            .sidebar-container {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-            }
-        }
-
-        .card {
-            background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e5e5ea;
-        }
-
-        @media (min-width: 640px) {
-            .card {
-                padding: 2rem;
-            }
-        }
-
-        .card-section {
-            background-color: #f9f9fb;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid #e5e5ea;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-section:last-of-type {
-            margin-bottom: 0;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #3c3c43;
-            margin-bottom: 0.25rem;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e5e5ea;
-            border-radius: 0.5rem;
-            transition: all 150ms ease-in-out;
-        }
-
-        select:focus, input:focus {
-            outline: none;
-            border-color: #007aff;
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
-        }
-
-        .flex-container {
-            display: flex;
-            gap: 1.5rem;
-            flex-direction: column;
-        }
-
-        @media (min-width: 640px) {
-            .flex-container {
-                flex-direction: row;
-                gap: 1.5rem;
-            }
-        }
-
-        .btn {
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 150ms ease-in-out;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: #1c1c1e;
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            background-color: #3a3a3c;
-        }
-
-        .btn-secondary {
-            background-color: #e5e7eb;
-            color: #374151;
-        }
-
-        .btn-secondary:hover {
-            background-color: #d1d5db;
-        }
-        
-        .alert-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.2s linear;
-        }
-
-        .alert-modal.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .alert-content {
-            background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .alert-content p {
-            margin-bottom: 1rem;
-        }
-        
-        .tooltip-icon {
-            color: #9ca3af;
-            cursor: pointer;
-        }
-
-        .tooltip-icon:hover {
-            color: #007aff;
-        }
-
-        .history-table, .legend-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .history-table th, .legend-table th {
-            text-align: left;
-            padding: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #3c3c43;
-            border-bottom: 1px solid #e5e5ea;
-        }
-
-        .history-table td, .legend-table td {
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            border-bottom: 1px solid #e5e5ea;
-            vertical-align: top;
-        }
-
-        .history-table tr:hover {
-            background-color: #f9f9fb;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .input-group label {
-            margin-bottom: 0;
-        }
-
-        .details-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .details-section:last-child {
-            margin-bottom: 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casegoods: SKU Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .logo { height: 10rem; width: auto; border-radius: .5rem; }
+    #skuOutput { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.4rem; font-weight: 600;
+      background: #fff; padding: .9rem; border-radius: .6rem; border: 1px solid #e5e5ea; text-align: center; word-break: break-all; }
+    #skuOutput.placeholder { color: #8e8e93; font-family: inherit; font-weight: 400; font-size: 1rem; }
+    #descOutput { margin: .6rem 0 1rem; font-size: .9rem; color: #3c3c43; text-align: center; font-style: italic; min-height: 1.2em; }
+    .actions { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+    .footer-link { font-size: .8rem; color: #8e8e93; text-align: center; margin-top: 1rem; }
+    .footer-link a { color: #8e8e93; }
+  </style>
 </head>
-<body class="flex-container">
-    <div class="main-container">
-        <div class="card main-form-card">
-            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem;">
-                <img src="https://raw.githubusercontent.com/abishainfs/Casegoods-SKU/main/Casegoods_Logo.png" alt="Casegoods Logo" style="height: 12rem; width: auto; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);" onerror="this.onerror=null;this.src='https://placehold.co/192x192/CCCCCC/666666?text=LOGO+NOT+FOUND';">
-                <h1 style="font-weight: 600;">SKU Generator</h1>
-            </div>
-
-            <details style="margin-bottom: 2rem; padding: 1.5rem;" class="card-section details-section">
-                <summary style="font-size: 1.125rem; font-weight: 600; cursor: pointer;">Quick Guide: SKU Generation</summary>
-                <div style="margin-top: 1rem; font-size: 0.875rem; line-height: 1.6;">
-                    <p style="margin-bottom: 0.5rem;">This tool helps create unique SKUs (Stock Keeping Units). Our SKUs follow this format: <strong style="color: #1d1d1f;">X-ABCD-EF-GH-IJ</strong></p>
-                    <h4 style="font-weight: 700; color: #1d1d1f; margin-bottom: 0.5rem;">Here's the simple breakdown:</h4>
-                    <ul style="list-style-type: disc; list-style-position: inside; margin-bottom: 0.75rem;">
-                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">X - Product Category:</strong> Pick the product type from the dropdown.</li>
-                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">ABCD - Product Code:</strong> Select the product's unique code.</li>
-                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">EF - Size/Type:</strong> Enter a 2-digit number for the size or specific version (e.g., '01').</li>
-                        <li style="margin-bottom: 0.25rem;"><strong style="color: #1d1d1f;">GH & IJ - Materials:</strong> Select Material Type and its Finish. These are optional.</li>
-                    </ul>
-                </div>
-            </details>
-
-            <div class="card-section details-section">
-                <h3 style="display: flex; align-items: center;">Product Details</h3>
-                <div class="flex-container">
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="productCategory">Category</label>
-                            <select id="productCategory">
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="F">F - Furniture</option>
-                                <option value="L">L - Lights</option>
-                                <option value="O">O - Objects</option>
-                                <option value="H">H - Hardware</option>
-                                <option value="T">T - Textiles</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="productCode">Product Code</label>
-                            <select id="productCode">
-                                <option value="" disabled selected>Select Category First</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="sizeType">Type/Variation</label>
-                            <select id="sizeType">
-                                <option value="" disabled selected>Select Product First</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-section details-section">
-                <h3 style="display: flex; align-items: center;">Primary Material <i id="primaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(GH)</span></h3>
-                <div class="flex-container">
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="material1Type">Material Type (G)</label>
-                            <select id="material1Type">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="material1Finish">Material Finish (H)</label>
-                            <select id="material1Finish">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-section details-section">
-                <h3 style="display: flex; align-items: center;">Secondary Material <i id="secondaryMaterialTooltipBtn" class="fa-solid fa-circle-question tooltip-icon" style="margin-left: 0.5rem;"></i> <span style="color: #9ca3af; font-size: 0.875rem; margin-left: auto;">(IJ) (Optional)</span></h3>
-                <div class="flex-container">
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="material2Type">Material Type (I)</label>
-                            <select id="material2Type">
-                                <option value="" disabled selected>Loading Materials...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="input-group">
-                            <label for="material2Finish">Material Finish (J)</label>
-                            <select id="material2Finish">
-                                <option value="" disabled selected>Select Type First</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;" class="card-section details-section">
-                <div style="flex: 1;">
-                    <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.25rem;">Generated SKU</p>
-                    <div id="generatedSku" style="font-family: monospace; font-size: 1.125rem; color: #1d1d1f; background-color: #ffffff; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5ea; word-break: break-all; text-align: center;">
-                        SKU-CODE
-                    </div>
-                    <p id="generatedDescription" style="margin-top: 0.5rem; font-size: 0.875rem; color: #3c3c43; text-align: center; font-style: italic;"></p>
-                </div>
-                <div style="display: flex; flex-shrink: 0; gap: 0.5rem; align-items: center;">
-                    <button id="generateSkuBtn" class="btn btn-primary">
-                        Generate SKU
-                    </button>
-                    <button id="copySkuBtn" class="btn btn-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar-container">
-            <div class="card">
-                <h2>Material & Finish Legend</h2>
-                <div style="overflow-x: auto;">
-                    <table class="legend-table">
-                        <thead>
-                            <tr>
-                                <th>Material</th>
-                                <th>Finishes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="legendTableBody">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>SKU History</h2>
-                <div style="overflow-x: auto;">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>SKU</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            </tbody>
-                    </table>
-                </div>
-                <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 1rem;">Note: This history is temporary and will be cleared when the page is refreshed.</p>
-            </div>
-        </div>
+<body>
+<div class="main-container">
+  <div class="card main-form-card">
+    <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <img class="logo" src="Casegoods_Logo.png" alt="Casegoods logo"
+           onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/abishainfs/Casegoods-SKU/main/Casegoods_Logo.png';">
+      <h1>SKU Generator</h1>
     </div>
 
-    <div id="customAlert" class="alert-modal">
-        <div class="alert-content">
-            <p id="alertMessage"></p>
-            <button id="alertCloseBtn" class="btn btn-primary">OK</button>
-        </div>
+    <div id="dataBanner"></div>
+
+    <details class="card-section">
+      <summary>Quick guide: how SKUs are built</summary>
+      <div style="margin-top:1rem;font-size:.875rem;line-height:1.6;">
+        <p>Our SKUs follow this format: <strong class="mono">X-ABCD-EF-GH-IJ</strong></p>
+        <ul>
+          <li><strong>X – Category:</strong> e.g. F = Furniture.</li>
+          <li><strong>ABCD – Product code:</strong> 3 or 4 characters, unique to each product.</li>
+          <li><strong>EF – Size / type:</strong> 2 characters. Products without variations use <span class="mono">00</span>.</li>
+          <li><strong>GH – Primary material + finish</strong> (optional), e.g. <span class="mono">T1</span> = Teak, Natural.</li>
+          <li><strong>IJ – Secondary material + finish</strong> (optional).</li>
+        </ul>
+        <p>The SKU updates as you choose. Click <em>Save to history</em> to keep a list you can copy or download.</p>
+      </div>
+    </details>
+
+    <div class="card-section">
+      <h3>Product</h3>
+      <div class="row">
+        <div><label for="category">Category (X)</label><select id="category"></select></div>
+        <div><label for="product">Product (ABCD)</label><select id="product"></select></div>
+        <div><label for="size">Size / Type (EF)</label><select id="size"></select></div>
+      </div>
     </div>
 
-    <script>
-    // Renamed 'products' to 'allProducts' to store the full list of products
-    let allProducts = [];
-    let materials = [];
-    let productDetails = [];
-    let skus = [];
+    <div class="card-section">
+      <h3>Primary material <button type="button" class="help-btn" id="help1" aria-label="Help">?</button>
+        <span class="muted" style="margin-left:auto">(GH) optional</span></h3>
+      <div class="row">
+        <div><label for="mat1">Material (G)</label><select id="mat1"></select></div>
+        <div><label for="fin1">Finish (H)</label><select id="fin1"></select></div>
+      </div>
+    </div>
 
-    // Element references
-    let productCategorySelect, productCodeSelect, sizeTypeSelect, material1TypeSelect, material1FinishSelect, material2TypeSelect, material2FinishSelect;
-    let generateSkuBtn, copySkuBtn, primaryMaterialTooltipBtn, secondaryMaterialTooltipBtn;
-    let generatedSkuEl, generatedDescriptionEl;
-    let legendTableBody, historyTableBody;
-    let customAlert, alertMessage, alertCloseBtn;
+    <div class="card-section">
+      <h3>Secondary material <button type="button" class="help-btn" id="help2" aria-label="Help">?</button>
+        <span class="muted" style="margin-left:auto">(IJ) optional</span></h3>
+      <div class="row">
+        <div><label for="mat2">Material (I)</label><select id="mat2"></select></div>
+        <div><label for="fin2">Finish (J)</label><select id="fin2"></select></div>
+      </div>
+    </div>
 
-    // Category Map (Corrected for 'Lights')
-    const categoryMap = {
-        'F': 'Furniture',
-        'L': 'Lights', 
-        'O': 'Objects',
-        'H': 'Hardware',
-        'T': 'Textiles'
-    };
-    
-    // --- UTILITY FUNCTION FOR EDGE CASES ---
-    const disableFormOnFailure = () => {
-        productCategorySelect.disabled = true;
-        productCodeSelect.disabled = true;
-        sizeTypeSelect.disabled = true;
-        material1TypeSelect.disabled = true;
-        material1FinishSelect.disabled = true;
-        material2TypeSelect.disabled = true;
-        material2FinishSelect.disabled = true;
-        generateSkuBtn.disabled = true;
-    };
-    // ---------------------------------------
+    <div class="card-section" style="margin-bottom:0">
+      <p class="muted" style="margin:0 0 .4rem">Generated SKU</p>
+      <div id="skuOutput" class="placeholder">Choose a product to begin</div>
+      <p id="descOutput"></p>
+      <div class="actions">
+        <button class="btn btn-primary" id="saveBtn" disabled>Save to history</button>
+        <button class="btn btn-secondary" id="copyBtn" disabled>Copy SKU</button>
+        <button class="btn btn-secondary" id="resetBtn">Start over</button>
+      </div>
+    </div>
+    <p class="footer-link">Need to add or change a product or material? <a href="editor.html">Open the catalogue editor</a></p>
+  </div>
 
-    const showCustomAlert = (message) => {
-        alertMessage.textContent = message;
-        customAlert.classList.add('visible');
-    };
+  <div class="sidebar-container">
+    <div class="card">
+      <h2>SKU history</h2>
+      <div style="overflow-x:auto">
+        <table class="table"><thead><tr><th>SKU</th><th>Description</th><th></th></tr></thead>
+          <tbody id="historyBody"></tbody></table>
+      </div>
+      <p id="historyEmpty" class="muted">Nothing saved yet.</p>
+      <div class="actions" style="justify-content:flex-start;margin-top:1rem">
+        <button class="btn btn-secondary btn-small" id="downloadBtn">Download as spreadsheet (CSV)</button>
+        <button class="btn btn-danger btn-small" id="clearBtn">Clear history</button>
+      </div>
+      <p class="muted" style="font-size:.75rem">History is kept in this browser only.</p>
+    </div>
 
-    const copyToClipboard = (text) => {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            showCustomAlert('SKU copied to clipboard!');
-        } catch (err) {
-            showCustomAlert('Failed to copy SKU.');
-        } finally {
-            document.body.removeChild(textarea);
-        }
-    };
+    <div class="card">
+      <h2>Material &amp; finish legend</h2>
+      <div style="overflow-x:auto">
+        <table class="table"><thead><tr><th>Material</th><th>Finishes</th></tr></thead>
+          <tbody id="legendBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
 
-    const populateSelect = (selectElement, items, placeholder) => {
-        selectElement.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
-        items.forEach(item => {
-            const option = document.createElement('option');
-            // Edge Case: Ensure item.code is a string before using it
-            const code = String(item.code || ''); 
-            option.value = code;
-            const textContent = item.name ? `${code} - ${item.name}` : code;
-            option.textContent = textContent;
-            selectElement.appendChild(option);
-        });
-    };
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    const populateMaterialFinishes = (materialTypeSelect, materialFinishSelect, placeholder) => {
-        const selectedMaterialCode = materialTypeSelect.value;
-        materialFinishSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
-        if (selectedMaterialCode) {
-            // Edge Case: Check if material exists before accessing finishes
-            const material = materials.find(m => m.code === selectedMaterialCode);
-            if (material && material.finishes && Array.isArray(material.finishes)) {
-                material.finishes.forEach(finish => {
-                    const option = document.createElement('option');
-                    option.value = finish.code;
-                    option.textContent = `${finish.code} - ${finish.name}`;
-                    materialFinishSelect.appendChild(option);
-                });
-            } else {
-                // Edge Case: If material has no finishes, treat it as a final selection option
-                materialFinishSelect.innerHTML = '<option value="XX" selected>XX - No Finish Required</option>';
-            }
-        }
-    };
+<script src="sku-core.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    banner: $('dataBanner'), category: $('category'), product: $('product'), size: $('size'),
+    mat1: $('mat1'), fin1: $('fin1'), mat2: $('mat2'), fin2: $('fin2'),
+    sku: $('skuOutput'), desc: $('descOutput'), save: $('saveBtn'), copy: $('copyBtn'), reset: $('resetBtn'),
+    historyBody: $('historyBody'), historyEmpty: $('historyEmpty'), download: $('downloadBtn'), clear: $('clearBtn'),
+    legend: $('legendBody'), toast: $('toast'),
+  };
+  const HISTORY_KEY = 'casegoods-sku-history';
+  let catalog = { categories: [], products: [] };
+  let materials = [];
+  let current = null; // { sku, description } currently shown
 
-    const populateProductSizes = (productCode) => {
-        // Edge Case: Check if productDetails exists before searching it
-        if (!productDetails) {
-            sizeTypeSelect.innerHTML = `<option value="" disabled selected>Data Error</option>`;
-            return;
-        }
+  // ---------- small helpers ----------
+  let toastTimer;
+  const toast = (msg, ms = 2500) => {
+    el.toast.textContent = msg;
+    el.toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.toast.classList.remove('visible'), ms);
+  };
 
-        const details = productDetails.find(p => p.code === productCode);
-        sizeTypeSelect.innerHTML = `<option value="" disabled selected>Select Type</option>`;
-        
-        if (details && details.sizes && Array.isArray(details.sizes) && details.sizes.length > 0) {
-            details.sizes.forEach(size => {
-                const option = document.createElement('option');
-                option.value = size.code;
-                option.textContent = `${size.code} - ${size.name}`;
-                sizeTypeSelect.appendChild(option);
-            });
-        } else {
-            // Edge Case: Default size if no sizes are defined
-            sizeTypeSelect.innerHTML = `<option value="00" selected>00 - Default / N/A</option>`;
-        }
-    };
-    
-    const filterProductsByCategory = (selectedCategoryPrefix) => {
-        productCodeSelect.innerHTML = '<option value="" disabled selected>Select Product Code</option>';
-        sizeTypeSelect.innerHTML = '<option value="" disabled selected>Select Product First</option>';
+  const fill = (select, items, placeholder, opts = {}) => {
+    select.innerHTML = '';
+    const ph = new Option(placeholder, '');
+    if (!opts.allowNone) ph.disabled = true;
+    select.add(ph);
+    items.forEach((it) => select.add(new Option(`${it.code} – ${it.name}`, it.code)));
+    select.value = '';
+    select.disabled = !!opts.disabled;
+  };
 
-        if (selectedCategoryPrefix) {
-            const selectedCategoryName = categoryMap[selectedCategoryPrefix];
+  const tr = (cells) => {
+    const row = document.createElement('tr');
+    cells.forEach((c) => {
+      const td = document.createElement('td');
+      if (c instanceof Node) td.appendChild(c); else td.textContent = c;
+      row.appendChild(td);
+    });
+    return row;
+  };
 
-            if (selectedCategoryName) {
-                const standardCategoryName = selectedCategoryName.toLowerCase();
+  const loadHistory = () => {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch (e) { return []; }
+  };
+  const saveHistory = (h) => { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch (e) {} };
+  let history = loadHistory();
 
-                // Robust filtering against case and whitespace
-                const filteredProducts = allProducts.filter(p => {
-                    // Edge Case: Check that p.category exists and is a string
-                    return p.category && typeof p.category === 'string' && 
-                           p.category.toLowerCase().trim() === standardCategoryName;
-                });
-                
-                populateSelect(productCodeSelect, filteredProducts, 'Select Product Code');
-            }
-        } else {
-            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
-        }
-    };
+  const copyText = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } finally { ta.remove(); }
+    }
+    toast(`Copied ${text}`);
+  };
 
-    const showPrimaryMaterialTooltip = () => {
-        showCustomAlert("Please choose the material that is mainly used in the product. If there are material options in the parts, please choose constant material as the first one. Ex: SSL Floor Primary material will be Brass, and secondary will be marble (black white etc.)");
-    };
+  // ---------- rendering ----------
+  const activeProducts = () => catalog.products.filter((p) => !p.retired);
 
-    const showSecondaryMaterialTooltip = () => {
-        showCustomAlert("The secondary material is a constant material used in a smaller part of the product. Ex: SSL Floor Primary material is Brass, and secondary will be marble (black white etc.)");
-    };
+  const onCategory = () => {
+    const cat = catalog.categories.find((c) => c.code === el.category.value);
+    const items = cat ? activeProducts().filter((p) => p.category.trim().toLowerCase() === cat.name.toLowerCase()) : [];
+    fill(el.product, items, cat ? 'Choose product' : 'Choose a category first', { disabled: !cat });
+    onProduct();
+  };
 
-    const generateSku = () => {
-        const productCategory = productCategorySelect.value;
-        let productCode = productCodeSelect.value;
-        let sizeType = sizeTypeSelect.value;
-        const material1Type = material1TypeSelect.value;
-        const material1Finish = material1FinishSelect.value;
-        const material2Type = material2TypeSelect.value;
-        const material2Finish = material2FinishSelect.value;
+  const onProduct = () => {
+    const product = catalog.products.find((p) => p.code === el.product.value);
+    if (!product) {
+      fill(el.size, [], 'Choose a product first', { disabled: true });
+    } else {
+      const sizes = SkuCore.sizesFor(product);
+      fill(el.size, sizes, 'Choose size / type');
+      if (sizes.length === 1) el.size.value = sizes[0].code; // only one option — pick it
+    }
+    update();
+  };
 
-        if (!productCategory || !productCode || !sizeType) {
-            showCustomAlert('Please select a product category, code, and size/type.');
-            return;
-        }
+  const onMaterial = (matSel, finSel) => {
+    const m = materials.find((x) => x.code === matSel.value);
+    fill(finSel, m ? m.finishes : [], m ? 'Choose finish' : 'Choose a material first', { disabled: !m });
+    if (m && m.finishes.length === 1) finSel.value = m.finishes[0].code;
+    update();
+  };
 
-        // --- CODE LENGTH VALIDATION (Allows 3 or 4 Product Code characters) ---
-        productCode = String(productCode).trim();
-        sizeType = String(sizeType).trim();
-        
-        // Product Code Check (3 or 4 characters)
-        if (productCode.length < 3 || productCode.length > 4) {
-             showCustomAlert(`Error: Product Code (${productCode}) must be 3 or 4 characters.`);
-             return;
-        }
+  const update = () => {
+    current = null;
+    el.save.disabled = el.copy.disabled = true;
+    el.desc.textContent = '';
+    if (!el.product.value) {
+      el.sku.className = 'placeholder';
+      el.sku.textContent = 'Choose a product to begin';
+      return;
+    }
+    const r = SkuCore.buildSku(catalog, materials, {
+      productCode: el.product.value, sizeCode: el.size.value,
+      mat1: el.mat1.value, fin1: el.fin1.value, mat2: el.mat2.value, fin2: el.fin2.value,
+    });
+    if (r.error) {
+      el.sku.className = 'placeholder';
+      el.sku.textContent = r.error;
+      return;
+    }
+    current = r;
+    el.sku.className = '';
+    el.sku.textContent = r.sku;
+    el.desc.textContent = r.description;
+    el.save.disabled = el.copy.disabled = false;
+  };
 
-        // Size/Type Code Check (2 characters)
-        if (sizeType.length !== 2) {
-             showCustomAlert(`Error: Size/Type Code (${sizeType}) must be exactly 2 characters.`);
-             return;
-        }
-        
-        // Material and Finish codes maximum length
-        if (material1Type.length > 2 || material1Finish.length > 2 || material2Type.length > 2 || material2Finish.length > 2) {
-             showCustomAlert('Error: Material and Finish codes cannot exceed 2 characters.');
-             return;
-        }
-        // ----------------------------------------------------------------------
+  const renderHistory = () => {
+    el.historyBody.innerHTML = '';
+    history.forEach((h) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary btn-small';
+      btn.textContent = 'Copy';
+      btn.onclick = () => copyText(h.sku);
+      const row = tr([h.sku, h.description, btn]);
+      row.firstChild.className = 'mono';
+      row.firstChild.style.whiteSpace = 'nowrap';
+      el.historyBody.appendChild(row);
+    });
+    el.historyEmpty.style.display = history.length ? 'none' : '';
+  };
 
-        let sku = `${productCategory}-${productCode}-${sizeType}`;
-        let description = '';
+  const renderLegend = () => {
+    el.legend.innerHTML = '';
+    materials.forEach((m) => {
+      el.legend.appendChild(tr([`${m.code} – ${m.name}`, (m.finishes || []).map((f) => `${f.code} – ${f.name}`).join(', ')]));
+    });
+  };
 
-        const product = allProducts.find(p => p.code === productCode);
-        if (!product) {
-             showCustomAlert('Error: Selected Product Code not found in data source.');
-             return;
-        }
+  const showBanner = (errors, warnings, fatal) => {
+    el.banner.innerHTML = '';
+    if (!errors.length) return; // warnings are for the editor, not for everyday users
+    const box = document.createElement('div');
+    box.className = 'banner banner-error';
+    box.innerHTML = fatal
+      ? '<strong>The product list could not be loaded.</strong> Please tell whoever looks after the catalogue.'
+      : '<strong>The catalogue has problems that may produce wrong SKUs.</strong> Please tell whoever looks after the catalogue (or open the catalogue editor to fix them).';
+    const ul = document.createElement('ul');
+    errors.slice(0, 10).forEach((e) => { const li = document.createElement('li'); li.textContent = e; ul.appendChild(li); });
+    if (errors.length > 10) { const li = document.createElement('li'); li.textContent = `…and ${errors.length - 10} more.`; ul.appendChild(li); }
+    box.appendChild(ul);
+    el.banner.appendChild(box);
+  };
 
-        // Primary Material Logic (Allows code '0' for finish if the material type is selected)
-        if (material1Type && material1Type !== '0') {
-            if (!material1Finish) {
-                showCustomAlert('Please select a valid Primary Material Finish.');
-                return;
-            }
-            sku += `-${material1Type}${material1Finish}`;
-            
-            // Edge Case: Use safe access and provide fallback description
-            const m1 = materials.find(m => m.code === material1Type);
-            const f1 = m1?.finishes?.find(f => f.code === material1Finish);
+  const csvCell = (v) => `"${String(v).replace(/"/g, '""')}"`;
 
-            const m1Name = m1?.name || `Material ${material1Type}`;
-            const f1Name = f1?.name || `Finish ${material1Finish}`;
+  // ---------- events ----------
+  el.category.onchange = onCategory;
+  el.product.onchange = onProduct;
+  el.size.onchange = update;
+  el.mat1.onchange = () => onMaterial(el.mat1, el.fin1);
+  el.mat2.onchange = () => onMaterial(el.mat2, el.fin2);
+  el.fin1.onchange = update;
+  el.fin2.onchange = update;
+  el.copy.onclick = () => current && copyText(current.sku);
+  el.save.onclick = () => {
+    if (!current) return;
+    history.unshift({ sku: current.sku, description: current.description, date: new Date().toISOString() });
+    saveHistory(history); renderHistory(); toast(`Saved ${current.sku}`);
+  };
+  el.reset.onclick = () => {
+    el.category.value = ''; onCategory();
+    el.mat1.value = ''; onMaterial(el.mat1, el.fin1);
+    el.mat2.value = ''; onMaterial(el.mat2, el.fin2);
+  };
+  el.clear.onclick = () => {
+    if (!history.length || !confirm('Clear all saved SKUs from this browser?')) return;
+    history = []; saveHistory(history); renderHistory();
+  };
+  el.download.onclick = () => {
+    if (!history.length) return toast('Nothing to download yet.');
+    const lines = [['SKU', 'Description', 'Saved'].map(csvCell).join(',')]
+      .concat(history.map((h) => [h.sku, h.description, h.date || ''].map(csvCell).join(',')));
+    const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `casegoods-skus-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $('help1').onclick = () => toast('The material used for most of the product. If a part comes in several material options, put the constant material here. E.g. SSL Floor: primary = Brass.', 7000);
+  $('help2').onclick = () => toast('A constant material used in a smaller part of the product. E.g. SSL Floor: secondary = Marble (black, white etc.).', 7000);
 
-            description = `${product.name}, made in ${m1Name} with a ${f1Name} finish`;
-            
-            // Secondary Material Logic
-            if (material2Type && material2Type !== '0') {
-                if (!material2Finish) {
-                    showCustomAlert('Please select a valid Secondary Material Finish.');
-                    return;
-                }
-                sku += `-${material2Type}${material2Finish}`;
+  // ---------- start ----------
+  const getJson = async (name) => {
+    const res = await fetch(`${name}?v=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${name} could not be downloaded (${res.status}).`);
+    try { return await res.json(); } catch (e) { throw new Error(`${name} has a typing mistake (missing comma, quote or bracket).`); }
+  };
 
-                const m2 = materials.find(m => m.code === material2Type);
-                const f2 = m2?.finishes?.find(f => f.code === material2Finish);
+  (async () => {
+    renderHistory();
+    [el.category, el.product, el.size, el.mat1, el.fin1, el.mat2, el.fin2].forEach((s) => fill(s, [], 'Loading…', { disabled: true }));
+    try {
+      [catalog, materials] = await Promise.all([getJson('products.json'), getJson('materials.json')]);
+    } catch (e) {
+      console.error(e);
+      showBanner([e.message], [], true);
+      [el.category, el.product, el.size, el.mat1, el.fin1, el.mat2, el.fin2].forEach((s) => fill(s, [], 'Unavailable', { disabled: true }));
+      return;
+    }
+    const { errors, warnings } = SkuCore.validate(catalog, materials);
+    showBanner(errors, warnings, false);
+    catalog.categories = catalog.categories || [];
+    catalog.products = (catalog.products || []).filter((p) => p && p.code && p.name);
+    materials = (Array.isArray(materials) ? materials : []).filter((m) => m && m.code && Array.isArray(m.finishes));
 
-                const m2Name = m2?.name || `Material ${material2Type}`;
-                const f2Name = f2?.name || `Finish ${material2Finish}`;
-                
-                description += ` and a secondary material of ${m2Name} with a ${f2Name} finish`;
-            }
-        } else if (material2Type && material2Type !== '0') {
-            // Error: Orphaned secondary material
-            showCustomAlert('Please select a Primary Material before selecting a Secondary Material.');
-            return;
-        } else {
-            // Case where both are "None" or unselected
-            description = `${product.name}`;
-        }
-
-        description += '.';
-
-        generatedSkuEl.textContent = sku;
-        generatedDescriptionEl.textContent = description;
-
-        skus.push({ sku: sku, description: description });
-        updateHistoryTable();
-    };
-
-    const updateHistoryTable = () => {
-        historyTableBody.innerHTML = '';
-        skus.forEach(item => {
-            const row = `
-                <tr>
-                    <td style="font-weight: 500;">${item.sku}</td>
-                    <td>${item.description}</td>
-                </tr>
-            `;
-            historyTableBody.insertAdjacentHTML('beforeend', row);
-        });
-    };
-
-    const populateLegend = () => {
-        legendTableBody.innerHTML = '';
-        materials.forEach(material => {
-            const finishes = material.finishes.map(f => `${f.code} - ${f.name}`).join(', ');
-            const row = `
-                <tr>
-                    <td style="font-weight: 500;">${material.code} - ${material.name}</td>
-                    <td>${finishes}</td>
-                </tr>
-            `;
-            legendTableBody.insertAdjacentHTML('beforeend', row);
-        });
-    };
-
-    const fetchAndPopulateData = async () => {
-        try {
-            // Fetch products data
-            const productsResponse = await fetch('products.json');
-            if (!productsResponse.ok) {
-                throw new Error('Failed to load products.json');
-            }
-            allProducts = await productsResponse.json();
-            
-            // Do NOT populate productCodeSelect yet, wait for category selection
-            productCodeSelect.innerHTML = '<option value="" disabled selected>Select Category First</option>';
-
-            // Fetch materials data
-            const materialsResponse = await fetch('materials.json');
-            if (!materialsResponse.ok) {
-                throw new Error('Failed to load materials.json');
-            }
-            materials = await materialsResponse.json();
-            populateSelect(material1TypeSelect, materials, 'Select Type');
-            populateSelect(material2TypeSelect, materials, 'Select Type');
-            
-            // Fetch product details data
-            const productDetailsResponse = await fetch('product_details.json');
-            if (!productDetailsResponse.ok) {
-                throw new Error('Failed to load product_details.json');
-            }
-            productDetails = await productDetailsResponse.json();
-            
-            populateLegend();
-        } catch (e) {
-            console.error("Error fetching data:", e);
-            showCustomAlert("CRITICAL ERROR: Failed to load essential data. Functionality is disabled.");
-            // Edge Case: Disable all interactivity if data fetch fails
-            disableFormOnFailure();
-        }
-    };
-
-    const runApplication = () => {
-        productCategorySelect = document.getElementById('productCategory');
-        productCodeSelect = document.getElementById('productCode');
-        sizeTypeSelect = document.getElementById('sizeType');
-        material1TypeSelect = document.getElementById('material1Type');
-        material1FinishSelect = document.getElementById('material1Finish');
-        material2TypeSelect = document.getElementById('material2Type');
-        material2FinishSelect = document.getElementById('material2Finish');
-        generateSkuBtn = document.getElementById('generateSkuBtn');
-        copySkuBtn = document.getElementById('copySkuBtn');
-        primaryMaterialTooltipBtn = document.getElementById('primaryMaterialTooltipBtn');
-        secondaryMaterialTooltipBtn = document.getElementById('secondaryMaterialTooltipBtn');
-        generatedSkuEl = document.getElementById('generatedSku');
-        generatedDescriptionEl = document.getElementById('generatedDescription');
-        legendTableBody = document.getElementById('legendTableBody');
-        historyTableBody = document.getElementById('historyTableBody');
-        customAlert = document.getElementById('customAlert');
-        alertMessage = document.getElementById('alertMessage');
-        alertCloseBtn = document.getElementById('alertCloseBtn');
-
-        // --- CRITICAL FIX: Category change listener for filtering ---
-        productCategorySelect.addEventListener('change', () => {
-            filterProductsByCategory(productCategorySelect.value);
-        });
-        // ------------------------------------------------------------
-
-        productCodeSelect.addEventListener('change', () => {
-            populateProductSizes(productCodeSelect.value);
-        });
-        material1TypeSelect.addEventListener('change', () => {
-            populateMaterialFinishes(material1TypeSelect, material1FinishSelect, 'Select Finish');
-        });
-        material2TypeSelect.addEventListener('change', () => {
-            populateMaterialFinishes(material2TypeSelect, material2FinishSelect, 'Select Finish');
-        });
-        generateSkuBtn.addEventListener('click', generateSku);
-        copySkuBtn.addEventListener('click', () => copyToClipboard(generatedSkuEl.textContent));
-        primaryMaterialTooltipBtn.addEventListener('click', showPrimaryMaterialTooltip);
-        secondaryMaterialTooltipBtn.addEventListener('click', showSecondaryMaterialTooltip);
-        alertCloseBtn.addEventListener('click', () => customAlert.classList.remove('visible'));
-
-        fetchAndPopulateData();
-    };
-
-    window.onload = runApplication;
+    fill(el.category, catalog.categories, 'Choose category');
+    fill(el.mat1, materials, '— None —', { allowNone: true });
+    fill(el.mat2, materials, '— None —', { allowNone: true });
+    onCategory();
+    onMaterial(el.mat1, el.fin1);
+    onMaterial(el.mat2, el.fin2);
+    renderLegend();
+  })();
+})();
 </script>
 </body>
 </html>
