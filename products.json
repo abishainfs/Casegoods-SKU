@@ -407,6 +407,14 @@
       ]
     },
     {
+      "code": "AMR",
+      "name": "Amari Chair",
+      "category": "Furniture",
+      "sizes": [
+        { "code": "01", "name": "Dining Chair - Upholstered Seat" }
+      ]
+    },
+    {
       "code": "TBK",
       "name": "Topologic Knobs",
       "category": "Hardware",
