@@ -248,7 +248,9 @@
     if (opts.body) headers['Content-Type'] = 'application/json';
     let res;
     try {
-      res = await fetch(`https://api.github.com/repos/${s.repo}/${path}`, Object.assign({}, opts, { headers, cache: 'no-store' }));
+      // No trailing "/" — GitHub rejects "…/repos/owner/name/" and the browser then reports it as a network error.
+      const repo = String(s.repo || '').trim().replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '').replace(/^\/+|\/+$/g, '');
+      res = await fetch(`https://api.github.com/repos/${repo}${path ? '/' + path : ''}`, Object.assign({}, opts, { headers, cache: 'no-store' }));
     } catch (e) {
       throw new Error('This browser could not reach GitHub. Check the internet connection, and turn off ad blockers or privacy extensions for this page. Some office networks also block api.github.com.');
     }
