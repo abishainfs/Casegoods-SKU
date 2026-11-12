@@ -86,7 +86,8 @@
       { "code": "3", "name": "Slightly Aged" },
       { "code": "4", "name": "Blackened" },
       { "code": "5", "name": "Nickel, Polished" },
-      { "code": "6", "name": "Nickel, Satin" }
+      { "code": "6", "name": "Nickel, Satin" },
+      { "code": "7", "name": "Silver plated" }
     ]
   },
   {
@@ -98,7 +99,9 @@
       { "code": "2", "name": "Polished" },
       { "code": "3", "name": "Slightly Aged" },
       { "code": "4", "name": "Blackened" },
-      { "code": "5", "name": "Nickel Plated" }
+      { "code": "5", "name": "Nickel Plated" },
+      { "code": "7", "name": "Patina Red" },
+      { "code": "6", "name": "Patina Blue" }
     ]
   },
   {
