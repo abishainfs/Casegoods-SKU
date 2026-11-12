@@ -21,6 +21,9 @@ The people asking you for changes are usually **not technical**. Reply in plain 
 3. Run `node scripts/validate.js --against HEAD` and tell the person about any line marked "AFFECTS EXISTING SKUs".
 4. Open a pull request with a short, plain-English description. Don't merge it yourself.
 
+## When changing the site's code
+- If you change `styles.css`, `sku-core.js` or `footer.js`, bump the `?v=` number where `index.html` and `editor.html` load them (use today's date). Otherwise browsers can mix old and new files for up to 10 minutes.
+
 ## Don't
 - Don't change the SKU format or `sku-core.js` rules unless explicitly asked.
 - Don't edit `store.json` or `reports/`: the weekly shop check writes those.

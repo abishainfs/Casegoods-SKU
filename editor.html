@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261112">
   <style>
     .ed-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
     @media (min-width: 1000px) { .ed-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; } .ed-side { position: sticky; top: 110px; } }
@@ -179,8 +179,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="sku-core.js"></script>
-<script src="footer.js" defer></script>
+<script src="sku-core.js?v=20261112"></script>
+<script src="footer.js?v=20261112" defer></script>
 <script>
 (function () {
   'use strict';
@@ -241,23 +241,44 @@
   // ---------------------------------------------------------------- GitHub
   const b64encode = (s) => { let bin = ''; new TextEncoder().encode(s).forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin); };
   const b64decode = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+  // A key copied from GitHub can pick up spaces, line breaks, quotes or a "Bearer " prefix: tidy it.
+  const cleanKey = (k) => String(k || '').replace(/["'`]/g, '').trim().replace(/^bearer\s+/i, '').replace(/\s/g, '');
+  const cleanRepo = (r) => String(r || '').trim().replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/\.git$/i, '').replace(/^\/+|\/+$/g, '');
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const KEY_HELP = 'On GitHub, open the key (Settings → Developer settings → Fine-grained tokens) and check: Repository access → "Only select repositories" includes Casegoods-SKU, and Permissions → Contents → "Read and write".';
+
   const gh = async (path, opts = {}, needKey = true) => {
     const s = settings();
     const headers = { Accept: 'application/vnd.github+json' };
-    if (s.token) headers.Authorization = `Bearer ${s.token}`;
+    const key = cleanKey(s.token);
+    if (key) headers.Authorization = `Bearer ${key}`;
     if (opts.body) headers['Content-Type'] = 'application/json';
+    // No trailing "/" — GitHub rejects "…/repos/owner/name/" and the browser then reports it as a network error.
+    const url = `https://api.github.com/repos/${cleanRepo(s.repo)}${path ? '/' + path : ''}`;
     let res;
-    try {
-      res = await fetch(`https://api.github.com/repos/${s.repo}/${path}`, Object.assign({}, opts, { headers, cache: 'no-store' }));
-    } catch (e) {
-      throw new Error('This browser could not reach GitHub. Check the internet connection, and turn off ad blockers or privacy extensions for this page. Some office networks also block api.github.com.');
+    for (let attempt = 1; ; attempt++) {
+      try {
+        res = await fetch(url, Object.assign({}, opts, { headers, cache: 'no-store' }));
+      } catch (e) {
+        if (attempt < 3) { await wait(1500 * attempt); continue; }   // brief Wi-Fi drop: try again
+        throw new Error('This browser could not reach GitHub (tried 3 times). Check the internet connection, then turn off ad blockers or privacy extensions for this page and try again.');
+      }
+      if (res.status >= 500 && attempt < 3) { await wait(2000 * attempt); continue; }   // GitHub hiccup: try again
+      break;
     }
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      throw new Error(res.status === 401 ? 'The access key is wrong or has expired.'
-        : res.status === 403 || res.status === 404 ? (needKey ? 'The access key does not have permission to change this repository (or the repository name is wrong).' : 'GitHub refused the request (it may be busy — try again later).')
-        : res.status === 409 ? 'Someone else saved a change at the same moment. Reload the page and try again.'
-        : body.message || `GitHub said "${res.status}".`);
+      const said = String(body.message || '');
+      const err = new Error(
+        res.status === 401 ? 'GitHub doesn\'t accept this access key. It may be mistyped, cut off when copying, deleted, or expired. Paste it again, or ask for a new one.'
+        : /rate limit/i.test(said) ? 'GitHub is limiting requests from this connection for a few minutes. Wait 5–10 minutes and try again.'
+        : res.status === 403 ? (needKey ? 'The access key works, but it isn\'t allowed to change this project. ' + KEY_HELP : 'GitHub refused the request. Try again in a few minutes.')
+        : res.status === 404 ? (needKey ? 'GitHub can\'t find the project with this key. Usually the key wasn\'t given access to Casegoods-SKU, or the Repository / Branch under "Advanced" is wrong. ' + KEY_HELP : 'GitHub couldn\'t find the project. Check the Repository under "Advanced".')
+        : res.status === 409 || res.status === 422 ? 'The file changed on GitHub while publishing.'
+        : res.status >= 500 ? 'GitHub is having trouble right now. Wait a minute and try again.'
+        : said || `GitHub said "${res.status}".`);
+      err.status = res.status;
+      throw err;
     }
     return res.json();
   };
@@ -680,21 +701,37 @@
     if (!list.length) msg += '\n• Formatting only';
     if (!confirm(msg)) return;
     const btn = $('publishBtn'); btn.disabled = true; btn.textContent = 'Publishing…';
+    const same = (a, b) => { try { return JSON.stringify(JSON.parse(a)) === JSON.stringify(JSON.parse(b)); } catch (e) { return false; } };
+    const done = [];
     try {
-      const files = [['products.json', t.products, original.products], ['materials.json', t.materials, original.materials]].filter((f) => f[1] !== f[2]);
-      for (const [name, content, before] of files) {
-        const remote = await ghGetFile(name);
-        let same = true;
-        try { same = JSON.stringify(JSON.parse(remote.text)) === JSON.stringify(JSON.parse(before)); } catch (e) { same = false; }
-        if (!same && !confirm(`${name} was changed by someone else since you opened the editor.\n\nOK = overwrite their change with yours\nCancel = stop (then reload the page to see their version)`)) {
-          throw new Error('Publishing cancelled — nothing was overwritten.');
+      const files = [['products.json', t.products, original.products, 'products'], ['materials.json', t.materials, original.materials, 'materials']].filter((f) => f[1] !== f[2]);
+      for (const [name, content, before, field] of files) {
+        let asked = false;
+        for (let attempt = 1; ; attempt++) {
+          const remote = await ghGetFile(name);
+          if (same(remote.text, content)) break;               // already saved (e.g. an earlier attempt got through)
+          // Someone else changed it (not just GitHub being slow): ask once before saving over it.
+          if (!same(remote.text, before) && !asked && (asked = true) &&
+              !confirm(`${name} was changed by someone else since you opened the editor.\n\nOK = save your version over theirs\nCancel = stop (then reload the page to see their version)`)) {
+            throw new Error('Publishing cancelled. Nothing was overwritten.');
+          }
+          try {
+            await gh(`contents/${name}`, { method: 'PUT', body: JSON.stringify({ message: commitMessage(list), content: b64encode(content), sha: remote.sha, branch: s.branch }) });
+            break;
+          } catch (e) {
+            // GitHub can take a few seconds to show its newest version; when that happens, wait and try again.
+            if ((e.status === 409 || e.status === 422) && attempt < 4) { await wait(2000 * attempt); continue; }
+            throw e;
+          }
         }
-        await gh(`contents/${name}`, { method: 'PUT', body: JSON.stringify({ message: commitMessage(list), content: b64encode(content), sha: remote.sha, branch: s.branch }) });
+        original[field] = content;   // this file is saved, even if the next one fails
+        done.push(name);
       }
-      original = t; clearDraft(); historyLoaded = false; refresh();
-      toast('✓ Published. The website updates within a minute or two.', 6000);
+      clearDraft(); historyLoaded = false; refresh();
+      toast('✓ Published. The SKU site shows it within a few minutes (refresh the page if not).', 7000);
     } catch (e) {
-      alert('Could not publish.\n\n' + e.message + '\n\nYour changes are still here. You can also use "Download files" instead.');
+      const partly = done.length ? `\n\n(${done.join(' and ')} ${done.length === 1 ? 'was' : 'were'} saved. Press Publish again to save the rest.)` : '';
+      alert('Could not publish.\n\n' + e.message + partly + '\n\nYour changes are still here. You can also use "Download files" instead.');
     } finally {
       btn.textContent = 'Publish'; refresh();
     }
@@ -704,17 +741,22 @@
   const showSettings = () => { const s = settings(); $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch; $('who').value = s.who || ''; };
   $('who').addEventListener('change', () => { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(Object.assign(settings(), { who: $('who').value.trim() }))); } catch (e) {} });
   $('saveSettings').onclick = async () => {
-    const s = { token: $('token').value.trim(), repo: $('repo').value.trim() || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main', who: $('who').value.trim() };
+    const s = { token: cleanKey($('token').value), repo: cleanRepo($('repo').value) || DEFAULT_SETTINGS.repo, branch: $('branch').value.trim() || 'main', who: $('who').value.trim() };
+    $('token').value = s.token; $('repo').value = s.repo; $('branch').value = s.branch;
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
     const msg = $('settingsMsg'); msg.innerHTML = '';
     if (!s.token) return msg.append(h('div', { class: 'banner banner-error' }, 'Paste the access key first.'));
     if (!/^(github_pat_|ghp_)/.test(s.token)) msg.append(h('div', { class: 'banner banner-warn' }, 'That doesn\'t look like a GitHub access key (they start with github_pat_). Testing anyway…'));
+    const btn = $('saveSettings'); btn.disabled = true; btn.textContent = 'Testing…';
     try {
       const repo = await gh('');
-      if (!repo.permissions || !repo.permissions.push) throw new Error('The key can read the project but not change it. It needs "Contents: Read and write" permission.');
-      msg.append(h('div', { class: 'banner banner-ok' }, '✓ Connected. Publish is ready to use on this computer.'));
+      if (repo.permissions && repo.permissions.push === false) throw new Error('The key can read the project but not change it. ' + KEY_HELP);
+      await ghGetFile('products.json');   // can it read the catalogue on this branch?
+      msg.append(h('div', { class: 'banner banner-ok' }, `✓ Connected to ${repo.full_name || s.repo} (${s.branch}). Publish is ready to use on this computer.`));
     } catch (e) {
       msg.append(h('div', { class: 'banner banner-error' }, 'Not connected: ' + e.message));
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save & test connection';
     }
   };
   $('forgetSettings').onclick = () => { try { localStorage.removeItem(SETTINGS_KEY); } catch (e) {} showSettings(); toast('Key removed from this computer.'); };
